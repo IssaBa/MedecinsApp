@@ -1,0 +1,15 @@
+models\Ordonnance.class
+models\Antecedent.class
+models\Consultation.class
+models\SexeEnum.class
+models\TypeConsultation.class
+models\ClasseAntecedent.class
+models\Patient.class
+models\Profession.class
+dao\MedecinUserDAO.class
+models\config\HibernateUtil.class
+models\PatientAntecedent.class
+models\CiviliteEnum.class
+models\MedecinUser.class
+views\TestMain.class
+App\MedecinsApp\App.class
