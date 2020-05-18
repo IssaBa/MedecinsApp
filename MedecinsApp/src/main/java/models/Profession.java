@@ -1,76 +1,48 @@
 package models;
 
-import java.util.Collection;
-
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-
 @Entity
-@Table(name = "Profession",schema = "PUBLIC",catalog = "PUBLIC")
-public class Profession {
+@Table(name = "Profession", schema = "PUBLIC", catalog = "PUBLIC")
+public class Profession implements Serializable {
 
-	
-		@Id
-	    @Column ( name = "ID" )
-	    private Integer id;
-	  
-	    @Column ( name = "LIBELLE" )
-	    private String libelle;
-	   
-	    @OneToMany ( mappedBy = "professionId" )
-	    private Collection<Patients> patientsCollection;
-	    
-	    @OneToMany ( mappedBy = "professionConjoint" )
-	    private Collection<Patients> patientsCollection1;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
-		public Integer getId() {
-			return id;
-		}
+    @Column
+    private String libelle;
 
-		public void setId(Integer id) {
-			this.id = id;
-		}
+    public Profession() {
+    }
 
-		public String getLibelle() {
-			return libelle;
-		}
+    public Profession(Long id) {
+        this.id = id;
+    }
 
-		public void setLibelle(String libelle) {
-			this.libelle = libelle;
-		}
+    public Profession(String libelle) {
+        this.libelle = libelle;
+    }
 
-		public Collection<Patients> getPatientsCollection() {
-			return patientsCollection;
-		}
+    public Long getId() {
+        return id;
+    }
 
-		public void setPatientsCollection(Collection<Patients> patientsCollection) {
-			this.patientsCollection = patientsCollection;
-		}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-		public Collection<Patients> getPatientsCollection1() {
-			return patientsCollection1;
-		}
+    public String getLibelle() {
+        return libelle;
+    }
 
-		public void setPatientsCollection1(Collection<Patients> patientsCollection1) {
-			this.patientsCollection1 = patientsCollection1;
-		}
-
-		public Profession(String libelle, Collection<Patients> patientsCollection,
-				Collection<Patients> patientsCollection1) {
-			super();
-			this.libelle = libelle;
-			this.patientsCollection = patientsCollection;
-			this.patientsCollection1 = patientsCollection1;
-		}
-
-		public Profession() {
-			super();
-		}
-	    
-	    
-	    
+    public void setLibelle(String libelle) {
+        this.libelle = libelle;
+    }
 }

@@ -1,9 +1,12 @@
 package models;
 
-import java.sql.Date;
+import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -12,83 +15,80 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-@Table(name = "PatientAntecedent",schema = "PUBLIC",catalog = "PUBLIC")
-public class PatientAntecedent {
+@Table(name = "Patient_Antecedent", schema = "PUBLIC", catalog = "PUBLIC")
+public class PatientAntecedent implements Serializable {
 
-	
-	@Id
-  
-    @Column ( name = "ID" )
-    private Integer id;
-    @Column ( name = "COMMENTAIRE" )
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    
+    @Column
     private String commentaire;
-  
-    @Column ( name = "DATE_ENTREE" )
-    @Temporal ( TemporalType.DATE )
+
+    @Column(nullable = false)
+    @Temporal(TemporalType.DATE)
     private Date dateEntree;
-    
-    @JoinColumn ( name = "ID_ANTECEDENT" , referencedColumnName = "ID" )
-    @ManyToOne ( optional = false )
-    private Antecedents idAntecedent;
-    
-    @JoinColumn ( name = "ID_PATIENT" , referencedColumnName = "ID" )
-    @ManyToOne ( optional = false )
-    private Patients idPatient;
 
-	public Integer getId() {
-		return id;
-	}
+    @ManyToOne
+    @JoinColumn(name = "antecedent_id", nullable = false)
+    private Antecedent antecedent;
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    @ManyToOne
+    @JoinColumn(name = "patient_id", nullable = false)
+    private Patient patient;
 
-	public String getCommentaire() {
-		return commentaire;
-	}
+    public PatientAntecedent() {
+    }
 
-	public void setCommentaire(String commentaire) {
-		this.commentaire = commentaire;
-	}
+    public PatientAntecedent(Long id) {
+        this.id = id;
+    }
 
-	public Date getDateEntree() {
-		return dateEntree;
-	}
+    public PatientAntecedent(String commentaire, Date dateEntree, Antecedent antecedent, Patient patient) {
+        this.commentaire = commentaire;
+        this.dateEntree = dateEntree;
+        this.antecedent = antecedent;
+        this.patient = patient;
+    }
 
-	public void setDateEntree(Date dateEntree) {
-		this.dateEntree = dateEntree;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public Antecedents getIdAntecedent() {
-		return idAntecedent;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setIdAntecedent(Antecedents idAntecedent) {
-		this.idAntecedent = idAntecedent;
-	}
+    public String getCommentaire() {
+        return commentaire;
+    }
 
-	public Patients getIdPatient() {
-		return idPatient;
-	}
+    public void setCommentaire(String commentaire) {
+        this.commentaire = commentaire;
+    }
 
-	public void setIdPatient(Patients idPatient) {
-		this.idPatient = idPatient;
-	}
+    public Date getDateEntree() {
+        return dateEntree;
+    }
 
-	public PatientAntecedent(String commentaire, Date dateEntree, Antecedents idAntecedent, Patients idPatient) {
-		super();
-		this.commentaire = commentaire;
-		this.dateEntree = dateEntree;
-		this.idAntecedent = idAntecedent;
-		this.idPatient = idPatient;
-	}
+    public void setDateEntree(Date dateEntree) {
+        this.dateEntree = dateEntree;
+    }
 
-	public PatientAntecedent() {
-		super();
-	}
-    
-    
-    
-    
+    public Antecedent getAntecedent() {
+        return antecedent;
+    }
+
+    public void setAntecedent(Antecedent antecedent) {
+        this.antecedent = antecedent;
+    }
+
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
+    }
 
 }

@@ -1,61 +1,48 @@
 package models;
 
-import java.util.Collection;
-
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "ClasseAntecedent",schema = "PUBLIC",catalog = "PUBLIC")
-public class ClasseAntecedent {
+@Table(name = "Classe_Antecedent", schema = "PUBLIC", catalog = "PUBLIC")
+public class ClasseAntecedent implements Serializable {
 
-	@Id
-    @Column ( name = "ID" )
-    private Integer id;
-   
-	@Column ( name = "LIBELLE" )
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    @Column
     private String libelle;
-    
-	@OneToMany ( mappedBy = "classeId" )
-    private Collection<Antecedents> antecedentsCollection;
 
-	public Integer getId() {
-		return id;
-	}
+    public ClasseAntecedent() {
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public ClasseAntecedent(Long id) {
+        this.id = id;
+    }
 
-	public String getLibelle() {
-		return libelle;
-	}
+    public ClasseAntecedent(String libelle) {
+        this.libelle = libelle;
+    }
 
-	public void setLibelle(String libelle) {
-		this.libelle = libelle;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public Collection<Antecedents> getAntecedentsCollection() {
-		return antecedentsCollection;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setAntecedentsCollection(Collection<Antecedents> antecedentsCollection) {
-		this.antecedentsCollection = antecedentsCollection;
-	}
+    public String getLibelle() {
+        return libelle;
+    }
 
-	public ClasseAntecedent(String libelle, Collection<Antecedents> antecedentsCollection) {
-		super();
-		this.libelle = libelle;
-		this.antecedentsCollection = antecedentsCollection;
-	}
-
-	public ClasseAntecedent() {
-		super();
-	}
-	
-	
-	
+    public void setLibelle(String libelle) {
+        this.libelle = libelle;
+    }
 }

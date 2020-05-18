@@ -1,4 +1,4 @@
-package utils;
+package models.config;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.Metadata;
@@ -14,7 +14,7 @@ public class HibernateUtil {
         if (sessionFactory == null) {
             try {
                 // Create registry
-                registry = new StandardServiceRegistryBuilder().configure("hibernate.cfg.xml").build();
+                registry = new StandardServiceRegistryBuilder().configure().build();
 
                 // Create MetadataSources
                 MetadataSources sources = new MetadataSources(registry);

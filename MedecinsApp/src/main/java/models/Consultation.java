@@ -1,9 +1,12 @@
 package models;
 
-import java.sql.Date;
+import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -12,87 +15,92 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-@Table(name = "Consultation",schema = "PUBLIC",catalog = "PUBLIC")
-public class Consultation {
-	
-	
-	  	@Id
-	    @Column ( name = "ID" )
-	    private Integer id;
-	  
-	  	@Column ( name = "DATE_CONSULTATION" )
-	    @Temporal ( TemporalType.TIMESTAMP )
-	    private Date dateConsultation;
-	   
-	  	@Column ( name = "DONNEES" )
-	    private String donnees;
-	  	
-	    @JoinColumn ( name = "ID_MEDECIN" , referencedColumnName = "ID" )
-	    @ManyToOne
-	    private MedecinUser idMedecin;
-	    
-	    @JoinColumn ( name = "ID_PATIENT" , referencedColumnName = "ID" )
-	    @ManyToOne ( optional = false )
-	    private Patients idPatient;
-	    
-	    @JoinColumn ( name = "ID_TYPE_CONSULTATION" , referencedColumnName = "ID" )
-	    @ManyToOne ( optional = false )
-	    private TypeConsultation idTypeConsultation;
+@Table(name = "Consultation", schema = "PUBLIC", catalog = "PUBLIC")
+public class Consultation implements Serializable {
 
-		public Date getDateConsultation() {
-			return dateConsultation;
-		}
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
 
-		public void setDateConsultation(Date dateConsultation) {
-			this.dateConsultation = dateConsultation;
-		}
+    @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateConsultation;
 
-		public String getDonnees() {
-			return donnees;
-		}
+    @Column
+    private String donnees;
 
-		public void setDonnees(String donnees) {
-			this.donnees = donnees;
-		}
+    @JoinColumn(name = "medecin_id", nullable = false)
+    @ManyToOne
+    private MedecinUser medecin;
 
-		public MedecinUser getIdMedecin() {
-			return idMedecin;
-		}
+    @ManyToOne
+    @JoinColumn(name = "patient_id", nullable = false)
+    private Patient patient;
 
-		public void setIdMedecin(MedecinUser idMedecin) {
-			this.idMedecin = idMedecin;
-		}
+    @ManyToOne
+    @JoinColumn(name = "type_consultation_id", nullable = false)
+    private TypeConsultation typeConsultation;
 
-		public Patients getIdPatient() {
-			return idPatient;
-		}
+    public Consultation(Integer id) {
+        this.id = id;
+    }
 
-		public void setIdPatient(Patients idPatient) {
-			this.idPatient = idPatient;
-		}
+    public Consultation(Date dateConsultation, String donnees, MedecinUser medecin, Patient patient, TypeConsultation typeConsultation) {
+        this.dateConsultation = dateConsultation;
+        this.donnees = donnees;
+        this.medecin = medecin;
+        this.patient = patient;
+        this.typeConsultation = typeConsultation;
+    }
 
-		public TypeConsultation getIdTypeConsultation() {
-			return idTypeConsultation;
-		}
+    public Consultation() {
+    }
 
-		public void setIdTypeConsultation(TypeConsultation idTypeConsultation) {
-			this.idTypeConsultation = idTypeConsultation;
-		}
+    public Integer getId() {
+        return id;
+    }
 
-		public Consultation(Date dateConsultation, String donnees, MedecinUser idMedecin, Patients idPatient,
-				TypeConsultation idTypeConsultation) {
-			super();
-			this.dateConsultation = dateConsultation;
-			this.donnees = donnees;
-			this.idMedecin = idMedecin;
-			this.idPatient = idPatient;
-			this.idTypeConsultation = idTypeConsultation;
-		}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-		public Consultation() {
-			super();
-		}
+    public Date getDateConsultation() {
+        return dateConsultation;
+    }
 
-	    
+    public void setDateConsultation(Date dateConsultation) {
+        this.dateConsultation = dateConsultation;
+    }
 
+    public String getDonnees() {
+        return donnees;
+    }
+
+    public void setDonnees(String donnees) {
+        this.donnees = donnees;
+    }
+
+    public MedecinUser getMedecin() {
+        return medecin;
+    }
+
+    public void setMedecin(MedecinUser medecin) {
+        this.medecin = medecin;
+    }
+
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
+    }
+
+    public TypeConsultation getTypeConsultation() {
+        return typeConsultation;
+    }
+
+    public void setTypeConsultation(TypeConsultation typeConsultation) {
+        this.typeConsultation = typeConsultation;
+    }
 }

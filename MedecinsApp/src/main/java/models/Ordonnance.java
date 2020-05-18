@@ -1,9 +1,12 @@
 package models;
 
+import java.io.Serializable;
 import java.sql.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -12,80 +15,80 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-@Table(name = "Ordonnance",schema = "PUBLIC",catalog = "PUBLIC")
-public class Ordonnance {
+@Table(name = "Ordonnance", schema = "PUBLIC", catalog = "PUBLIC")
+public class Ordonnance implements Serializable {
 
-	 	@Id
-	    @Column ( name = "ID" )
-	    private Integer id;
-	  
-	 	@Column ( name = "DATE_ORDONNANCE" )
-	    @Temporal ( TemporalType.TIMESTAMP )
-	    private Date dateOrdonnance;
-	 
-	    @Column ( name = "DONNEES" )
-	    private String donnees;
-	  
-	    @JoinColumn ( name = "ID_MEDECIN" , referencedColumnName = "ID" )
-	    @ManyToOne ( optional = false )
-	    private MedecinUser idMedecin;
-	    
-	    @JoinColumn ( name = "ID_PATIENT" , referencedColumnName = "ID" )
-	    @ManyToOne ( optional = false )
-	    private Patients idPatient;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
-		public Integer getId() {
-			return id;
-		}
+    @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateOrdonnance;
 
-		public void setId(Integer id) {
-			this.id = id;
-		}
+    @Column
+    private String donnees;
 
-		public Date getDateOrdonnance() {
-			return dateOrdonnance;
-		}
+    @JoinColumn(name = "medecin_id", nullable = false)
+    @ManyToOne
+    private MedecinUser medecin;
 
-		public void setDateOrdonnance(Date dateOrdonnance) {
-			this.dateOrdonnance = dateOrdonnance;
-		}
+    @JoinColumn(name = "patient_id", nullable = false)
+    @ManyToOne
+    private Patient patient;
 
-		public String getDonnees() {
-			return donnees;
-		}
+    public Ordonnance() {
+    }
 
-		public void setDonnees(String donnees) {
-			this.donnees = donnees;
-		}
+    public Ordonnance(Long id) {
+        this.id = id;
+    }
 
-		public MedecinUser getIdMedecin() {
-			return idMedecin;
-		}
+    public Ordonnance(Date dateOrdonnance, String donnees, MedecinUser medecin, Patient patient) {
+        this.dateOrdonnance = dateOrdonnance;
+        this.donnees = donnees;
+        this.medecin = medecin;
+        this.patient = patient;
+    }
 
-		public void setIdMedecin(MedecinUser idMedecin) {
-			this.idMedecin = idMedecin;
-		}
+    public Long getId() {
+        return id;
+    }
 
-		public Patients getIdPatient() {
-			return idPatient;
-		}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-		public void setIdPatient(Patients idPatient) {
-			this.idPatient = idPatient;
-		}
+    public Date getDateOrdonnance() {
+        return dateOrdonnance;
+    }
 
-		public Ordonnance(Date dateOrdonnance, String donnees, MedecinUser idMedecin, Patients idPatient) {
-			super();
-			this.dateOrdonnance = dateOrdonnance;
-			this.donnees = donnees;
-			this.idMedecin = idMedecin;
-			this.idPatient = idPatient;
-		}
+    public void setDateOrdonnance(Date dateOrdonnance) {
+        this.dateOrdonnance = dateOrdonnance;
+    }
 
-		public Ordonnance() {
-			super();
-		}
-	    
-	    
-	    
+    public String getDonnees() {
+        return donnees;
+    }
+
+    public void setDonnees(String donnees) {
+        this.donnees = donnees;
+    }
+
+    public MedecinUser getMedecin() {
+        return medecin;
+    }
+
+    public void setMedecin(MedecinUser medecin) {
+        this.medecin = medecin;
+    }
+
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
+    }
+
 }
