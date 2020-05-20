@@ -9,10 +9,15 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "Medecin_User", schema = "PUBLIC", catalog = "PUBLIC")
+@Table(name = "MedecinUser", schema = "PUBLIC", catalog = "PUBLIC")
 public class MedecinUser implements Serializable {
 
-    @Id
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     

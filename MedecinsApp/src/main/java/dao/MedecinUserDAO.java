@@ -1,5 +1,6 @@
 package dao;
 
+import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -23,7 +24,6 @@ public class MedecinUserDAO {
 
         } catch (Exception e) {
             transaction.rollback();
-
             e.printStackTrace();
         }
 
@@ -36,7 +36,7 @@ public class MedecinUserDAO {
         try {
             session = HibernateUtil.getSessionFactory().openSession();
 
-            usersSearch = session.createQuery("from MedecinUser", MedecinUser.class).list().get(0);
+            usersSearch = session.createQuery("from Medecin_User", MedecinUser.class).list().get(0);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -47,11 +47,16 @@ public class MedecinUserDAO {
     // Search d'un userMedecin via son matricule
     public MedecinUser findUserByMatricule(String matricule) {
 
-        MedecinUser medecinUser = null;
+        MedecinUser medecinUser = null ;
         try {
             session = HibernateUtil.getSessionFactory().openSession();
-            medecinUser = (MedecinUser) session.createQuery("from MedecinUsers as  mu  where mu.= :mat").setEntity("mat", matricule).list().get(0);
-
+            
+            List<MedecinUser> listMedecin = session.createQuery("FROM  MedecinUser").list();
+            	medecinUser = listMedecin.get(0);
+            if(medecinUser.getUsername().equals(matricule)){
+                return medecinUser;
+            }
+         
         } catch (Exception e) {
             e.printStackTrace();
         }
