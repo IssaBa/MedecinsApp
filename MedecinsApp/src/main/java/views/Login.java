@@ -6,14 +6,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-
 import dao.MedecinUserDAO;
 import models.MedecinUser;
-import net.bytebuddy.asm.Advice.Exit;
-
 import javax.swing.JSeparator;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
@@ -91,17 +85,16 @@ public class Login {
 					String paswd = password.getText().toString();
 				
 			if(!username.equals(null) && !password.equals(null)) {
-					
 					MedecinUserDAO medecinUserDAO = new MedecinUserDAO();
 					MedecinUser medecinUser =medecinUserDAO.findUserByMatricule(username);
-					
 					if(username.equals(medecinUser.getUsername())  && paswd.equals(medecinUser.getPassword()) )  {
-						
 						Menu menu = new Menu();
-							menu.setVisible(true);;
-						
+						menu.show();
+						menu.setVisible(true);
+						frame.setVisible(false);
+					
 					}else {
-						System.out.println("JE SUIS LA : KO =");
+						//System.out.println("JE SUIS LA : KO =");
 						JOptionPane.showMessageDialog(null, "LOGIN OU PASSWORD ! ","INCORECTE", JOptionPane.ERROR_MESSAGE);
 					}
 				}else {

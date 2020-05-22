@@ -1,3 +1,4 @@
+views\GestionMedecins.class
 views\Login$2.class
 models\ClasseAntecedent.class
 views\Menu$1.class
@@ -7,6 +8,7 @@ views\Menu$3.class
 models\Ordonnance.class
 views\Menu.class
 models\Antecedent.class
+views\GestionMedecins$1.class
 models\Consultation.class
 models\SexeEnum.class
 models\TypeConsultation.class
