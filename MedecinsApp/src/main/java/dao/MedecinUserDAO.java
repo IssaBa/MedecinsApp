@@ -50,15 +50,15 @@ public class MedecinUserDAO {
         MedecinUser medecinUser = null ;
         try {
             session = HibernateUtil.getSessionFactory().openSession();
-            
-            List<MedecinUser> listMedecin = session.createQuery("FROM  MedecinUser").list();
-            	medecinUser = listMedecin.get(0);
-            if(medecinUser.getUsername().equals(matricule)){
-                return medecinUser;
+            MedecinUser medecin = (MedecinUser) session.createQuery("FROM  MedecinUser m  WHERE m.username=:mat").setParameter("mat", matricule).getSingleResult();
+            if(medecin!=null) {
+            	return medecin;
+            }else {
+            	return null;
             }
-         
+                
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         return medecinUser;
     }

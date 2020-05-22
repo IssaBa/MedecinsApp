@@ -146,34 +146,61 @@ public class GestionMedecins extends javax.swing.JInternalFrame {
         );
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
+    }
 
-    private void ajoutMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ajoutMActionPerformed
-        // TODO add your handling code here:
-          try {
-        	
-        if(prenom.getText().equals(null) &&  nom.getText().equals(null) && password.getText().equals(null) && username.getText().equals(null))	{
-          JOptionPane.showMessageDialog (null, "Tous les champs doivent etre remplis" , "Avertissement" ,
-                    JOptionPane.WARNING_MESSAGE);
-        }else {
-            
-            MedecinUser medecinUser = new MedecinUser();
-             medecinUser.setPrenom(prenom.getText());
-             medecinUser.setNom(nom.getText());
-             medecinUser.setPassword(password.getText());
-             medecinUser.setUsername(username.getText());
-             MedecinUserDAO dAO = new MedecinUserDAO();
-             dAO.saveUser(medecinUser);
-             JOptionPane.showMessageDialog (null, "Medecin ajouter avec succee" , "Gestion Medecins" , JOptionPane.INFORMATION_MESSAGE);
-             
-             viderChamps();
-        }
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog (null, "Une erreur s'est produite Veuillez contactez l'adminstrateur du systeme" , "Title" , JOptionPane.ERROR_MESSAGE);
-        }  
-    }//GEN-LAST:event_ajoutMActionPerformed
+    public Boolean VerifiMedecinExist(String username) {
+    	try {
+			
+    		MedecinUserDAO dAO = new MedecinUserDAO();
+	    	  MedecinUser medecinUser1 = dAO.findUserByMatricule(username);
+	    	  if(medecinUser1==null){
+	    		  return false;
+	          }else {
+	        	  return true;
+	          } 
+	    	  
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    	return false;
+    }
+    
+    private void ajoutMActionPerformed(java.awt.event.ActionEvent evt) {
+    try {
+    	
+    	MedecinUserDAO dAO = new MedecinUserDAO();
+    	
+       	if(prenom.getText().equals("") &&  nom.getText().equals("") && password.getText().equals("") && username.getText().equals(""))	{
+	        JOptionPane.showMessageDialog (null, "Tous les champs doivent etre remplis" , "Avertissement" ,
+	                  JOptionPane.WARNING_MESSAGE);
+	      }else {
+	    	  if(VerifiMedecinExist(username.getText())==false) {
+		      	     MedecinUser medecinUser = new MedecinUser();
+		             medecinUser.setPrenom(prenom.getText());
+		             medecinUser.setNom(nom.getText());
+		             medecinUser.setPassword(password.getText());
+		             medecinUser.setUsername(username.getText());
+		                          dAO.saveUser(medecinUser);
+		             JOptionPane.showMessageDialog (null, "Medecin ajouter avec succee" , "Gestion Medecins" , JOptionPane.INFORMATION_MESSAGE);
+		             
+		             viderChamps();
+
+	         }
+	    	  else {
+	    		  JOptionPane.showMessageDialog (null, "Ce medecin existe Déja" , "Avertissement" ,JOptionPane.WARNING_MESSAGE);
+	            	viderChamps();	  	      
+	         }
+	      }
+
+       	
+       	    
+	    	
+      }catch (Exception e) {
+          e.printStackTrace();
+          JOptionPane.showMessageDialog (null, "Une erreur s'est produite Veuillez contactez l'adminstrateur du systeme" , "Title" , JOptionPane.ERROR_MESSAGE);
+      } 
+    
+}
 
 public void viderChamps(){
     prenom.setText("");
@@ -182,7 +209,6 @@ public void viderChamps(){
     username.setText("");
 }
     
-    // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Nom;
     private javax.swing.JButton ajoutM;
     private javax.swing.JLabel jLabel1;
@@ -195,5 +221,5 @@ public void viderChamps(){
     private javax.swing.JPasswordField password;
     private javax.swing.JTextField prenom;
     private javax.swing.JTextField username;
-    // End of variables declaration//GEN-END:variables
+    
 }
