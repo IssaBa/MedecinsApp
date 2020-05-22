@@ -1,4 +1,3 @@
-views\FormMedecin$1.class
 views\Login$2.class
 models\ClasseAntecedent.class
 views\Menu$1.class
@@ -10,10 +9,7 @@ views\Menu.class
 models\Antecedent.class
 models\Consultation.class
 models\SexeEnum.class
-views\FormMedecin$2.class
 models\TypeConsultation.class
-views\Menu$5.class
-views\FormMedecin.class
 models\Patient.class
 views\Login$3.class
 models\Profession.class
