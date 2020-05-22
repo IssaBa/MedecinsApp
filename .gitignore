@@ -1,2 +1,4 @@
 
 MedecinsApp/target
+*.class
+*.lst
