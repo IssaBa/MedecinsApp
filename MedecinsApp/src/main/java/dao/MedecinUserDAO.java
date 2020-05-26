@@ -1,5 +1,6 @@
 package dao;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -74,5 +75,52 @@ public class MedecinUserDAO {
         }
 
     }
+    
+    public ArrayList<MedecinUser> getAllMedecinuser() {
+    	
+    	try {
+			
+    		 session = HibernateUtil.getSessionFactory().openSession();
+    		 ArrayList<MedecinUser> listmedecin = (ArrayList<MedecinUser>) session.createQuery("FROM  MedecinUser m ").list();
+    		 if(listmedecin.size()>0) {
+    			 return listmedecin;
+    		 }else {
+    			 return null;
+    		 }
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+    	return null;
+	}
+    
+    public void UpdateMedecinUser(MedecinUser medecinUser) {
+    	try {
+    		
+    		transaction = session.beginTransaction();
+            session.update(medecinUser);
+            transaction.commit();
+            session.close();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+    
+    
+    public void DeleteMedecinUser(MedecinUser medecinUser) {
+    	try {
+    		
+    		transaction = session.beginTransaction();
+            session.delete(medecinUser);
+            transaction.commit();
+            session.close();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
 
 }
