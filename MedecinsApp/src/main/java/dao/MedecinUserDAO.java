@@ -47,16 +47,16 @@ public class MedecinUserDAO {
     // Search d'un userMedecin via son matricule
     public MedecinUser findUserByMatricule(String matricule) {
 
-        MedecinUser medecinUser = null ;
+        MedecinUser medecinUser = null;
         try {
             session = HibernateUtil.getSessionFactory().openSession();
             MedecinUser medecin = (MedecinUser) session.createQuery("FROM  MedecinUser m  WHERE m.username=:mat").setParameter("mat", matricule).getSingleResult();
-            if(medecin!=null) {
-            	return medecin;
-            }else {
-            	return null;
+            if (medecin != null) {
+                return medecin;
+            } else {
+                return null;
             }
-                
+
         } catch (Exception e) {
             //e.printStackTrace();
         }
