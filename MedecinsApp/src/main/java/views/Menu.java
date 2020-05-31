@@ -5,6 +5,8 @@
  */
 package views;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author A663588
@@ -89,14 +91,24 @@ public class Menu extends javax.swing.JFrame {
         menuBar.add(fileMenu);
 
         editMenu.setMnemonic('e');
-        editMenu.setText("Edit");
+        editMenu.setText("Gestion Profession");
 
         cutMenuItem.setMnemonic('t');
-        cutMenuItem.setText("Cut");
+        cutMenuItem.setText("Profession");
+        cutMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cutMenuItemActionPerformed(evt);
+            }
+        });
         editMenu.add(cutMenuItem);
 
         copyMenuItem.setMnemonic('y');
-        copyMenuItem.setText("Copy");
+        copyMenuItem.setText("BATCH");
+        copyMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                copyMenuItemActionPerformed(evt);
+            }
+        });
         editMenu.add(copyMenuItem);
 
         pasteMenuItem.setMnemonic('p');
@@ -144,6 +156,17 @@ public class Menu extends javax.swing.JFrame {
         desktopPane.add(medecinModif).setVisible(true);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
+    private void copyMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyMenuItemActionPerformed
+        BatchFiles batchFiles = new BatchFiles();
+        desktopPane.add(batchFiles).setVisible(true);
+    }//GEN-LAST:event_copyMenuItemActionPerformed
+
+    private void cutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {
+    	GestionProfession gestionProfession = new GestionProfession();
+        desktopPane.add(gestionProfession).setVisible(true);;
+    }
+
+  
     private void fileMenuActionPerformed(java.awt.event.ActionEvent evt) {                                         
         // TODO add your handling code here:
        
