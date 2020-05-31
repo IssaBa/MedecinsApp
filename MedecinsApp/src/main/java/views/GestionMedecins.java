@@ -191,9 +191,6 @@ public class GestionMedecins extends javax.swing.JInternalFrame {
 	            	viderChamps();	  	      
 	         }
 	      }
-
-       	
-       	    
 	    	
       }catch (Exception e) {
           e.printStackTrace();
