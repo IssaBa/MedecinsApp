@@ -24,7 +24,7 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = "Patient.findAll", query = "SELECT p FROM Patient p")
 })
 public class Patient implements Serializable {
-        
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
@@ -117,7 +117,7 @@ public class Patient implements Serializable {
         this.profession = profession;
         this.professionConjoint = professionConjoint;
     }
-    
+
     public Integer getId() {
         return id;
     }

@@ -1,8 +1,10 @@
 C:\Users\Baye Lahad DIAGNE\Projets\MedecinsApp\MedecinsApp\src\main\java\models\ClasseAntecedent.java
+C:\Users\Baye Lahad DIAGNE\Projets\MedecinsApp\MedecinsApp\src\main\java\views\ListePatients.java
 C:\Users\Baye Lahad DIAGNE\Projets\MedecinsApp\MedecinsApp\src\main\java\views\Menu.java
 C:\Users\Baye Lahad DIAGNE\Projets\MedecinsApp\MedecinsApp\src\main\java\models\TypeConsultation.java
 C:\Users\Baye Lahad DIAGNE\Projets\MedecinsApp\MedecinsApp\src\main\java\models\Consultation.java
 C:\Users\Baye Lahad DIAGNE\Projets\MedecinsApp\MedecinsApp\src\main\java\App\MedecinsApp\App.java
+C:\Users\Baye Lahad DIAGNE\Projets\MedecinsApp\MedecinsApp\src\main\java\views\AddPatient.java
 C:\Users\Baye Lahad DIAGNE\Projets\MedecinsApp\MedecinsApp\src\main\java\models\Antecedent.java
 C:\Users\Baye Lahad DIAGNE\Projets\MedecinsApp\MedecinsApp\src\main\java\models\config\HibernateUtil.java
 C:\Users\Baye Lahad DIAGNE\Projets\MedecinsApp\MedecinsApp\src\main\java\models\Profession.java
@@ -14,4 +16,6 @@ C:\Users\Baye Lahad DIAGNE\Projets\MedecinsApp\MedecinsApp\src\main\java\models\
 C:\Users\Baye Lahad DIAGNE\Projets\MedecinsApp\MedecinsApp\src\main\java\dao\MedecinUserDAO.java
 C:\Users\Baye Lahad DIAGNE\Projets\MedecinsApp\MedecinsApp\src\main\java\models\Ordonnance.java
 C:\Users\Baye Lahad DIAGNE\Projets\MedecinsApp\MedecinsApp\src\main\java\models\SexeEnum.java
+C:\Users\Baye Lahad DIAGNE\Projets\MedecinsApp\MedecinsApp\src\main\java\views\ModificationMedecin.java
+C:\Users\Baye Lahad DIAGNE\Projets\MedecinsApp\MedecinsApp\src\main\java\dao\PatientDAO.java
 C:\Users\Baye Lahad DIAGNE\Projets\MedecinsApp\MedecinsApp\src\main\java\models\MedecinUser.java

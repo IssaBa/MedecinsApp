@@ -31,10 +31,10 @@
         </dependency>
           
         <dependency>
-		   <groupId>com.sun.jersey</groupId>
-		   <artifactId>jersey-client</artifactId>
-		   <version>1.8</version>
-		</dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>1.8</version>
+        </dependency>
         
         <dependency>
             <groupId>junit</groupId>
@@ -53,6 +53,13 @@
             <artifactId>hsqldb</artifactId>
             <version>SNAPSHOT</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.toedter/jcalendar -->
+        <dependency>
+            <groupId>com.toedter</groupId>
+            <artifactId>jcalendar</artifactId>
+            <version>1.4</version>
+        </dependency>
+
     </dependencies>
     <build>
         <plugins>
