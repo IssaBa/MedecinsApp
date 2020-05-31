@@ -32,9 +32,9 @@ public class AddPatient extends javax.swing.JFrame {
         initComponents();
         professionDAO = new ProfessionDAO();
         patientDAO = new PatientDAO();
-        List<Profession> professions = professionDAO.findAll();
-        for (Profession profession : professions) {
-            listStrProfessions.add(profession.getLibelle());
+        List<Profession> professions = professionDAO.getAllProfession();
+        for (Profession p : professions) {
+            listStrProfessions.add(p.getLibelle());
         }
     }
 

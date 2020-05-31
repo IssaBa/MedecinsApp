@@ -5,15 +5,11 @@
  */
 package views;
 
-import java.awt.Point;
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumnModel;
 
 import dao.ProfessionDAO;
 import models.Profession;
@@ -27,135 +23,129 @@ public class GestionProfession extends javax.swing.JInternalFrame {
     /**
      * Creates new form GestionProfession
      */
-	
-	DefaultTableModel model = new DefaultTableModel();
-	Long idUpdateJtable ;
-	
-	
-	
-	
-	public void RemplirTableProfession() {
-		try {
-			model.setRowCount(0);
-			ProfessionDAO dao = new ProfessionDAO();
-			
-			model.setColumnIdentifiers(new String[]{"ID","LIBELLE"});
-			 
-			List<Profession> professions = dao.getAllProfession();
-		        if(professions.size()>0) {
-		        
-		          for (int i = 0 ; i < professions.size(); i++) {
-		        	  	  model.addRow(new String[]{professions.get(i).getId().toString(),professions.get(i).getLibelle().toString()});
-	        		  }
-		          tableProfession.setModel(model);
-		          tableProfession.setEnabled(false);
-		        }
-		        
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+    DefaultTableModel model = new DefaultTableModel();
+    Long idUpdateJtable;
 
-	}
-	
-	
-	
-	public boolean isValueValide( Object[] value )
-    {
+    public void remplirTableProfession() {
+        try {
+            model.setRowCount(0);
+            ProfessionDAO dao = new ProfessionDAO();
+
+            model.setColumnIdentifiers(new String[]{"ID", "LIBELLE"});
+
+            List<Profession> professions = dao.getAllProfession();
+            if (professions.size() > 0) {
+
+                for (int i = 0; i < professions.size(); i++) {
+                    model.addRow(new String[]{professions.get(i).getId().toString(), professions.get(i).getLibelle()});
+                }
+                tableProfession.setModel(model);
+                tableProfession.setEnabled(false);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public boolean isValueValide(Object[] value) {
         int size = model.getRowCount();
-        for ( int i = 0; i < size; i++ )
-        {
-            if ( value[0].equals( model.getValueAt(i, 0) ) ) return false;
+        for (int i = 0; i < size; i++) {
+            if (value[0].equals(model.getValueAt(i, 0))) {
+                return false;
+            }
         }
         return true;
     }
-	
-	
-	public void checkChoixSelect(String choixAction) {
-		try {
-				if(choixAction.equalsIgnoreCase("")) {
-					desactiverChamps();
-				}else if(choixAction.equalsIgnoreCase("AJOUTER PROFESSION")) {
-					activerChamps();
-					choixBTX.setText("AJOUTER PROFESSION");
-					libelle.setText("");
-					
-				}
-				else if(choixAction.equalsIgnoreCase("MODIFIER PROFESSION")) {
-					activerChamps();
-					choixBTX.setText("MODIFIER PROFESSION");
-					tableProfession.setEnabled(true);
-					libelle.setText("");
-				}
-				else if(choixAction.equalsIgnoreCase("SUPRIMER PROFESSION")) {
-					activerChamps();
-					choixBTX.setText("SUPRIMER PROFESSION");
-					tableProfession.setEnabled(true);
-					libelle.setText("");
-				}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void remplirComboChoix() {
-		ComboChoix.removeAll();
-		try {
-				for (int i = 0; i < listItemCombo().size(); i++) {
-					ComboChoix.addItem(listItemCombo().get(i));
-				}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-	}
-	
-	
-	public List<String> listItemCombo() {
-		try {
-			ArrayList<String> list = new ArrayList<String>() ;
-			     list.add("");
-				list.add("AJOUTER PROFESSION");
-				list.add("MODIFIER PROFESSION");
-				list.add("SUPRIMER PROFESSION");
-			if(list.size()>0) {
-				return list;
-			}else {
-				return null;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return null;
-	}
-	
-	public void desactiverChamps() {
-		labelprofession.setVisible(false);
-		libelle.setVisible(false);
-		choixBTX.setVisible(false);
-	}
-	
-	public void activerChamps() {
-		labelprofession.setVisible(true);
-		libelle.setVisible(true);
-		choixBTX.setVisible(true);
-	}
-	
-	public void viderChamps() {
-		labelprofession.setText("");
-		labelprofession.setText("");
-	}
-	
-	public void refrechALL() {
-		 desactiverChamps();
-	       remplirComboChoix();
-	       model.setRowCount(0);
-	       RemplirTableProfession();
-	}
-	
-    public GestionProfession () {
+
+    public void checkChoixSelect(String choixAction) {
+        try {
+            if (choixAction.equalsIgnoreCase("")) {
+                desactiverChamps();
+            } else if (choixAction.equalsIgnoreCase("AJOUTER PROFESSION")) {
+                activerChamps();
+                choixBTX.setText("AJOUTER PROFESSION");
+                libelle.setText("");
+                libelle.setEnabled(true);
+
+            } else if (choixAction.equalsIgnoreCase("MODIFIER PROFESSION")) {
+                activerChamps();
+                choixBTX.setText("MODIFIER PROFESSION");
+                tableProfession.setEnabled(true);
+                libelle.setText("");
+                libelle.setEnabled(true);
+            } else if (choixAction.equalsIgnoreCase("SUPRIMER PROFESSION")) {
+                activerChamps();
+                choixBTX.setText("SUPRIMER PROFESSION");
+                tableProfession.setEnabled(true);
+                libelle.setText("");
+                libelle.setEnabled(false);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void remplirComboChoix() {
+        ComboChoix.removeAll();
+        try {
+            for (int i = 0; i < listItemCombo().size(); i++) {
+                ComboChoix.addItem(listItemCombo().get(i));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public List<String> listItemCombo() {
+        try {
+            ArrayList<String> list = new ArrayList<String>();
+            list.add("");
+            list.add("AJOUTER PROFESSION");
+            list.add("MODIFIER PROFESSION");
+            list.add("SUPRIMER PROFESSION");
+            if (list.size() > 0) {
+                return list;
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public void desactiverChamps() {
+        labelprofession.setVisible(false);
+        libelle.setVisible(false);
+        choixBTX.setVisible(false);
+    }
+
+    public void activerChamps() {
+        labelprofession.setVisible(true);
+        libelle.setVisible(true);
+        choixBTX.setVisible(true);
+    }
+
+    public void viderChamps() {
+        labelprofession.setText("");
+        labelprofession.setText("");
+        libelle.setText("");
+    }
+
+    private void refrechALL() {
+        desactiverChamps();
+        remplirComboChoix();
+        model.setRowCount(0);
+        remplirTableProfession();
+    }
+
+    public GestionProfession() {
         initComponents();
         refrechALL();
     }
@@ -165,7 +155,7 @@ public class GestionProfession extends javax.swing.JInternalFrame {
      * WARNING: Do NOT modify this code. The content of this method is always
      * regenerated by the Form Editor.
      */
-    @SuppressWarnings ( "unchecked" )
+    @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -178,6 +168,10 @@ public class GestionProfession extends javax.swing.JInternalFrame {
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tableProfession = new javax.swing.JTable();
+
+        setClosable(true);
+        setIconifiable(true);
+        setMaximizable(true);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -297,109 +291,93 @@ public class GestionProfession extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    
-    
     private void tableProfessionMouseClicked(java.awt.event.MouseEvent evt) {
-    	
-    	String combo = ComboChoix.getSelectedItem().toString();
-    	if(combo.equalsIgnoreCase("")  || combo.equalsIgnoreCase("AJOUTER PROFESSION") ) {
-    		return ;
-    	}else {
-    		
-    		DefaultTableModel defaultTableModel = (DefaultTableModel)tableProfession.getModel();
-        	
-    		int selectRowsIndex = tableProfession.getSelectedRow();
-        	
-        	libelle.setText(defaultTableModel.getValueAt(selectRowsIndex, 1).toString());
-        	
-        	ProfessionDAO dao = new ProfessionDAO();
-        	
-        	Profession p  = dao.findProfessionByLibeller(defaultTableModel.getValueAt(selectRowsIndex, 1).toString());
-        	//JOptionPane.showMessageDialog (null, p.getLibelle() , "GESTION PROFESSION" , JOptionPane.ERROR_MESSAGE);
-        	
-        	if(dao.findProfessionByLibeller(defaultTableModel.getValueAt(selectRowsIndex, 1).toString())!=null) {
-        		
-        		idUpdateJtable =  dao.findProfessionByLibeller(defaultTableModel.getValueAt(selectRowsIndex, 1).toString()).getId();
-        	
-        		//System.out.println("ID :"+ dao.findProfessionByLibeller(defaultTableModel.getValueAt(selectRowsIndex, 1).toString()).getId());
-        	}else {
-        		return ;
-        	}
-        	
-        	//JOptionPane.showMessageDialog (null, defaultTableModel.getValueAt(selectRowsIndex, 1).toString() , "GESTION PROFESSION" , JOptionPane.ERROR_MESSAGE);
-    	}
-    	
+
+        String combo = ComboChoix.getSelectedItem().toString();
+        if (!combo.equalsIgnoreCase("") && !combo.equalsIgnoreCase("AJOUTER PROFESSION")) {
+
+            DefaultTableModel defaultTableModel = (DefaultTableModel) tableProfession.getModel();
+            int selectRowsIndex = tableProfession.getSelectedRow();
+            libelle.setText(defaultTableModel.getValueAt(selectRowsIndex, 1).toString());
+
+            ProfessionDAO dao = new ProfessionDAO();
+            Profession p = dao.findProfessionByLibeller(defaultTableModel.getValueAt(selectRowsIndex, 1).toString());
+            //JOptionPane.showMessageDialog (null, p.getLibelle() , "GESTION PROFESSION" , JOptionPane.ERROR_MESSAGE);
+
+            if (p != null) {
+                this.idUpdateJtable = p.getId();
+            }
+        }
+
     }
 
     private void choixBTXActionPerformed(java.awt.event.ActionEvent evt) {
-    	try {
-    		
-    		ProfessionDAO dao = new ProfessionDAO();
-    		
-		if(choixBTX.getText().equalsIgnoreCase("AJOUTER PROFESSION")) {
-			
-			Profession professionCheck = dao.findProfessionByLibeller(libelle.getText().toString());
-			
-			if(professionCheck!=null) {
-						
-						JOptionPane.showMessageDialog (null, "CETTE PROFESSION EXISTE DEJA MERCI !" , "GESTION PROFESSION" , JOptionPane.ERROR_MESSAGE);
-						RemplirTableProfession();
-					}
-					else {
-						//System.out.println("Libelle :  null");
-						Profession newProfession = new Profession();
-						newProfession.setLibelle(libelle.getText());
-						dao.saveProfession(newProfession);
-						 JOptionPane.showMessageDialog (null, "PROFESSION AJOUTER AVEC SUCCESS" , "GESTION PROFESSION" , JOptionPane.INFORMATION_MESSAGE);  
-						 model.setRowCount(0);
-						 RemplirTableProfession();
-						 viderChamps();
-					}
-					
-    		}
-		
-			else if(choixBTX.getText().equalsIgnoreCase("MODIFIER PROFESSION")) {
-					if(libelle.getText().equalsIgnoreCase("")) {
-						JOptionPane.showMessageDialog (null, "LE LIBELLE NE DOIT PAS ETRE VIDE !" , "GESTION PROFESSION" , JOptionPane.ERROR_MESSAGE);
-					}else {
-						Profession newProfession = new Profession();
-						
-	    				newProfession.setId(idUpdateJtable);
-	    				newProfession.setLibelle(libelle.getText());
-	    				dao.UpdateProfession(newProfession);
-	    				JOptionPane.showMessageDialog (null, "PROFESSION MODIFIER AVEC SUCCESS" , "GESTION PROFESSION" , JOptionPane.INFORMATION_MESSAGE);
-	    				RemplirTableProfession();
-	    				viderChamps();
-	    				//remplirComboChoix();
-	    			}
-					
-			}else if(choixBTX.getText().equalsIgnoreCase("SUPRIMER PROFESSION")) {
-				if(libelle.getText().equalsIgnoreCase("")) {
-					JOptionPane.showMessageDialog (null, "LE LIBELLE NE DOIT PAS ETRE VIDE !" , "GESTION PROFESSION" , JOptionPane.ERROR_MESSAGE);
-				}else {
-					Profession newProfession = new Profession();
-					
-    				newProfession.setId(idUpdateJtable);
-    				newProfession.setLibelle(libelle.getText());
-    				dao.DeleteProfession(newProfession);
-    				JOptionPane.showMessageDialog (null, "PROFESSION SUPRIMER AVEC SUCCESS" , "GESTION PROFESSION" , JOptionPane.INFORMATION_MESSAGE);
-    				RemplirTableProfession();
-    				viderChamps();
-    				//remplirComboChoix();
-    			}
-    			}
-			
-		
-		
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-    	
-    	
+        try {
+
+            ProfessionDAO dao = new ProfessionDAO();
+
+            if (choixBTX.getText().equalsIgnoreCase("AJOUTER PROFESSION")) {
+
+                Profession professionCheck = dao.findProfessionByLibeller(libelle.getText().toString());
+
+                if (professionCheck != null) {
+
+                    JOptionPane.showMessageDialog(null, "CETTE PROFESSION EXISTE DEJA MERCI !", "GESTION PROFESSION", JOptionPane.ERROR_MESSAGE);
+                    remplirTableProfession();
+                } else {
+                    //System.out.println("Libelle :  null");
+                    Profession newProfession = new Profession();
+                    newProfession.setLibelle(libelle.getText());
+                    dao.saveProfession(newProfession);
+                    JOptionPane.showMessageDialog(null, "PROFESSION AJOUTER AVEC SUCCESS", "GESTION PROFESSION", JOptionPane.INFORMATION_MESSAGE);
+                    model.setRowCount(0);
+                    remplirTableProfession();
+                    viderChamps();
+                }
+
+            } else if (choixBTX.getText().equalsIgnoreCase("MODIFIER PROFESSION")) {
+                if (libelle.getText().equalsIgnoreCase("")) {
+                    JOptionPane.showMessageDialog(null, "LE LIBELLE NE DOIT PAS ETRE VIDE !", "GESTION PROFESSION", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    Profession newProfession = new Profession();
+
+                    newProfession.setId(idUpdateJtable);
+                    newProfession.setLibelle(libelle.getText());
+                    dao.updateProfession(newProfession);
+                    JOptionPane.showMessageDialog(null, "PROFESSION MODIFIER AVEC SUCCESS", "GESTION PROFESSION", JOptionPane.INFORMATION_MESSAGE);
+                    remplirTableProfession();
+                    viderChamps();
+                    //remplirComboChoix();
+                }
+
+            } else if (choixBTX.getText().equalsIgnoreCase("SUPRIMER PROFESSION")) {
+                if (libelle.getText().equalsIgnoreCase("")) {
+                    JOptionPane.showMessageDialog(null, "LE LIBELLE NE DOIT PAS ETRE VIDE !", "GESTION PROFESSION", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    Profession newProfession = new Profession();
+
+                    newProfession.setId(idUpdateJtable);
+                    newProfession.setLibelle(libelle.getText());
+                    if (dao.deleteProfession(newProfession)) {
+                        JOptionPane.showMessageDialog(null, "PROFESSION SUPRIMER AVEC SUCCESS", "GESTION PROFESSION", JOptionPane.INFORMATION_MESSAGE);
+                        remplirTableProfession();
+                        viderChamps();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "ECHEC DE LA SUPPRESSION", "GESTION PROFESSION", JOptionPane.ERROR_MESSAGE);
+                    }
+
+                    //remplirComboChoix();
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void ComboChoixItemStateChanged(java.awt.event.ItemEvent evt) {
-    	checkChoixSelect(ComboChoix.getSelectedItem().toString());
+        checkChoixSelect(ComboChoix.getSelectedItem().toString());
     }
 
 
