@@ -10,6 +10,9 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
+
+import org.jboss.logging.Message;
+
 import models.Patient;
 
 /**
@@ -147,7 +150,7 @@ public class ListePatients extends javax.swing.JInternalFrame {
 
     private void modifierBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifierBtnActionPerformed
         if (idPatientSelected == null) {
-            JOptionPane.showMessageDialog(null, "VEUILLEZ SELECTIONNER UN PATIENT", "ERROR", ERROR);
+            JOptionPane.showMessageDialog(null, "VEUILLEZ SELECTIONNER UN PATIENT", "ERROR", JOptionPane.ERROR_MESSAGE);
         } else {
             Patient p = patientDAO.findById(idPatientSelected);
             EditPatient editPatientForm = new EditPatient(p);
