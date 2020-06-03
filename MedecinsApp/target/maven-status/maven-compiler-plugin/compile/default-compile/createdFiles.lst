@@ -2,9 +2,14 @@ views\ModificationMedecin$5.class
 views\GestionMedecins.class
 views\GestionProfession$3.class
 views\Menu$1.class
+views\ListePatients$2.class
+views\ListePatients$3.class
 views\Login.class
 views\AddPatient$5.class
+views\EditPatient$3.class
 views\ModificationMedecin$1.class
+views\Menu$8.class
+views\EditPatient$5.class
 views\Menu.class
 views\ModificationMedecin.class
 dao\ProfessionDAO.class
@@ -13,9 +18,9 @@ views\AddPatient$2.class
 views\Menu$5.class
 views\Login$3.class
 models\Profession.class
+views\EditPatient$2.class
 models\config\HibernateUtil.class
 views\ModificationMedecin$2.class
-views\AddPatient$6.class
 views\ListePatients$1.class
 views\Menu$2.class
 models\MedecinUser.class
@@ -23,11 +28,13 @@ views\Ouvrir.class
 views\AddPatient$3.class
 views\Menu$6.class
 views\GestionProfession.class
+views\EditPatient$4.class
 views\Login$2.class
 views\ModificationMedecin$3.class
 models\ClasseAntecedent.class
 views\ListePatients.class
 dao\MedecinUserDAO.class
+views\EditPatient$1.class
 views\GestionProfession$1.class
 views\Menu$3.class
 models\Ordonnance.class
@@ -40,6 +47,7 @@ views\ModificationMedecin$4.class
 views\ModificationMedecin$6.class
 models\SexeEnum.class
 models\TypeConsultation.class
+views\EditPatient.class
 models\Patient.class
 views\BatchFiles.class
 models\PatientAntecedent.class

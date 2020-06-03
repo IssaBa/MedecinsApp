@@ -103,16 +103,12 @@ public class GestionProfession extends javax.swing.JInternalFrame {
 
     public List<String> listItemCombo() {
         try {
-            ArrayList<String> list = new ArrayList<String>();
+            List<String> list = new ArrayList<String>();
             list.add("");
             list.add("AJOUTER PROFESSION");
             list.add("MODIFIER PROFESSION");
             list.add("SUPRIMER PROFESSION");
-            if (list.size() > 0) {
-                return list;
-            } else {
-                return null;
-            }
+            return list;
         } catch (Exception e) {
             e.printStackTrace();
         }

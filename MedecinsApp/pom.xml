@@ -42,7 +42,7 @@
             <version>3.8.1</version>
             <scope>test</scope>
         </dependency>
-        
+<!--        
         <dependency>
             <groupId>unknown.binary</groupId>
             <artifactId>AbsoluteLayout</artifactId>
@@ -52,7 +52,7 @@
             <groupId>unknown.binary</groupId>
             <artifactId>hsqldb</artifactId>
             <version>SNAPSHOT</version>
-        </dependency>
+        </dependency>-->
         <!-- https://mvnrepository.com/artifact/com.toedter/jcalendar -->
         <dependency>
             <groupId>com.toedter</groupId>

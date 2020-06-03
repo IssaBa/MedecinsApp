@@ -35,6 +35,8 @@ public class Menu extends javax.swing.JFrame {
         editMenu = new javax.swing.JMenu();
         cutMenuItem = new javax.swing.JMenuItem();
         copyMenuItem = new javax.swing.JMenuItem();
+        patientsMenu = new javax.swing.JMenu();
+        listePatientsMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -106,6 +108,18 @@ public class Menu extends javax.swing.JFrame {
 
         menuBar.add(editMenu);
 
+        patientsMenu.setText("Patients");
+
+        listePatientsMenuItem.setText("Liste des patients");
+        listePatientsMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                listePatientsMenuItemActionPerformed(evt);
+            }
+        });
+        patientsMenu.add(listePatientsMenuItem);
+
+        menuBar.add(patientsMenu);
+
         setJMenuBar(menuBar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -137,6 +151,11 @@ public class Menu extends javax.swing.JFrame {
         GestionProfession gestionProfession = new GestionProfession();
         desktopPane.add(gestionProfession).setVisible(true);
     }//GEN-LAST:event_cutMenuItemActionPerformed
+
+    private void listePatientsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listePatientsMenuItemActionPerformed
+        ListePatients listePatients = new ListePatients();
+        desktopPane.add(listePatients).setVisible(true);
+    }//GEN-LAST:event_listePatientsMenuItemActionPerformed
 
     private void fileMenuActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
@@ -190,8 +209,10 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JMenu editMenu;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem listePatientsMenuItem;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem openMenuItem;
+    private javax.swing.JMenu patientsMenu;
     // End of variables declaration//GEN-END:variables
 
 }

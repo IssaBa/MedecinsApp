@@ -7,7 +7,8 @@ package views;
 
 import dao.PatientDAO;
 import java.util.List;
-import javax.swing.JTable;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import models.Patient;
 
@@ -15,34 +16,44 @@ import models.Patient;
  *
  * @author Baye Lahad DIAGNE
  */
-public class ListePatients extends javax.swing.JFrame {
-    
-    private PatientDAO patientDAO;
+public class ListePatients extends javax.swing.JInternalFrame {
+
+    private final PatientDAO patientDAO;
+    private Integer idPatientSelected;
+    private final DefaultTableModel model;
+    private final String[] entete = new String[]{"ID", "Prénom", "Nom", "Date de naissance", "Civilité", "Suivi depuis"};
+
+    private void remplirTablePatients() {
+        this.model.setRowCount(0);
+        this.model.setColumnIdentifiers(this.entete);
+        List<Patient> patients = patientDAO.findAll();
+        for (int i = 0; i < patients.size(); i++) {
+            this.model.addRow(new Object[]{
+                patients.get(i).getId(),
+                patients.get(i).getPrenom(),
+                patients.get(i).getNom(),
+                patients.get(i).getDateNaissance(),
+                patients.get(i).getCivilite().getName(),
+                patients.get(i).getConnuDepuis()
+            });
+        }
+        this.jTable1.setModel(this.model);
+        this.jTable1.setEnabled(true);
+        /*
+        Je cache l'id
+         */
+        TableColumnModel tcm = this.jTable1.getColumnModel();
+        tcm.removeColumn(tcm.getColumn(0));
+    }
 
     /**
      * Creates new form ListePatients
      */
     public ListePatients() {
         initComponents();
-        patientDAO = new PatientDAO();
-        String[] entetes = {"ID","Prénom", "Nom", "Date de naissance", "Civilité", "Suivi depuis"};
-        List<Patient> patients = patientDAO.findAll();
-        Object[][] donnees = {};
-        for (int i = 0; i < patients.size(); i++) {
-            Patient p = patients.get(i);
-            Object[] patientArray = {p.getId(), p.getPrenom(), p.getNom(), p.getDateNaissance(), p.getCivilite(), p.getConnuDepuis()};
-            donnees[i] = patientArray;
-        }
-        
-        jTable1 = new JTable(donnees, entetes);
-        
-        /*
-        Je cache l'id
-        */
-        TableColumnModel tcm = jTable1.getColumnModel();
-        tcm.removeColumn(tcm.getColumn(0));
-        
-                
+        this.model = new DefaultTableModel();
+        this.patientDAO = new PatientDAO();
+        this.remplirTablePatients();
     }
 
     /**
@@ -56,8 +67,16 @@ public class ListePatients extends javax.swing.JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        ajouterBtn = new javax.swing.JToggleButton();
+        modifierBtn = new javax.swing.JToggleButton();
+        supprimerBtn = new javax.swing.JToggleButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setClosable(true);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setIconifiable(true);
+        setMaximizable(true);
+        setResizable(true);
+        setTitle("Liste des Patients");
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -70,7 +89,28 @@ public class ListePatients extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTable1);
+
+        ajouterBtn.setText("AJOUTER");
+        ajouterBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ajouterBtnActionPerformed(evt);
+            }
+        });
+
+        modifierBtn.setText("MODIFIER");
+        modifierBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                modifierBtnActionPerformed(evt);
+            }
+        });
+
+        supprimerBtn.setText("SUPPRIMER");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -78,57 +118,61 @@ public class ListePatients extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 579, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(230, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 623, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(ajouterBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(modifierBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(supprimerBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 398, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(ajouterBtn)
+                        .addGap(18, 18, 18)
+                        .addComponent(modifierBtn)
+                        .addGap(18, 18, 18)
+                        .addComponent(supprimerBtn)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ListePatients.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ListePatients.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ListePatients.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ListePatients.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    private void modifierBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifierBtnActionPerformed
+        if (idPatientSelected == null) {
+            JOptionPane.showMessageDialog(null, "VEUILLEZ SELECTIONNER UN PATIENT", "ERROR", ERROR);
+        } else {
+            Patient p = patientDAO.findById(idPatientSelected);
+            EditPatient editPatientForm = new EditPatient(p);
+            this.getDesktopPane().add(editPatientForm).setVisible(true);
+            this.dispose();
         }
-        //</editor-fold>
+    }//GEN-LAST:event_modifierBtnActionPerformed
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ListePatients().setVisible(true);
-            }
-        });
-    }
+    private void ajouterBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ajouterBtnActionPerformed
+        AddPatient addPatientForm = new AddPatient();
+        this.getDesktopPane().add(addPatientForm).setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_ajouterBtnActionPerformed
+
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
+        int selectedRowIndex = jTable1.getSelectedRow();
+        idPatientSelected = (Integer) dtm.getValueAt(selectedRowIndex, 0);
+    }//GEN-LAST:event_jTable1MouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JToggleButton ajouterBtn;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JToggleButton modifierBtn;
+    private javax.swing.JToggleButton supprimerBtn;
     // End of variables declaration//GEN-END:variables
 }

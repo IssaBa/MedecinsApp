@@ -10,6 +10,7 @@ import dao.ProfessionDAO;
 import java.util.Date;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import models.CiviliteEnum;
 import models.Patient;
@@ -20,17 +21,21 @@ import models.SexeEnum;
  *
  * @author Baye Lahad DIAGNE
  */
-public class AddPatient extends javax.swing.JInternalFrame {
+public class EditPatient extends javax.swing.JInternalFrame {
 
     ProfessionDAO professionDAO = new ProfessionDAO();
     PatientDAO patientDAO = new PatientDAO();
+    Patient editedPatient;
 
     /**
      * Creates new form AddPatient
+     * @param patient
      */
-    public AddPatient() {
+    public EditPatient(Patient patient) {
         initComponents();
         remplirProfessionCombo();
+        this.editedPatient = patient;
+        setChampsForm();
     }
 
     private void remplirProfessionCombo() {
@@ -44,66 +49,103 @@ public class AddPatient extends javax.swing.JInternalFrame {
             professionConjointCombo.addItem(p.getLibelle());
         }
     }
+    
+    private void setChoixCombo(JComboBox<String> combo, String choix) {
+        for (int i = 0; i < combo.getItemCount(); i++) {
+            if(combo.getItemAt(i).equals(choix)) {
+                combo.setSelectedIndex(i);
+                return;
+            }
+        }
+    }
+    
+    private void setChoixCombo(JComboBox combo, Object choix) {
+        for (int i = 0; i < combo.getItemCount(); i++) {
+            if(combo.getItemAt(i).equals(choix)) {
+                combo.setSelectedIndex(i);
+                return;
+            }
+        }
+    }
 
     private void openListePatients() {
         ListePatients listePatients = new ListePatients();
         this.getDesktopPane().add(listePatients).setVisible(true);
         this.dispose();
     }
+    
+    private void setChampsForm() {
+        prenomTxt.setText(editedPatient.getPrenom());
+        nomTxt.setText(editedPatient.getNom());
+        naissancePicker.setDate(editedPatient.getDateNaissance());
+        lieuTxt.setText(editedPatient.getLieuNaissance());
+        String prof = editedPatient.getProfession() != null ? editedPatient.getProfession().getLibelle() : "";
+        setChoixCombo(civiliteCombo, editedPatient.getCivilite());
+        setChoixCombo(sexeCombo, editedPatient.getSexe());
+        setChoixCombo(professionCombo, prof);
+        numDossierTxt.setText(editedPatient.getNumeroDossier());
+        adresseTxt.setText(editedPatient.getAdresse());
+        telPortableTxt.setText(editedPatient.getTelephonePortable());
+        telDomicileTxt.setText(editedPatient.getTelephoneDomicile());
+        telBureauTxt.setText(editedPatient.getTelephoneBureau());
+        prenomConjointTxt.setText(editedPatient.getPrenomConjoint());
+        nomConjointTxt.setText(editedPatient.getNomConjoint());
+        telConjointTxt.setText(editedPatient.getTelephoneConjoint());
+        String profC = editedPatient.getProfessionConjoint() != null ? editedPatient.getProfessionConjoint().getLibelle() : "";
+        setChoixCombo(professionConjointCombo, profC);
+    }
 
-    private void savePatient() {
-        Patient patient = new Patient();
-        patient.setConnuDepuis(new Date());
+    private void updatePatient() {
         if (nomTxt.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "LE NOM NE DOIT PAS ETRE VIDE !", "NOUVEAU PATIENT", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "LE NOM NE DOIT PAS ETRE VIDE !", "EDITION PATIENT", JOptionPane.ERROR_MESSAGE);
             return;
         } else {
-            patient.setNom(nomTxt.getText());
+            editedPatient.setNom(nomTxt.getText());
         }
 
         if (prenomTxt.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "LE PRENOM NE DOIT PAS ETRE VIDE !", "NOUVEAU PATIENT", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "LE PRENOM NE DOIT PAS ETRE VIDE !", "EDITION PATIENT", JOptionPane.ERROR_MESSAGE);
             return;
         } else {
-            patient.setPrenom(prenomTxt.getText());
+            editedPatient.setPrenom(prenomTxt.getText());
         }
 
         if (naissancePicker.getDate() == null) {
             JOptionPane.showMessageDialog(null, "LA DATE DE NAISSANCE NE DOIT PAS ETRE VIDE !", "NOUVEAU PATIENT", JOptionPane.ERROR_MESSAGE);
             return;
         } else {
-            patient.setDateNaissance(naissancePicker.getDate());
+            editedPatient.setDateNaissance(naissancePicker.getDate());
         }
 
-        patient.setLieuNaissance(lieuTxt.getText().isEmpty() ? null : lieuTxt.getText());
-        patient.setSexe(SexeEnum.valueOf(sexeCombo.getSelectedItem().toString()));
-        patient.setCivilite(CiviliteEnum.valueOf(civiliteCombo.getSelectedItem().toString()));
+        editedPatient.setLieuNaissance(lieuTxt.getText().isEmpty() ? null : lieuTxt.getText());
+        editedPatient.setSexe(SexeEnum.valueOf(sexeCombo.getSelectedItem().toString()));
+        editedPatient.setCivilite(CiviliteEnum.valueOf(civiliteCombo.getSelectedItem().toString()));
         if (professionCombo.getSelectedItem().toString().isEmpty()) {
-            patient.setProfession(null);
+            editedPatient.setProfession(null);
         } else {
             Profession p = professionDAO.findProfessionByLibeller(professionCombo.getSelectedItem().toString());
-            patient.setProfession(p);
+            editedPatient.setProfession(p);
         }
-        patient.setNumeroDossier(numDossierTxt.getText());
-        patient.setAdresse(adresseTxt.getText());
-        patient.setTelephonePortable(telPortableTxt.getText());
-        patient.setTelephoneDomicile(telDomicileTxt.getText());
-        patient.setTelephoneBureau(telBureauTxt.getText());
-        patient.setPrenomConjoint(prenomConjointTxt.getText());
-        patient.setNomConjoint(nomConjointTxt.getText());
-        patient.setTelephoneConjoint(telConjointTxt.getText());
+        editedPatient.setNumeroDossier(numDossierTxt.getText());
+        editedPatient.setAdresse(adresseTxt.getText());
+        editedPatient.setTelephonePortable(telPortableTxt.getText());
+        editedPatient.setTelephoneDomicile(telDomicileTxt.getText());
+        editedPatient.setTelephoneBureau(telBureauTxt.getText());
+        editedPatient.setPrenomConjoint(prenomConjointTxt.getText());
+        editedPatient.setNomConjoint(nomConjointTxt.getText());
+        editedPatient.setTelephoneConjoint(telConjointTxt.getText());
         if (professionConjointCombo.getSelectedItem().toString().isEmpty()) {
-            patient.setProfession(null);
+            editedPatient.setProfession(null);
         } else {
             Profession p = professionDAO.findProfessionByLibeller(professionConjointCombo.getSelectedItem().toString());
-            patient.setProfession(p);
+            editedPatient.setProfession(p);
         }
 
-        if (patientDAO.save(patient)) {
-            JOptionPane.showMessageDialog(null, "PATIENT AJOUTé AVEC SUCCéS !", "NOUVEAU PATIENT", JOptionPane.INFORMATION_MESSAGE);
+        if (patientDAO.edit(editedPatient)) {
+            JOptionPane.showMessageDialog(null, "PATIENT MODIFIE AVEC SUCCéS !", "EDITION PATIENT", JOptionPane.INFORMATION_MESSAGE);
             openListePatients();
         } else {
-            JOptionPane.showMessageDialog(null, "ECHEC DE LA SAUVEGARDE !", "NOUVEAU PATIENT", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "ECHEC DE LA MODIFICAATION !", "EDITION PATIENT", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -153,7 +195,7 @@ public class AddPatient extends javax.swing.JInternalFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         adresseTxt = new javax.swing.JTextArea();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setText("Prénom");
 
@@ -379,7 +421,7 @@ public class AddPatient extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void enregistrerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enregistrerBtnActionPerformed
-        savePatient();
+        updatePatient();
     }//GEN-LAST:event_enregistrerBtnActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
