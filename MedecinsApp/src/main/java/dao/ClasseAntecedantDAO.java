@@ -2,10 +2,12 @@ package dao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import models.ClasseAntecedent;
+import models.Patient;
 import models.config.HibernateUtil;
 
 
@@ -121,4 +123,15 @@ public class ClasseAntecedantDAO {
         }
 
     }
+    
+    public ClasseAntecedent findClAntById(Long id) {
+        try {
+            return session.get(ClasseAntecedent.class, id);
+        } catch (Exception e) {
+            
+            return null;
+        }
+    }
+    
+    
 }

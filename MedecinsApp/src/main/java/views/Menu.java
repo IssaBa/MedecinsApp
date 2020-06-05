@@ -42,6 +42,10 @@ public class Menu extends javax.swing.JFrame {
         listePatientsMenuItem = new javax.swing.JMenuItem();
         classeAnteMenu = new javax.swing.JMenu();
         listeClasseAnteMenuItem = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem2 = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
+        jMenuItem3 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("FAYEMILOG");
@@ -138,6 +142,18 @@ public class Menu extends javax.swing.JFrame {
 
         menuBar.add(classeAnteMenu);
 
+        jMenu2.setText("Antecedant");
+
+        jMenuItem3.setText("Gestion Antecedant");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItem3);
+
+        menuBar.add(jMenu2);
+
         setJMenuBar(menuBar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -170,12 +186,22 @@ public class Menu extends javax.swing.JFrame {
         desktopPane.add(gestionProfession).setVisible(true);
     }//GEN-LAST:event_listeProfessionMenuItemActionPerformed
 
+
     private void listePatientsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listePatientsMenuItemActionPerformed
         ListePatients listePatients = new ListePatients();
         desktopPane.add(listePatients).setVisible(true);
     }//GEN-LAST:event_listePatientsMenuItemActionPerformed
     private void listeClasseAnteMenuItemActionPerformed(java.awt.event.ActionEvent evt) {
         GestionClasseAntecedant classeAntecedant = new GestionClasseAntecedant();
+
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {
+     	GestionAntecedant gestionAntecedant = new GestionAntecedant();
+    	desktopPane.add(gestionAntecedant).setVisible(true);;
+    }
+
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {
+        GestionClasseAntecedant classeAntecedant =  new GestionClasseAntecedant();
         desktopPane.add(classeAntecedant).setVisible(true);
     }
 
@@ -233,6 +259,14 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JMenuItem listePatientsMenuItem;
     private javax.swing.JMenuItem listeProfessionMenuItem;
     private javax.swing.JMenu medecinsMenu;
+    private javax.swing.JMenu editMenu;
+    private javax.swing.JMenu fileMenu;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem listePatientsMenuItem;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem modifMedecinMenuItem;
     private javax.swing.JMenu patientsMenu;
