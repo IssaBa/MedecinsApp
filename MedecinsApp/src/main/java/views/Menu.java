@@ -18,6 +18,7 @@ public class Menu extends javax.swing.JFrame {
      */
     public Menu() {
         initComponents();
+        this.setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
     }
 
     /**
@@ -31,18 +32,19 @@ public class Menu extends javax.swing.JFrame {
 
         desktopPane = new javax.swing.JDesktopPane();
         menuBar = new javax.swing.JMenuBar();
-        fileMenu = new javax.swing.JMenu();
-        openMenuItem = new javax.swing.JMenuItem();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        editMenu = new javax.swing.JMenu();
-        cutMenuItem = new javax.swing.JMenuItem();
-        copyMenuItem = new javax.swing.JMenuItem();
+        medecinsMenu = new javax.swing.JMenu();
+        addMedecinMenuItem = new javax.swing.JMenuItem();
+        modifMedecinMenuItem = new javax.swing.JMenuItem();
+        professionMenu = new javax.swing.JMenu();
+        listeProfessionMenuItem = new javax.swing.JMenuItem();
+        batchMenuItem = new javax.swing.JMenuItem();
         patientsMenu = new javax.swing.JMenu();
         listePatientsMenuItem = new javax.swing.JMenuItem();
-        jMenu1 = new javax.swing.JMenu();
-        jMenuItem2 = new javax.swing.JMenuItem();
+        classeAnteMenu = new javax.swing.JMenu();
+        listeClasseAnteMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("FAYEMILOG");
 
         desktopPane.setBackground(new java.awt.Color(204, 204, 255));
 
@@ -57,60 +59,60 @@ public class Menu extends javax.swing.JFrame {
             .addGap(0, 494, Short.MAX_VALUE)
         );
 
-        fileMenu.setMnemonic('f');
-        fileMenu.setText("Médecins");
-        fileMenu.addActionListener(new java.awt.event.ActionListener() {
+        medecinsMenu.setMnemonic('f');
+        medecinsMenu.setText("Médecins");
+        medecinsMenu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                fileMenuActionPerformed(evt);
+                medecinsMenuActionPerformed(evt);
             }
         });
 
-        openMenuItem.setMnemonic('o');
-        openMenuItem.setText("Ajouter Medecins");
-        openMenuItem.addMouseListener(new java.awt.event.MouseAdapter() {
+        addMedecinMenuItem.setMnemonic('o');
+        addMedecinMenuItem.setText("Ajouter Medecins");
+        addMedecinMenuItem.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                openMenuItemMouseClicked(evt);
+                addMedecinMenuItemMouseClicked(evt);
             }
         });
-        openMenuItem.addActionListener(new java.awt.event.ActionListener() {
+        addMedecinMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                openMenuItemActionPerformed(evt);
+                addMedecinMenuItemActionPerformed(evt);
             }
         });
-        fileMenu.add(openMenuItem);
+        medecinsMenu.add(addMedecinMenuItem);
 
-        jMenuItem1.setText("Modification Medecins");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        modifMedecinMenuItem.setText("Modification Medecins");
+        modifMedecinMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                modifMedecinMenuItemActionPerformed(evt);
             }
         });
-        fileMenu.add(jMenuItem1);
+        medecinsMenu.add(modifMedecinMenuItem);
 
-        menuBar.add(fileMenu);
+        menuBar.add(medecinsMenu);
 
-        editMenu.setMnemonic('e');
-        editMenu.setText("Professions");
+        professionMenu.setMnemonic('e');
+        professionMenu.setText("Professions");
 
-        cutMenuItem.setMnemonic('t');
-        cutMenuItem.setText("Liste des professions");
-        cutMenuItem.addActionListener(new java.awt.event.ActionListener() {
+        listeProfessionMenuItem.setMnemonic('t');
+        listeProfessionMenuItem.setText("Liste des professions");
+        listeProfessionMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cutMenuItemActionPerformed(evt);
+                listeProfessionMenuItemActionPerformed(evt);
             }
         });
-        editMenu.add(cutMenuItem);
+        professionMenu.add(listeProfessionMenuItem);
 
-        copyMenuItem.setMnemonic('y');
-        copyMenuItem.setText("BATCH");
-        copyMenuItem.addActionListener(new java.awt.event.ActionListener() {
+        batchMenuItem.setMnemonic('y');
+        batchMenuItem.setText("BATCH");
+        batchMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                copyMenuItemActionPerformed(evt);
+                batchMenuItemActionPerformed(evt);
             }
         });
-        editMenu.add(copyMenuItem);
+        professionMenu.add(batchMenuItem);
 
-        menuBar.add(editMenu);
+        menuBar.add(professionMenu);
 
         patientsMenu.setText("Patients");
 
@@ -123,17 +125,18 @@ public class Menu extends javax.swing.JFrame {
         patientsMenu.add(listePatientsMenuItem);
 
         menuBar.add(patientsMenu);
-        jMenu1.setText("Classe Antecedant");
 
-        jMenuItem2.setText("Gestion CL ANT");
-        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+        classeAnteMenu.setText("Classe Antecedant");
+
+        listeClasseAnteMenuItem.setText("Gestion CL ANT");
+        listeClasseAnteMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem2ActionPerformed(evt);
+                listeClasseAnteMenuItemActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem2);
+        classeAnteMenu.add(listeClasseAnteMenuItem);
 
-        menuBar.add(jMenu1);
+        menuBar.add(classeAnteMenu);
 
         setJMenuBar(menuBar);
 
@@ -151,43 +154,43 @@ public class Menu extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void modifMedecinMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifMedecinMenuItemActionPerformed
 
         ModificationMedecin medecinModif = new ModificationMedecin();
         desktopPane.add(medecinModif).setVisible(true);
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    }//GEN-LAST:event_modifMedecinMenuItemActionPerformed
 
-    private void copyMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyMenuItemActionPerformed
+    private void batchMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_batchMenuItemActionPerformed
         BatchFiles batchFiles = new BatchFiles();
         desktopPane.add(batchFiles).setVisible(true);
-    }//GEN-LAST:event_copyMenuItemActionPerformed
+    }//GEN-LAST:event_batchMenuItemActionPerformed
 
-    private void cutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cutMenuItemActionPerformed
+    private void listeProfessionMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listeProfessionMenuItemActionPerformed
         GestionProfession gestionProfession = new GestionProfession();
         desktopPane.add(gestionProfession).setVisible(true);
-    }//GEN-LAST:event_cutMenuItemActionPerformed
+    }//GEN-LAST:event_listeProfessionMenuItemActionPerformed
 
     private void listePatientsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listePatientsMenuItemActionPerformed
         ListePatients listePatients = new ListePatients();
         desktopPane.add(listePatients).setVisible(true);
     }//GEN-LAST:event_listePatientsMenuItemActionPerformed
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {
-        GestionClasseAntecedant classeAntecedant =  new GestionClasseAntecedant();
+    private void listeClasseAnteMenuItemActionPerformed(java.awt.event.ActionEvent evt) {
+        GestionClasseAntecedant classeAntecedant = new GestionClasseAntecedant();
         desktopPane.add(classeAntecedant).setVisible(true);
     }
 
-    private void fileMenuActionPerformed(java.awt.event.ActionEvent evt) {
+    private void medecinsMenuActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
 
     }
 
-    private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {
+    private void addMedecinMenuItemActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
         GestionMedecins gestionMedecins = new GestionMedecins();
         desktopPane.add(gestionMedecins).setVisible(true);
     }
 
-    private void openMenuItemMouseClicked(java.awt.event.MouseEvent evt) {
+    private void addMedecinMenuItemMouseClicked(java.awt.event.MouseEvent evt) {
         // TODO add your handling code here:
     }
 
@@ -222,18 +225,18 @@ public class Menu extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenuItem copyMenuItem;
-    private javax.swing.JMenuItem cutMenuItem;
+    private javax.swing.JMenuItem addMedecinMenuItem;
+    private javax.swing.JMenuItem batchMenuItem;
+    private javax.swing.JMenu classeAnteMenu;
     private javax.swing.JDesktopPane desktopPane;
-    private javax.swing.JMenu editMenu;
-    private javax.swing.JMenu fileMenu;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem listeClasseAnteMenuItem;
     private javax.swing.JMenuItem listePatientsMenuItem;
-    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem listeProfessionMenuItem;
+    private javax.swing.JMenu medecinsMenu;
     private javax.swing.JMenuBar menuBar;
-    private javax.swing.JMenuItem openMenuItem;
+    private javax.swing.JMenuItem modifMedecinMenuItem;
     private javax.swing.JMenu patientsMenu;
+    private javax.swing.JMenu professionMenu;
     // End of variables declaration//GEN-END:variables
 
 }

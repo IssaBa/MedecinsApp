@@ -111,6 +111,11 @@ public class ListePatients extends javax.swing.JInternalFrame {
         });
 
         supprimerBtn.setText("SUPPRIMER");
+        supprimerBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                supprimerBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -147,12 +152,13 @@ public class ListePatients extends javax.swing.JInternalFrame {
 
     private void modifierBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifierBtnActionPerformed
         if (idPatientSelected == null) {
-            JOptionPane.showMessageDialog(null, "VEUILLEZ SELECTIONNER UN PATIENT", "ERROR", ERROR);
+            JOptionPane.showMessageDialog(null, "VEUILLEZ SELECTIONNER UN PATIENT", "ERROR", JOptionPane.ERROR_MESSAGE);
         } else {
-            Patient p = patientDAO.findById(idPatientSelected);
+            Patient p = patientDAO.findById(this.idPatientSelected);
             EditPatient editPatientForm = new EditPatient(p);
             this.getDesktopPane().add(editPatientForm).setVisible(true);
             this.dispose();
+            this.idPatientSelected = null;
         }
     }//GEN-LAST:event_modifierBtnActionPerformed
 
@@ -165,8 +171,27 @@ public class ListePatients extends javax.swing.JInternalFrame {
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
         int selectedRowIndex = jTable1.getSelectedRow();
-        idPatientSelected = (Integer) dtm.getValueAt(selectedRowIndex, 0);
+        this.idPatientSelected = (Integer) dtm.getValueAt(selectedRowIndex, 0);
     }//GEN-LAST:event_jTable1MouseClicked
+
+    private void supprimerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_supprimerBtnActionPerformed
+        if (this.idPatientSelected == null) {
+            JOptionPane.showMessageDialog(null, "VEUILLEZ SELECTIONNER UN PATIENT", "ERROR", JOptionPane.ERROR_MESSAGE);
+        } else {
+            //reponse : 0 == oui, 1 == non 
+            int reponse = JOptionPane.showConfirmDialog(null, "Voulez vous supprimer ce patient ?", "SUPPRESSION", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+            if(reponse == 0) {
+                Patient p = patientDAO.findById(this.idPatientSelected);
+                if(patientDAO.delete(p)) {
+                    JOptionPane.showMessageDialog(null, "SUPRESSION REUSSIE", "PATIENTS", JOptionPane.INFORMATION_MESSAGE);
+                    this.idPatientSelected = null;
+                    remplirTablePatients();
+                } else {
+                    JOptionPane.showMessageDialog(null, "ECHEC DE LA SUPRESSION", "PATIENTS", JOptionPane.ERROR_MESSAGE);
+                }
+            } 
+        }
+    }//GEN-LAST:event_supprimerBtnActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToggleButton ajouterBtn;

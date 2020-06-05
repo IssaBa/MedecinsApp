@@ -20,20 +20,22 @@ import org.hibernate.Transaction;
 public class PatientDAO {
 
     private static Transaction transaction = null;
-    Session session = HibernateUtil.getSessionFactory().openSession();
+    Session session;
     private static final Logger LOGGER = Logger.getLogger(PatientDAO.class.getName());
 
     public List<Patient> findAll() {
         try {
+            openSession();
             return session.createNamedQuery("Patient.findAll").getResultList();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
             return new ArrayList<>();
         }
     }
-    
+
     public Patient findById(Integer id) {
         try {
+            openSession();
             return session.get(Patient.class, id);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
@@ -43,10 +45,11 @@ public class PatientDAO {
 
     public boolean save(Patient p) {
         try {
+            openSession();
             transaction = this.session.beginTransaction();
             session.save(p);
             transaction.commit();
-            session.close();
+            closeSession();
             return true;
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "PatientDAO : " + e.getMessage(), e);
@@ -54,18 +57,42 @@ public class PatientDAO {
             return false;
         }
     }
-    
+
     public boolean edit(Patient p) {
         try {
+            openSession();
             transaction = this.session.beginTransaction();
             session.merge(p);
             transaction.commit();
-            session.close();
+            closeSession();
             return true;
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "PatientDAO : " + e.getMessage(), e);
             transaction.rollback();
             return false;
         }
+    }
+
+    public boolean delete(Patient p) {
+        try {
+            openSession();
+            transaction = this.session.beginTransaction();
+            session.remove(p);
+            transaction.commit();
+            closeSession();
+            return true;
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "PatientDAO : " + e.getMessage(), e);
+            transaction.rollback();
+            return false;
+        }
+    }
+
+    private void openSession() {
+        this.session = HibernateUtil.getSessionFactory().openSession();
+    }
+
+    private void closeSession() {
+        this.session.close();
     }
 }
