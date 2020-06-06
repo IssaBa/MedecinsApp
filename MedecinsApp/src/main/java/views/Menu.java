@@ -42,8 +42,6 @@ public class Menu extends javax.swing.JFrame {
         listePatientsMenuItem = new javax.swing.JMenuItem();
         classeAnteMenu = new javax.swing.JMenu();
         listeClasseAnteMenuItem = new javax.swing.JMenuItem();
-        jMenu1 = new javax.swing.JMenu();
-        jMenuItem2 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
 
@@ -193,16 +191,12 @@ public class Menu extends javax.swing.JFrame {
     }//GEN-LAST:event_listePatientsMenuItemActionPerformed
     private void listeClasseAnteMenuItemActionPerformed(java.awt.event.ActionEvent evt) {
         GestionClasseAntecedant classeAntecedant = new GestionClasseAntecedant();
+        desktopPane.add(classeAntecedant).setVisible(true);
+    }
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {
      	GestionAntecedant gestionAntecedant = new GestionAntecedant();
-    	desktopPane.add(gestionAntecedant).setVisible(true);;
-    }
-
-
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {
-        GestionClasseAntecedant classeAntecedant =  new GestionClasseAntecedant();
-        desktopPane.add(classeAntecedant).setVisible(true);
+    	desktopPane.add(gestionAntecedant).setVisible(true);
     }
 
     private void medecinsMenuActionPerformed(java.awt.event.ActionEvent evt) {
@@ -255,18 +249,12 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JMenuItem batchMenuItem;
     private javax.swing.JMenu classeAnteMenu;
     private javax.swing.JDesktopPane desktopPane;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem listeClasseAnteMenuItem;
     private javax.swing.JMenuItem listePatientsMenuItem;
     private javax.swing.JMenuItem listeProfessionMenuItem;
     private javax.swing.JMenu medecinsMenu;
-    private javax.swing.JMenu editMenu;
-    private javax.swing.JMenu fileMenu;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem listePatientsMenuItem;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem modifMedecinMenuItem;
     private javax.swing.JMenu patientsMenu;
