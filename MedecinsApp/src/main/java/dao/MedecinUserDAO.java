@@ -14,7 +14,7 @@ public class MedecinUserDAO {
     Session session = HibernateUtil.getSessionFactory().openSession();
 
     // Ajout d'un user
-    public boolean saveUser(MedecinUser users) {
+    public void saveUser(MedecinUser users) {
 
         try {
 
@@ -22,12 +22,10 @@ public class MedecinUserDAO {
             session.save(users);
             transaction.commit();
             session.close();
-            return true;
 
         } catch (Exception e) {
             transaction.rollback();
             e.printStackTrace();
-            return false;
         }
 
     }
@@ -85,10 +83,9 @@ public class MedecinUserDAO {
     		 session = HibernateUtil.getSessionFactory().openSession();
     		 ArrayList<MedecinUser> listmedecin = (ArrayList<MedecinUser>) session.createQuery("FROM  MedecinUser m ").list();
     		 if(listmedecin.size()>0) {
-    			 System.out.println("TEST OK");
     			 return listmedecin;
     		 }else {
-    			 
+    			 return null;
     		 }
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -97,34 +94,31 @@ public class MedecinUserDAO {
     	return null;
 	}
     
-    public boolean UpdateMedecinUser(MedecinUser medecinUser) {
+    public void UpdateMedecinUser(MedecinUser medecinUser) {
     	try {
     		
     		transaction = session.beginTransaction();
             session.update(medecinUser);
             transaction.commit();
             session.close();
-            return true;
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-			return false;
 		}
 		
 	}
     
-    public boolean DeleteMedecinUser(MedecinUser medecinUser) {
+    
+    public void DeleteMedecinUser(MedecinUser medecinUser) {
     	try {
     		
     		transaction = session.beginTransaction();
             session.delete(medecinUser);
             transaction.commit();
             session.close();
-            return true;
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-			return false;
 		}
 		
 	}

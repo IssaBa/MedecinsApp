@@ -32,7 +32,6 @@ public class Menu extends javax.swing.JFrame {
 
         desktopPane = new javax.swing.JDesktopPane();
         menuBar = new javax.swing.JMenuBar();
-
         medecinsMenu = new javax.swing.JMenu();
         addMedecinMenuItem = new javax.swing.JMenuItem();
         modifMedecinMenuItem = new javax.swing.JMenuItem();
@@ -52,7 +51,6 @@ public class Menu extends javax.swing.JFrame {
         listeClasseAnteMenuItem = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
-        jMenuItem4 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("FAYEMILOG");
@@ -102,8 +100,22 @@ public class Menu extends javax.swing.JFrame {
         medecinsMenu.add(modifMedecinMenuItem);
 
         menuBar.add(medecinsMenu);
+            }
+        });
+        addMedecinMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addMedecinMenuItemActionPerformed(evt);
+            }
+        });
+        medecinsMenu.add(addMedecinMenuItem);
 
-        menuBar.add(fileMenu);
+        modifMedecinMenuItem.setText("Modification Medecins");
+        modifMedecinMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                modifMedecinMenuItemActionPerformed(evt);
+            }
+        });
+        medecinsMenu.add(modifMedecinMenuItem);
 
 
         professionMenu.setMnemonic('e');
@@ -142,7 +154,11 @@ public class Menu extends javax.swing.JFrame {
         menuBar.add(patientsMenu);
 
 
+
         jMenu1.setText("Classe Antecedant");
+
+        classeAnteMenu.setText("Classe Antecedant");
+
 
         classeAnteMenu.setText("Classe Antecedant");
 
@@ -165,14 +181,6 @@ public class Menu extends javax.swing.JFrame {
             }
         });
         jMenu2.add(jMenuItem3);
-
-        jMenuItem4.setText("PDF Antecedant");
-        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem4ActionPerformed(evt);
-            }
-        });
-        jMenu2.add(jMenuItem4);
 
         menuBar.add(jMenu2);
 
@@ -237,7 +245,7 @@ public class Menu extends javax.swing.JFrame {
 
     private void addMedecinMenuItemActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
-        GestionMedecin gestionMedecins = new GestionMedecin();
+        GestionMedecins gestionMedecins = new GestionMedecins();
         desktopPane.add(gestionMedecins).setVisible(true);
     }
 
@@ -289,8 +297,10 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JMenu medecinsMenu;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem listeClasseAnteMenuItem;
     private javax.swing.JMenuItem listePatientsMenuItem;
+    private javax.swing.JMenuItem listeProfessionMenuItem;
+    private javax.swing.JMenu medecinsMenu;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem modifMedecinMenuItem;
     private javax.swing.JMenu patientsMenu;
