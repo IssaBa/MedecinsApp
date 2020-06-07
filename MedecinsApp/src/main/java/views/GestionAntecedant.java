@@ -465,7 +465,6 @@ public class GestionAntecedant extends javax.swing.JInternalFrame {
     				 model.setRowCount(0);
     				 remplirTableANTECEDANT();
 	   				 viderChamps();
-    				 
     			 }
     			
     			 
