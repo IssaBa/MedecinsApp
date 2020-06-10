@@ -14,7 +14,7 @@ public class MedecinUserDAO {
     Session session = HibernateUtil.getSessionFactory().openSession();
 
     // Ajout d'un user
-    public void saveUser(MedecinUser users) {
+    public boolean saveUser(MedecinUser users) {
 
         try {
 
@@ -22,10 +22,12 @@ public class MedecinUserDAO {
             session.save(users);
             transaction.commit();
             session.close();
+            return true;
 
         } catch (Exception e) {
             transaction.rollback();
             e.printStackTrace();
+            return false;
         }
 
     }
@@ -94,31 +96,35 @@ public class MedecinUserDAO {
     	return null;
 	}
     
-    public void UpdateMedecinUser(MedecinUser medecinUser) {
+    public boolean UpdateMedecinUser(MedecinUser medecinUser) {
     	try {
     		
     		transaction = session.beginTransaction();
             session.update(medecinUser);
             transaction.commit();
             session.close();
+            return true;
 			
 		} catch (Exception e) {
 			e.printStackTrace();
+			return false;
 		}
 		
 	}
     
     
-    public void DeleteMedecinUser(MedecinUser medecinUser) {
+    public boolean DeleteMedecinUser(MedecinUser medecinUser) {
     	try {
     		
     		transaction = session.beginTransaction();
             session.delete(medecinUser);
             transaction.commit();
             session.close();
+            return true;
 			
 		} catch (Exception e) {
 			e.printStackTrace();
+			return false;
 		}
 		
 	}
