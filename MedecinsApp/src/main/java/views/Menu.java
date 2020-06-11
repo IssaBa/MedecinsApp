@@ -33,8 +33,7 @@ public class Menu extends javax.swing.JFrame {
         desktopPane = new javax.swing.JDesktopPane();
         menuBar = new javax.swing.JMenuBar();
         medecinsMenu = new javax.swing.JMenu();
-        addMedecinMenuItem = new javax.swing.JMenuItem();
-        modifMedecinMenuItem = new javax.swing.JMenuItem();
+        jMenuItem4 = new javax.swing.JMenuItem();
         professionMenu = new javax.swing.JMenu();
         listeProfessionMenuItem = new javax.swing.JMenuItem();
         batchMenuItem = new javax.swing.JMenuItem();
@@ -70,28 +69,19 @@ public class Menu extends javax.swing.JFrame {
                 medecinsMenuActionPerformed(evt);
             }
         });
+        medecinsMenu.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                medecinsMenuKeyPressed(evt);
+            }
+        });
 
-        addMedecinMenuItem.setMnemonic('o');
-        addMedecinMenuItem.setText("Ajouter Medecins");
-        addMedecinMenuItem.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                addMedecinMenuItemMouseClicked(evt);
-            }
-        });
-        addMedecinMenuItem.addActionListener(new java.awt.event.ActionListener() {
+        jMenuItem4.setText("Gestion Medecin");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addMedecinMenuItemActionPerformed(evt);
+                jMenuItem4ActionPerformed(evt);
             }
         });
-        medecinsMenu.add(addMedecinMenuItem);
-
-        modifMedecinMenuItem.setText("Modification Medecins");
-        modifMedecinMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                modifMedecinMenuItemActionPerformed(evt);
-            }
-        });
-        medecinsMenu.add(modifMedecinMenuItem);
+        medecinsMenu.add(jMenuItem4);
 
         menuBar.add(medecinsMenu);
 
@@ -99,7 +89,7 @@ public class Menu extends javax.swing.JFrame {
         professionMenu.setText("Professions");
 
         listeProfessionMenuItem.setMnemonic('t');
-        listeProfessionMenuItem.setText("Liste des professions");
+        listeProfessionMenuItem.setText("Gestion Profession");
         listeProfessionMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 listeProfessionMenuItemActionPerformed(evt);
@@ -111,7 +101,7 @@ public class Menu extends javax.swing.JFrame {
         batchMenuItem.setText("BATCH");
         batchMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                batchMenuItemActionPerformed(evt);
+                //batchMenuItemActionPerformed(evt);
             }
         });
         professionMenu.add(batchMenuItem);
@@ -182,16 +172,11 @@ public class Menu extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void modifMedecinMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifMedecinMenuItemActionPerformed
 
-        ModificationMedecin medecinModif = new ModificationMedecin();
-        desktopPane.add(medecinModif).setVisible(true);
-    }//GEN-LAST:event_modifMedecinMenuItemActionPerformed
-
-    private void batchMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_batchMenuItemActionPerformed
+    private void copyMenuItemActionPerformed(java.awt.event.ActionEvent evt) {                                             
         BatchFiles batchFiles = new BatchFiles();
         desktopPane.add(batchFiles).setVisible(true);
-    }//GEN-LAST:event_batchMenuItemActionPerformed
+    }                                             
 
     private void listeProfessionMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listeProfessionMenuItemActionPerformed
         GestionProfession gestionProfession = new GestionProfession();
@@ -213,19 +198,29 @@ public class Menu extends javax.swing.JFrame {
         desktopPane.add(classeAntecedant).setVisible(true);
     }
 
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+	      GestionMedecinUser gestionMedecinUser = new GestionMedecinUser();
+	      desktopPane.add(gestionMedecinUser).setVisible(true);
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
+
+    private void medecinsMenuKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_medecinsMenuKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_medecinsMenuKeyPressed
+
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {
      	GestionAntecedant gestionAntecedant = new GestionAntecedant();
     	desktopPane.add(gestionAntecedant).setVisible(true);
     }
 
     private void medecinsMenuActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        GestionMedecinUser gestionMedecins = new GestionMedecinUser();
+        desktopPane.add(gestionMedecins).setVisible(true);
 
     }
 
     private void addMedecinMenuItemActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
-        GestionMedecins gestionMedecins = new GestionMedecins();
+        GestionMedecinUser gestionMedecins = new GestionMedecinUser();
         desktopPane.add(gestionMedecins).setVisible(true);
     }
 
@@ -264,19 +259,18 @@ public class Menu extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenuItem addMedecinMenuItem;
     private javax.swing.JMenuItem batchMenuItem;
     private javax.swing.JMenu classeAnteMenu;
     private javax.swing.JDesktopPane desktopPane;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem listeClasseAnteMenuItem;
     private javax.swing.JMenuItem listePatientsMenuItem;
     private javax.swing.JMenuItem listeProfessionMenuItem;
     private javax.swing.JMenuItem listeTypeConsultationMenuItem;
     private javax.swing.JMenu medecinsMenu;
     private javax.swing.JMenuBar menuBar;
-    private javax.swing.JMenuItem modifMedecinMenuItem;
     private javax.swing.JMenu patientsMenu;
     private javax.swing.JMenu professionMenu;
     private javax.swing.JMenu typeConsultationMenu;
