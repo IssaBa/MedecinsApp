@@ -5,17 +5,72 @@
  */
 package views;
 
+import dao.TypeConsultationDAO;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
+import models.TypeConsultation;
+
 /**
  *
  * @author Baye Lahad DIAGNE
  */
 public class GestionTypeConsultation extends javax.swing.JInternalFrame {
 
+    private DefaultTableModel model;
+    private Long selectedID;
+    private TypeConsultationDAO dao;
+    private TypeConsultation selectedTypeConsultation;
+    private final String AJOUTER = "Ajouter nouveau type";
+    private final String MODIFIER = "Modifier un type";
+    private final String SUPPRIMER = "Supprimer un type";
+
+    private void remplirTableau() {
+        model.setRowCount(0);
+        model.setColumnIdentifiers(new String[]{"ID", "Libellé"});
+        List<TypeConsultation> typeCs = dao.findAll();
+
+        if (typeCs.size() > 0) {
+            for (TypeConsultation t : typeCs) {
+                model.addRow(new Object[]{t.getId(), t.getLibelle()});
+            }
+            tableTypeConsultation.setModel(model);
+            tableTypeConsultation.setEnabled(true);
+        } else {
+            tableTypeConsultation.setEnabled(false);
+        }
+        /*
+        Je cache l'id
+         */
+        TableColumnModel tcm = this.tableTypeConsultation.getColumnModel();
+        tcm.removeColumn(tcm.getColumn(0));
+    }
+
+    private void remplirComboChoix() {
+        actionCombo.removeAll();
+        actionCombo.addItem("");
+        actionCombo.addItem(AJOUTER);
+        actionCombo.addItem(MODIFIER);
+        actionCombo.addItem(SUPPRIMER);
+    }
+
+    private void desactiverChamps() {
+        this.libelleTypeConsTxt.setEnabled(false);
+        this.actionBtn.setText("Aucune action");
+        this.actionBtn.setEnabled(false);
+    }
+
     /**
      * Creates new form GestionTypeConsultation
      */
     public GestionTypeConsultation() {
         initComponents();
+        dao = new TypeConsultationDAO();
+        model = new DefaultTableModel();
+        remplirComboChoix();
+        remplirTableau();
+        desactiverChamps();
     }
 
     /**
@@ -28,80 +83,217 @@ public class GestionTypeConsultation extends javax.swing.JInternalFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tableTypeConsultation = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
+        actionCombo = new javax.swing.JComboBox<>();
+        libelleTypeConsTxt = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        actionBtn = new javax.swing.JButton();
 
+        setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setIconifiable(true);
+        setMaximizable(true);
+        setResizable(true);
+        setTitle("Type de consultation");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tableTypeConsultation.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {},
+                {},
+                {},
+                {}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        tableTypeConsultation.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableTypeConsultationMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tableTypeConsultation);
+
+        jLabel1.setText("Choix Action");
+
+        actionCombo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                actionComboActionPerformed(evt);
+            }
+        });
+
+        libelleTypeConsTxt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                libelleTypeConsTxtActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setText("Type de consultation");
+
+        actionBtn.setText("AJOUTER");
+        actionBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                actionBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 366, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(599, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(50, 50, 50)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(libelleTypeConsTxt)
+                            .addComponent(actionCombo, 0, 188, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(122, 122, 122)
+                        .addComponent(actionBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(25, 25, 25))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(38, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(actionCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(39, 39, 39)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(libelleTypeConsTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2))
+                        .addGap(31, 31, 31)
+                        .addComponent(actionBtn)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(GestionTypeConsultation.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(GestionTypeConsultation.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(GestionTypeConsultation.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(GestionTypeConsultation.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+    private void libelleTypeConsTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_libelleTypeConsTxtActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_libelleTypeConsTxtActionPerformed
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new GestionTypeConsultation().setVisible(true);
+    private void tableTypeConsultationMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableTypeConsultationMouseClicked
+        this.selectedID = null;
+        this.selectedTypeConsultation = null;
+        String action = (String) actionCombo.getSelectedItem();
+        if (action.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "VEUILLEZ SELECTIONNER UNE ACTION ", "ERREUR", JOptionPane.ERROR_MESSAGE);
+            tableTypeConsultation.clearSelection();
+        } else if (action.equals(MODIFIER) || action.equals(SUPPRIMER)) {
+            DefaultTableModel m = (DefaultTableModel) tableTypeConsultation.getModel();
+            try {
+                this.selectedID = (Long) m.getValueAt(tableTypeConsultation.getSelectedRow(), 0);
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "VEUILLEZ SELECTIONNER UN ELEMENT VALIDE", "ERREUR", JOptionPane.ERROR_MESSAGE);
+                return;
             }
-        });
-    }
+
+            selectedTypeConsultation = dao.findById(this.selectedID);
+            libelleTypeConsTxt.setText(selectedTypeConsultation.getLibelle());
+        }
+
+
+    }//GEN-LAST:event_tableTypeConsultationMouseClicked
+
+    private void actionComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_actionComboActionPerformed
+        String action = (String) actionCombo.getSelectedItem();
+
+        switch (action) {
+            case "":
+                desactiverChamps();
+                break;
+            case AJOUTER:
+                libelleTypeConsTxt.setEnabled(true);
+                actionBtn.setEnabled(true);
+                actionBtn.setText(AJOUTER);
+                break;
+            case MODIFIER:
+                libelleTypeConsTxt.setEnabled(true);
+                actionBtn.setEnabled(true);
+                actionBtn.setText(MODIFIER);
+                break;
+            case SUPPRIMER:
+                actionBtn.setEnabled(true);
+                actionBtn.setText(SUPPRIMER);
+                break;
+        }
+    }//GEN-LAST:event_actionComboActionPerformed
+
+    private void actionBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_actionBtnActionPerformed
+        String action = (String) actionCombo.getSelectedItem();
+        switch (action) {
+            case AJOUTER:
+                TypeConsultation tc = new TypeConsultation(libelleTypeConsTxt.getText());
+                if (dao.save(tc)) {
+                    JOptionPane.showMessageDialog(null, "TYPE DE CONSULTATION AJOUTE AVEC SUCCES", "SUCCES", JOptionPane.INFORMATION_MESSAGE);
+                    remplirTableau();
+                    libelleTypeConsTxt.setText("");
+                } else {
+                    JOptionPane.showMessageDialog(null, "ECHEC DE L'AJOUT DU TYPE DE CONSULTATION", "ERREUR", JOptionPane.ERROR_MESSAGE);
+                }
+                break;
+            case MODIFIER:
+                if (selectedTypeConsultation == null) {
+                    JOptionPane.showMessageDialog(null, "TYPE INTROUVABLE", "ERREUR", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    if (libelleTypeConsTxt.getText().isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "REMPLISSEZ LE LIBELLE", "ERREUR", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        selectedTypeConsultation.setLibelle(libelleTypeConsTxt.getText());
+                        if (dao.edit(selectedTypeConsultation)) {
+                            JOptionPane.showMessageDialog(null, "TYPE DE CONSULTATION MODIFIE AVEC SUCCES", "SUCCES", JOptionPane.INFORMATION_MESSAGE);
+                            remplirTableau();
+                            libelleTypeConsTxt.setText("");
+                        } else {
+                            JOptionPane.showMessageDialog(null, "ECHEC DE L'EDITION DU TYPE DE CONSULTATION", "ERREUR", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                }
+                break;
+            case SUPPRIMER:
+                if (selectedTypeConsultation == null) {
+                    JOptionPane.showMessageDialog(null, "TYPE INTROUVABLE", "ERREUR", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    if (dao.delete(selectedTypeConsultation)) {
+                        JOptionPane.showMessageDialog(null, "TYPE DE CONSULTATION SUPPRIME AVEC SUCCES", "SUCCES", JOptionPane.INFORMATION_MESSAGE);
+                        remplirTableau();
+                        libelleTypeConsTxt.setText("");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "ECHEC DE LA SUPPRESSION DU TYPE DE CONSULTATION", "ERREUR", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+        actionCombo.setSelectedIndex(0);
+    }//GEN-LAST:event_actionBtnActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton actionBtn;
+    private javax.swing.JComboBox<String> actionCombo;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTextField libelleTypeConsTxt;
+    private javax.swing.JTable tableTypeConsultation;
     // End of variables declaration//GEN-END:variables
 }

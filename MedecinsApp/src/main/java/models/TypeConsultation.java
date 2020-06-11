@@ -6,10 +6,15 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "type_consultation", schema = "PUBLIC", catalog = "PUBLIC")
+@NamedQueries({
+    @NamedQuery(name = "TypeConsultation.findAll", query = "SELECT tc FROM TypeConsultation tc")
+})
 public class TypeConsultation implements Serializable {
 
     @Id

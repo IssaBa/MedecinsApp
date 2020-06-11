@@ -6,12 +6,16 @@
 package views;
 
 import dao.PatientDAO;
+import java.awt.Component;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
-
-import org.jboss.logging.Message;
 
 import models.Patient;
 
@@ -25,6 +29,18 @@ public class ListePatients extends javax.swing.JInternalFrame {
     private Integer idPatientSelected;
     private final DefaultTableModel model;
     private final String[] entete = new String[]{"ID", "Prénom", "Nom", "Date de naissance", "Civilité", "Suivi depuis"};
+    
+    TableCellRenderer tableCellRenderer = new DefaultTableCellRenderer(){
+        SimpleDateFormat format = new SimpleDateFormat("dd MMMM YYYY");
+        
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            if(value instanceof Date) {
+                value = format.format(value);
+            }
+            return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        }
+    };
 
     private void remplirTablePatients() {
         this.model.setRowCount(0);
@@ -47,6 +63,8 @@ public class ListePatients extends javax.swing.JInternalFrame {
          */
         TableColumnModel tcm = this.jTable1.getColumnModel();
         tcm.removeColumn(tcm.getColumn(0));
+        tcm.getColumn(2).setCellRenderer(tableCellRenderer);
+        tcm.getColumn(4).setCellRenderer(tableCellRenderer);
     }
 
     /**
@@ -73,6 +91,7 @@ public class ListePatients extends javax.swing.JInternalFrame {
         ajouterBtn = new javax.swing.JToggleButton();
         modifierBtn = new javax.swing.JToggleButton();
         supprimerBtn = new javax.swing.JToggleButton();
+        openDossierBtn = new javax.swing.JToggleButton();
 
         setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -120,6 +139,14 @@ public class ListePatients extends javax.swing.JInternalFrame {
             }
         });
 
+        openDossierBtn.setText("OUVRIR DOSSIER DU PATIENT");
+        openDossierBtn.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        openDossierBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openDossierBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -127,11 +154,12 @@ public class ListePatients extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 623, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(ajouterBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(modifierBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(supprimerBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE))
+                    .addComponent(supprimerBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(openDossierBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -139,15 +167,18 @@ public class ListePatients extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
+                        .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(ajouterBtn)
                         .addGap(18, 18, 18)
                         .addComponent(modifierBtn)
                         .addGap(18, 18, 18)
                         .addComponent(supprimerBtn)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 150, Short.MAX_VALUE)
+                        .addComponent(openDossierBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(122, 122, 122))))
         );
 
         pack();
@@ -196,11 +227,23 @@ public class ListePatients extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_supprimerBtnActionPerformed
 
+    private void openDossierBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openDossierBtnActionPerformed
+        if (this.idPatientSelected == null) {
+            JOptionPane.showMessageDialog(null, "VEUILLEZ SELECTIONNER UN PATIENT", "ERROR", JOptionPane.ERROR_MESSAGE);
+        } else {
+            DossierPatient dossierPatient = new DossierPatient(idPatientSelected);
+            this.getDesktopPane().add(dossierPatient).setVisible(true);
+            this.dispose();
+        }
+        
+    }//GEN-LAST:event_openDossierBtnActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToggleButton ajouterBtn;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JToggleButton modifierBtn;
+    private javax.swing.JToggleButton openDossierBtn;
     private javax.swing.JToggleButton supprimerBtn;
     // End of variables declaration//GEN-END:variables
 }

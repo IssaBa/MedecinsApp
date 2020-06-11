@@ -44,6 +44,8 @@ public class Menu extends javax.swing.JFrame {
         listeClasseAnteMenuItem = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
+        typeConsultationMenu = new javax.swing.JMenu();
+        listeTypeConsultationMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("FAYEMILOG");
@@ -152,6 +154,18 @@ public class Menu extends javax.swing.JFrame {
 
         menuBar.add(jMenu2);
 
+        typeConsultationMenu.setText("Type de consultation");
+
+        listeTypeConsultationMenuItem.setText("Liste des types");
+        listeTypeConsultationMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                listeTypeConsultationMenuItemActionPerformed(evt);
+            }
+        });
+        typeConsultationMenu.add(listeTypeConsultationMenuItem);
+
+        menuBar.add(typeConsultationMenu);
+
         setJMenuBar(menuBar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -189,6 +203,11 @@ public class Menu extends javax.swing.JFrame {
         ListePatients listePatients = new ListePatients();
         desktopPane.add(listePatients).setVisible(true);
     }//GEN-LAST:event_listePatientsMenuItemActionPerformed
+
+    private void listeTypeConsultationMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listeTypeConsultationMenuItemActionPerformed
+        GestionTypeConsultation gestionTypeConsultation = new GestionTypeConsultation();
+        desktopPane.add(gestionTypeConsultation).setVisible(true);
+    }//GEN-LAST:event_listeTypeConsultationMenuItemActionPerformed
     private void listeClasseAnteMenuItemActionPerformed(java.awt.event.ActionEvent evt) {
         GestionClasseAntecedant classeAntecedant = new GestionClasseAntecedant();
         desktopPane.add(classeAntecedant).setVisible(true);
@@ -254,11 +273,13 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JMenuItem listeClasseAnteMenuItem;
     private javax.swing.JMenuItem listePatientsMenuItem;
     private javax.swing.JMenuItem listeProfessionMenuItem;
+    private javax.swing.JMenuItem listeTypeConsultationMenuItem;
     private javax.swing.JMenu medecinsMenu;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem modifMedecinMenuItem;
     private javax.swing.JMenu patientsMenu;
     private javax.swing.JMenu professionMenu;
+    private javax.swing.JMenu typeConsultationMenu;
     // End of variables declaration//GEN-END:variables
 
 }
