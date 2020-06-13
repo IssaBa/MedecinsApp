@@ -11,8 +11,19 @@ import models.ClasseAntecedent;
 import models.config.HibernateUtil;
 
 public class AntecedantDAO {
-	private static Transaction transaction = null;
+
+    private static Transaction transaction = null;
     Session session = HibernateUtil.getSessionFactory().openSession();
+
+    public Antecedent findById(Long id) {
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
+            return session.get(Antecedent.class, id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     // Ajouter ClasseAntecedent
     public boolean saveAntecedant(Antecedent antecedent) {
@@ -28,15 +39,14 @@ public class AntecedantDAO {
             e.printStackTrace();
             return false;
         }
-
     }
 
     //Search Antecedent via un objet
     public Antecedent searchAntecedant(Antecedent antecedent) {
 
-    	Antecedent classeAntecedent2 = null;
+        Antecedent classeAntecedent2 = null;
         try {
-        	classeAntecedent2 = session.createQuery("from Antecedent ant", Antecedent.class).list().get(0);
+            classeAntecedent2 = session.createQuery("from Antecedent ant", Antecedent.class).list().get(0);
             session.flush();
         } catch (Exception e) {
             e.printStackTrace();
@@ -45,19 +55,32 @@ public class AntecedantDAO {
         return classeAntecedent2;
     }
 
+    public ArrayList<Antecedent> findByClasseName(String libelle) {
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
+            return (ArrayList<Antecedent>) session
+                    .createNamedQuery("Antecedent.findByClasseName")
+                    .setParameter("libelle", libelle)
+                    .getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     // Search Antecedent via son libelle
     public Antecedent findAntecedant(String libelle) {
 
-    	List<Antecedent> antecedent = null;
+        List<Antecedent> antecedent = null;
         try {
-        	antecedent = session.createQuery("FROM  Antecedent ant  WHERE ant.libelle=:lib").setParameter("lib", libelle).list();
-           // session.flush();
-            if(antecedent.size()>0) {
-            	return antecedent.get(0);
-            }else {
-            	return null;
+            antecedent = session.createQuery("FROM  Antecedent ant  WHERE ant.libelle=:lib").setParameter("lib", libelle).list();
+            // session.flush();
+            if (antecedent.size() > 0) {
+                return antecedent.get(0);
+            } else {
+                return null;
             }
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -67,7 +90,7 @@ public class AntecedantDAO {
     // Delete Antecedent via son libelle
     public void deleteAntecedent(String libelle) {
         try {
-        	Antecedent antecedent = findAntecedant(libelle);
+            Antecedent antecedent = findAntecedant(libelle);
             session.delete(antecedent);
             session.flush();
 
@@ -81,7 +104,7 @@ public class AntecedantDAO {
     public ArrayList<Antecedent> getAllAntecedent() {
         ArrayList<Antecedent> lisAntecedent = new ArrayList<>();
         try {
-        	lisAntecedent = (ArrayList<Antecedent>) session.createQuery("FROM  Antecedent clAnt ").list();
+            lisAntecedent = (ArrayList<Antecedent>) session.createQuery("FROM  Antecedent clAnt ").list();
         } catch (Exception e) {
             e.printStackTrace();
         }

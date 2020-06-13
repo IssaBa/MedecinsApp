@@ -8,10 +8,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "Antecedent", schema = "PUBLIC", catalog = "PUBLIC")
+@NamedQueries({
+    @NamedQuery(name = "Antecedent.findByClasseName", query = "SELECT a FROM Antecedent a WHERE a.classe.libelle = :libelle")
+})
 public class Antecedent implements Serializable {
 
     @Id

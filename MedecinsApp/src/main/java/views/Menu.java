@@ -172,11 +172,10 @@ public class Menu extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-
-    private void copyMenuItemActionPerformed(java.awt.event.ActionEvent evt) {                                             
+    private void copyMenuItemActionPerformed(java.awt.event.ActionEvent evt) {
         BatchFiles batchFiles = new BatchFiles();
         desktopPane.add(batchFiles).setVisible(true);
-    }                                             
+    }
 
     private void listeProfessionMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listeProfessionMenuItemActionPerformed
         GestionProfession gestionProfession = new GestionProfession();
@@ -199,8 +198,8 @@ public class Menu extends javax.swing.JFrame {
     }
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
-	      GestionMedecinUser gestionMedecinUser = new GestionMedecinUser();
-	      desktopPane.add(gestionMedecinUser).setVisible(true);
+        GestionMedecinUser gestionMedecinUser = new GestionMedecinUser();
+        desktopPane.add(gestionMedecinUser).setVisible(true);
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     private void medecinsMenuKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_medecinsMenuKeyPressed
@@ -208,8 +207,8 @@ public class Menu extends javax.swing.JFrame {
     }//GEN-LAST:event_medecinsMenuKeyPressed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {
-     	GestionAntecedant gestionAntecedant = new GestionAntecedant();
-    	desktopPane.add(gestionAntecedant).setVisible(true);
+        GestionAntecedant gestionAntecedant = new GestionAntecedant();
+        desktopPane.add(gestionAntecedant).setVisible(true);
     }
 
     private void medecinsMenuActionPerformed(java.awt.event.ActionEvent evt) {
@@ -222,10 +221,6 @@ public class Menu extends javax.swing.JFrame {
         // TODO add your handling code here:
         GestionMedecinUser gestionMedecins = new GestionMedecinUser();
         desktopPane.add(gestionMedecins).setVisible(true);
-    }
-
-    private void addMedecinMenuItemMouseClicked(java.awt.event.MouseEvent evt) {
-        // TODO add your handling code here:
     }
 
     /**

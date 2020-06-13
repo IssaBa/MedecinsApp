@@ -10,12 +10,19 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "Patient_Antecedent", schema = "PUBLIC", catalog = "PUBLIC")
+@NamedQueries({
+    @NamedQuery(name = "PatientAntecedent.findAll", query = "SELECT pa FROM PatientAntecedent pa"),
+    @NamedQuery(name = "PatientAntecedent.findByPatient", query = "SELECT pa FROM PatientAntecedent pa WHERE pa.patient.id = :idPatient ORDER BY pa.antecedent.classe.libelle"),
+    @NamedQuery(name = "PatientAntecedent.findByPatientAndAntecedent", query = "SELECT pa FROM PatientAntecedent pa WHERE pa.patient.id = :idPatient AND pa.antecedent.id = :idAntecedent")    
+})
 public class PatientAntecedent implements Serializable {
 
     @Id

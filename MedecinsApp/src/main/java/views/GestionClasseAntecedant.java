@@ -11,7 +11,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-import dao.ClasseAntecedantDAO;
+import dao.ClasseAntecedentDAO;
 import models.ClasseAntecedent;
 
 /**
@@ -31,7 +31,7 @@ public class GestionClasseAntecedant extends javax.swing.JInternalFrame {
     public void remplirTableCLASSEANTECEDANT() {
         try {
             model.setRowCount(0);
-            ClasseAntecedantDAO dao = new ClasseAntecedantDAO();
+            ClasseAntecedentDAO dao = new ClasseAntecedentDAO();
 
             model.setColumnIdentifiers(new String[]{"ID", "LIBELLE"});
 
@@ -167,6 +167,9 @@ public class GestionClasseAntecedant extends javax.swing.JInternalFrame {
         tableClasseAntecedant = new javax.swing.JTable();
         choixBTX = new javax.swing.JButton();
 
+        setClosable(true);
+        setIconifiable(true);
+
         jLabel1.setText("Choix Action");
 
         ComboChoix.addItemListener(new java.awt.event.ItemListener() {
@@ -264,7 +267,7 @@ public class GestionClasseAntecedant extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(32, Short.MAX_VALUE))
         );
 
         pack();
@@ -289,7 +292,7 @@ public class GestionClasseAntecedant extends javax.swing.JInternalFrame {
                     int selectRowsIndex = tableClasseAntecedant.getSelectedRow();
                     // libelle.setText(defaultTableModel.getValueAt(selectRowsIndex, 1).toString());
 
-                    ClasseAntecedantDAO classeAntecedantDAO = new ClasseAntecedantDAO();
+                    ClasseAntecedentDAO classeAntecedantDAO = new ClasseAntecedentDAO();
                     ClasseAntecedent classeAnt = classeAntecedantDAO.findClasseAntecedant(defaultTableModel.getValueAt(selectRowsIndex, 1).toString());
                     //JOptionPane.showMessageDialog (null, classeAnt.getLibelle() , "GESTION PROFESSION" , JOptionPane.ERROR_MESSAGE);
 
@@ -311,7 +314,7 @@ public class GestionClasseAntecedant extends javax.swing.JInternalFrame {
 
     private void choixBTXActionPerformed(java.awt.event.ActionEvent evt) {
 
-        ClasseAntecedantDAO classeAntecedantDAO = new ClasseAntecedantDAO();
+        ClasseAntecedentDAO classeAntecedantDAO = new ClasseAntecedentDAO();
 
         // Ajout Classe  Antecedant
         if (choixBTX.getText().equalsIgnoreCase("AJOUTER CLASSE ANTECEDANT")) {
@@ -348,7 +351,7 @@ public class GestionClasseAntecedant extends javax.swing.JInternalFrame {
             ClasseAntecedent classeAntecedentCheck = classeAntecedantDAO.findClasseAntecedant(libeleModif);
             if (classeAntecedentCheck != null) {
                 ClasseAntecedent classeAntecedentmodif = new ClasseAntecedent();
-                ClasseAntecedantDAO dao = new ClasseAntecedantDAO();
+                ClasseAntecedentDAO dao = new ClasseAntecedentDAO();
 
                 classeAntecedentmodif.setId(idUpdateJtable);
                 classeAntecedentmodif.setLibelle(libelleAntecedant.getText());
@@ -380,7 +383,7 @@ public class GestionClasseAntecedant extends javax.swing.JInternalFrame {
             ClasseAntecedent classeAntecedentCheck = classeAntecedantDAO.findClasseAntecedant(libeleModif);
             if (classeAntecedentCheck != null) {
                 ClasseAntecedent classeAntecedentsup = new ClasseAntecedent();
-                ClasseAntecedantDAO dao = new ClasseAntecedantDAO();
+                ClasseAntecedentDAO dao = new ClasseAntecedentDAO();
 
                 classeAntecedentsup.setId(idUpdateJtable);
                 classeAntecedentsup.setLibelle(libelleAntecedant.getText());

@@ -1,7 +1,10 @@
 package models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import javax.persistence.CascadeType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,6 +17,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -90,6 +94,9 @@ public class Patient implements Serializable {
     @JoinColumn
     private Profession professionConjoint;
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PatientAntecedent> patientAntecedentListe;
+
     public Patient() {
     }
 
@@ -116,6 +123,7 @@ public class Patient implements Serializable {
         this.medecinTraitant = medecinTraitant;
         this.profession = profession;
         this.professionConjoint = professionConjoint;
+        this.patientAntecedentListe = new ArrayList<>();
     }
 
     public Integer getId() {
@@ -268,6 +276,29 @@ public class Patient implements Serializable {
 
     public void setProfessionConjoint(Profession professionConjoint) {
         this.professionConjoint = professionConjoint;
+    }
+
+    public List<PatientAntecedent> getPatientAntecedentListe() {
+        return patientAntecedentListe;
+    }
+
+    public void setPatientAntecedentListe(List<PatientAntecedent> patientAntecedentListe) {
+        this.patientAntecedentListe = patientAntecedentListe;
+    }
+
+    public void addPatientAntecedent(PatientAntecedent patientAntecedent) {
+        patientAntecedent.setPatient(this);
+        this.patientAntecedentListe.add(patientAntecedent);
+    }
+
+    public void removePatientAntecedent(PatientAntecedent patientAntecedent) {
+        for (int i = 0; i < patientAntecedentListe.size(); i++) {
+            if (patientAntecedentListe.get(i).getId().equals(patientAntecedent.getId())) {
+                patientAntecedentListe.get(i).setPatient(null);
+                patientAntecedentListe.remove(i);
+            }
+        }
+
     }
 
 }

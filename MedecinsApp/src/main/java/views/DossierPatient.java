@@ -5,28 +5,160 @@
  */
 package views;
 
+import dao.AntecedantDAO;
+import dao.ClasseAntecedentDAO;
+import dao.PatientAntecedentDAO;
 import dao.PatientDAO;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.Vector;
+import javax.swing.JOptionPane;
+import javax.swing.JTree;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import models.Antecedent;
+import models.ClasseAntecedent;
 import models.Patient;
+import models.PatientAntecedent;
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 /**
  *
  * @author Baye Lahad DIAGNE
  */
 public class DossierPatient extends javax.swing.JInternalFrame {
+
     private final Patient patient;
     private final PatientDAO patientDAO;
+    private final ClasseAntecedentDAO classeAntecedentDAO;
+    private final AntecedantDAO antecedentDAO;
+    private final PatientAntecedentDAO paDAO;
+    private DefaultTreeModel myTreeModel;
+
+    public class TableauAntecedentsModel extends DefaultTableModel {
+
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            Class clazz = String.class;
+            switch (columnIndex) {
+                case 0:
+                    clazz = String.class;
+                    break;
+                case 1:
+                    clazz = Boolean.class;
+                    break;
+                case 2:
+                    clazz = Long.class;
+                    break;
+            }
+            return clazz;
+        }
+
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return column == 1;
+        }
+
+        @Override
+        public void setValueAt(Object aValue, int row, int column) {
+            if (aValue instanceof Boolean && column == 1) {
+                System.out.println(aValue);
+                Vector rowData = (Vector) getDataVector().get(row);
+                rowData.set(1, (boolean) aValue);
+                fireTableCellUpdated(row, column);
+            }
+        }
+    }
+
     /**
      * Creates new form DossierPatient
+     *
      * @param idPatient
      */
     public DossierPatient(Integer idPatient) {
         initComponents();
         patientDAO = new PatientDAO();
+        classeAntecedentDAO = new ClasseAntecedentDAO();
+        antecedentDAO = new AntecedantDAO();
+        paDAO = new PatientAntecedentDAO();
         patient = patientDAO.findById(idPatient);
         remplirSignaletique();
+        this.setTitle(patient.getPrenom() + " " + patient.getNom());
+        remplirComboClassesAntecedent();
+        remplirTree();
+    }
+
+    private void remplirTree() {
+        myTreeModel = null;
+        antecedentsTree.removeAll();
+        DefaultMutableTreeNode racine = new DefaultMutableTreeNode("Antécédents de " + patient.getPrenom() + " " + patient.getNom());
+        //replace with the get
+        List<PatientAntecedent> pas = patient.getPatientAntecedentListe();
+        List<ClasseAntecedent> lca = paDAO.getClassesFrom(pas);
+        for (ClasseAntecedent ca : lca) {
+            DefaultMutableTreeNode classeNode = new DefaultMutableTreeNode(ca.getLibelle());
+            racine.add(classeNode);
+            for (PatientAntecedent pa : pas) {
+                if (pa.getAntecedent().getClasse().getId().equals(ca.getId())) {
+                    DefaultMutableTreeNode antecedentNode = new DefaultMutableTreeNode(pa.getAntecedent().getLibelle());
+                    classeNode.add(antecedentNode);
+                }
+            }
+        }
+        myTreeModel = new DefaultTreeModel(racine);
+        antecedentsTree.setModel(myTreeModel);
+        
+        /*Ouvrir tous les noeuds (dossier)*/
+        for (int i = 0; i < antecedentsTree.getRowCount(); i++) {
+            antecedentsTree.expandRow(i);
+        }
+    }
+
+    private void remplirComboClassesAntecedent() {
+        try {
+            List<ClasseAntecedent> classes = classeAntecedentDAO.getAllClasseAntecedent();
+            comboClasses.removeAll();
+            comboClasses.addItem("");
+            for (ClasseAntecedent c : classes) {
+                comboClasses.addItem(c.getLibelle());
+            }
+            AutoCompleteDecorator.decorate(comboClasses);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     
+    private PatientAntecedent findAntecedentInPatient(Long idAntecedent) {
+        for (int i = 0; i < this.patient.getPatientAntecedentListe().size(); i++) {
+            if(Objects.equals(this.patient.getPatientAntecedentListe().get(i).getAntecedent().getId(), idAntecedent)) {
+                return this.patient.getPatientAntecedentListe().get(i);
+            }
+        }
+        return null;
+    }
+
+    private void remplirTableauAntecedents(String libelleClasse) {
+        try {
+            TableauAntecedentsModel model = new TableauAntecedentsModel();
+            model.setRowCount(0);
+            model.setColumnIdentifiers(new String[]{"Nom de l'antécédent", "Selectionné", "ID"});
+            ArrayList<Antecedent> antecedents = antecedentDAO.findByClasseName(libelleClasse);
+            for (Antecedent a : antecedents) {
+                Boolean checkBox = paDAO.findByPatientAndAntecedent(patient.getId(), a.getId()) != null;
+                model.addRow(new Object[]{a.getLibelle(), checkBox, a.getId()});
+            }
+            tableAntecedentsPatient.setModel(model);
+            TableColumnModel tcm = tableAntecedentsPatient.getColumnModel();
+            tcm.removeColumn(tcm.getColumn(2));
+        } catch (Exception e) {
+        }
+    }
+
     private void remplirSignaletique() {
         //Replace all empty labels with NEANT
         //Add suivi depuis et nom du médecin traitant
@@ -94,6 +226,13 @@ public class DossierPatient extends javax.swing.JInternalFrame {
         professionConjointLabel = new javax.swing.JLabel();
         telConjointLabel = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        antecedentsTree = new javax.swing.JTree();
+        comboClasses = new javax.swing.JComboBox<>();
+        jLabel17 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tableAntecedentsPatient = new javax.swing.JTable();
+        updateAntecedantsBtn = new javax.swing.JToggleButton();
         jPanel4 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         imprimerBtn = new javax.swing.JToggleButton();
@@ -306,15 +445,63 @@ public class DossierPatient extends javax.swing.JInternalFrame {
 
         jTabbedPane1.addTab("Signalétique", jPanel1);
 
+        antecedentsTree.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
+        antecedentsTree.setModel(this.myTreeModel);
+        jScrollPane1.setViewportView(antecedentsTree);
+
+        comboClasses.setEditable(true);
+        comboClasses.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboClassesActionPerformed(evt);
+            }
+        });
+
+        jLabel17.setText("Classe de l'antécédent");
+
+        jScrollPane2.setMaximumSize(new java.awt.Dimension(32767, 10000));
+
+        tableAntecedentsPatient.setRowSelectionAllowed(false);
+        jScrollPane2.setViewportView(tableAntecedentsPatient);
+
+        updateAntecedantsBtn.setText("Mettre à jour les éléments sélectionnés");
+        updateAntecedantsBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateAntecedantsBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 721, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel17)
+                        .addGap(18, 18, 18)
+                        .addComponent(comboClasses, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(updateAntecedantsBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 364, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(comboClasses, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel17))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(updateAntecedantsBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(169, 169, 169))
         );
 
         jTabbedPane1.addTab("Antécédents", jPanel2);
@@ -367,16 +554,52 @@ public class DossierPatient extends javax.swing.JInternalFrame {
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 394, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(imprimerBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void comboClassesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboClassesActionPerformed
+        remplirTableauAntecedents((String) comboClasses.getSelectedItem());
+    }//GEN-LAST:event_comboClassesActionPerformed
+
+    private void updateAntecedantsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateAntecedantsBtnActionPerformed
+        DefaultTableModel dtm = (DefaultTableModel) tableAntecedentsPatient.getModel();
+        if (dtm.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(null, "AUCUNE VALEUR SELECTIONNEE", "PATIENT", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        for (int i = 0; i < dtm.getRowCount(); i++) {
+            Long idAntecedent = (Long) dtm.getValueAt(i, 2);
+            PatientAntecedent patAnt = this.findAntecedentInPatient(idAntecedent);
+            if ((Boolean) dtm.getValueAt(i, 1) && patAnt == null) {
+                patAnt = new PatientAntecedent();
+                patAnt.setPatient(this.patient);
+                Antecedent ant = antecedentDAO.findById(idAntecedent);
+                patAnt.setAntecedent(ant);
+                patAnt.setCommentaire("");
+                patAnt.setDateEntree(new Date());
+                this.patient.addPatientAntecedent(patAnt);
+            } else if (!(Boolean) dtm.getValueAt(i, 1) && patAnt != null) {
+                this.patient.removePatientAntecedent(patAnt);
+            } 
+        }
+
+        if (patientDAO.edit(patient)) {
+            this.remplirTree();
+            JOptionPane.showMessageDialog(null, "ANTECEDENTS MIS A JOUR", "PATIENT", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null, "ECHEC DE LA MISE A JOUR", "PATIENT", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_updateAntecedantsBtnActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel adresseLabel;
+    private javax.swing.JTree antecedentsTree;
     private javax.swing.JLabel civiliteLabel;
+    private javax.swing.JComboBox<String> comboClasses;
     private javax.swing.JLabel dateNaissanceLabel;
     private javax.swing.JToggleButton imprimerBtn;
     private javax.swing.JLabel jLabel1;
@@ -387,6 +610,7 @@ public class DossierPatient extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -399,6 +623,8 @@ public class DossierPatient extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel lieuNaissanceLabel;
     private javax.swing.JLabel nomConjointLabel;
@@ -409,9 +635,11 @@ public class DossierPatient extends javax.swing.JInternalFrame {
     private javax.swing.JLabel professionConjointLabel;
     private javax.swing.JLabel professionLabel;
     private javax.swing.JLabel sexeLabel;
+    private javax.swing.JTable tableAntecedentsPatient;
     private javax.swing.JLabel telBureauLabel;
     private javax.swing.JLabel telConjointLabel;
     private javax.swing.JLabel telDomicileLabel;
     private javax.swing.JLabel telPortableLabel;
+    private javax.swing.JToggleButton updateAntecedantsBtn;
     // End of variables declaration//GEN-END:variables
 }
