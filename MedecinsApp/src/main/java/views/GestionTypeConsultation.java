@@ -42,6 +42,8 @@ public class GestionTypeConsultation extends javax.swing.JInternalFrame {
         }
         /*
         Je cache l'id
+        Laha tu sais que tu peux recupere l'id la ou tu es dans le code juste avec ca : TableColumnModel tcm = this.tableTypeConsultation.getColumnModel();
+        
          */
         TableColumnModel tcm = this.tableTypeConsultation.getColumnModel();
         tcm.removeColumn(tcm.getColumn(0));

@@ -159,6 +159,7 @@ public class GestionMedecinUser extends javax.swing.JInternalFrame {
     }
 
     public void reitialiserPwd() {
+
         password1.setText("");
         password2.setText("");
     }
@@ -174,10 +175,10 @@ public class GestionMedecinUser extends javax.swing.JInternalFrame {
     public GestionMedecinUser() {
         initComponents();
         refrechALL();
-    }
+    }//GEN-initComponents
 
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">                           
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
@@ -359,7 +360,7 @@ public class GestionMedecinUser extends javax.swing.JInternalFrame {
         );
 
         pack();
-    }// </editor-fold>                        
+    }// </editor-fold>
 
     private void ComboChoixItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_ComboChoixItemStateChanged
         checkChoixSelect(ComboChoix.getSelectedItem().toString());
