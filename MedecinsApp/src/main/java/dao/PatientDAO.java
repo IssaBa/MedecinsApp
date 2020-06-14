@@ -87,6 +87,16 @@ public class PatientDAO {
             return false;
         }
     }
+    
+    public void refresh(Patient p) {
+        try {
+            openSession();
+            session.refresh(p);
+            closeSession();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "PatientDAO : " + e.getMessage(), e);
+        }
+    } 
 
     private void openSession() {
         this.session = HibernateUtil.getSessionFactory().openSession();

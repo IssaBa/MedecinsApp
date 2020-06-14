@@ -25,6 +25,7 @@ import models.Antecedent;
 import models.ClasseAntecedent;
 import models.Patient;
 import models.PatientAntecedent;
+import org.hibernate.Hibernate;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 /**
@@ -33,7 +34,8 @@ import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
  */
 public class DossierPatient extends javax.swing.JInternalFrame {
 
-    private final Patient patient;
+    private Patient patient;
+    private final Integer ID_PATIENT;
     private final PatientDAO patientDAO;
     private final ClasseAntecedentDAO classeAntecedentDAO;
     private final AntecedantDAO antecedentDAO;
@@ -82,11 +84,13 @@ public class DossierPatient extends javax.swing.JInternalFrame {
      */
     public DossierPatient(Integer idPatient) {
         initComponents();
+        ID_PATIENT = idPatient;
         patientDAO = new PatientDAO();
         classeAntecedentDAO = new ClasseAntecedentDAO();
         antecedentDAO = new AntecedantDAO();
         paDAO = new PatientAntecedentDAO();
         patient = patientDAO.findById(idPatient);
+        Hibernate.initialize(patient.getPatientAntecedentListe());
         remplirSignaletique();
         this.setTitle(patient.getPrenom() + " " + patient.getNom());
         remplirComboClassesAntecedent();
@@ -112,7 +116,7 @@ public class DossierPatient extends javax.swing.JInternalFrame {
         }
         myTreeModel = new DefaultTreeModel(racine);
         antecedentsTree.setModel(myTreeModel);
-        
+
         /*Ouvrir tous les noeuds (dossier)*/
         for (int i = 0; i < antecedentsTree.getRowCount(); i++) {
             antecedentsTree.expandRow(i);
@@ -132,10 +136,10 @@ public class DossierPatient extends javax.swing.JInternalFrame {
             e.printStackTrace();
         }
     }
-    
+
     private PatientAntecedent findAntecedentInPatient(Long idAntecedent) {
         for (int i = 0; i < this.patient.getPatientAntecedentListe().size(); i++) {
-            if(Objects.equals(this.patient.getPatientAntecedentListe().get(i).getAntecedent().getId(), idAntecedent)) {
+            if (this.patient.getPatientAntecedentListe().get(i).getAntecedent().getId().equals(idAntecedent)) {
                 return this.patient.getPatientAntecedentListe().get(i);
             }
         }
@@ -447,6 +451,7 @@ public class DossierPatient extends javax.swing.JInternalFrame {
 
         antecedentsTree.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
         antecedentsTree.setModel(this.myTreeModel);
+        antecedentsTree.setFocusable(false);
         jScrollPane1.setViewportView(antecedentsTree);
 
         comboClasses.setEditable(true);
@@ -575,6 +580,7 @@ public class DossierPatient extends javax.swing.JInternalFrame {
             PatientAntecedent patAnt = this.findAntecedentInPatient(idAntecedent);
             if ((Boolean) dtm.getValueAt(i, 1) && patAnt == null) {
                 patAnt = new PatientAntecedent();
+                //patAnt.setId(paDAO.newID());
                 patAnt.setPatient(this.patient);
                 Antecedent ant = antecedentDAO.findById(idAntecedent);
                 patAnt.setAntecedent(ant);
@@ -583,10 +589,11 @@ public class DossierPatient extends javax.swing.JInternalFrame {
                 this.patient.addPatientAntecedent(patAnt);
             } else if (!(Boolean) dtm.getValueAt(i, 1) && patAnt != null) {
                 this.patient.removePatientAntecedent(patAnt);
-            } 
+            }
         }
 
         if (patientDAO.edit(patient)) {
+            this.patient = patientDAO.findById(this.ID_PATIENT);
             this.remplirTree();
             JOptionPane.showMessageDialog(null, "ANTECEDENTS MIS A JOUR", "PATIENT", JOptionPane.INFORMATION_MESSAGE);
         } else {

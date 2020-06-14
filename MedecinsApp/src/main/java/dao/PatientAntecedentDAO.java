@@ -33,6 +33,13 @@ public class PatientAntecedentDAO {
             return new ArrayList<>();
         }
     }
+    
+    public Long newID() {
+        openSession();
+        Long id = (Long) session.createQuery("SELECT MAX(pa.id) FROM PatientAntecedent pa").getSingleResult();
+        closeSession();
+        return id+1;
+    }
 
     public PatientAntecedent findById(Long id) {
         try {
