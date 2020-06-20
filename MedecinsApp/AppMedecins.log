@@ -1,9 +1,183 @@
 /*C3*/SET SCHEMA PUBLIC
-INSERT INTO PATIENT_ANTECEDENT VALUES(97,'','2020-06-14',35,18)
-INSERT INTO PATIENT_ANTECEDENT VALUES(98,'','2020-06-14',41,18)
-ALTER SEQUENCE PUBLIC.HIBERNATE_SEQUENCE RESTART WITH 99
-COMMIT
-/*C4*/SET SCHEMA PUBLIC
-DELETE FROM PATIENT_ANTECEDENT WHERE ID=97
-DELETE FROM PATIENT_ANTECEDENT WHERE ID=98
-COMMIT
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
+/*C3*/SET SCHEMA PUBLIC
+alter table Patient_Patient_Antecedent drop constraint UK_k1iu9o5mtgqgb01449pyacaj3
+alter table Patient_Patient_Antecedent add constraint UK_k1iu9o5mtgqgb01449pyacaj3 unique (patientAntecedentListe_id)
