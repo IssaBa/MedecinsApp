@@ -3,8 +3,12 @@ package facture;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
@@ -17,6 +21,8 @@ import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.LineSeparator;
 
 import dao.PatientDAO;
+import models.Consultation;
+import models.Ordonnance;
 import models.Patient;
 import models.PatientAntecedent;
 
@@ -29,6 +35,7 @@ public class Facture {
 	private static  Document document = new Document();
 	private static  Font subFont = new Font(Font.FontFamily.TIMES_ROMAN, 15,Font.BOLD);
 	private static  Font font = new Font(FontFamily.TIMES_ROMAN,8);
+	 private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM YYYY");
 	 
 	 private  static Patient patient;
 	 
@@ -204,24 +211,60 @@ public class Facture {
 	
 	// Info antécedant
 	public static void getInfoAntecedant() throws DocumentException {
-		
 		List<PatientAntecedent> listeAnte= patient.getPatientAntecedentListe();
-	      
-	    for (int i = 0; i < listeAnte.size(); i++) {	
-			Paragraph paragrapheClasseAnt = new Paragraph("- "+listeAnte.get(i).getAntecedent().getClasse().getLibelle());
-			centrerPara(paragrapheClasseAnt, 20);
-		
-			document.add(paragrapheClasseAnt);
-			
-			Paragraph paragrapheAntecedant = new Paragraph(""+new Chunk("\u2022", subFont)+listeAnte.get(i).getAntecedent().getLibelle());
-			centrerPara(paragrapheAntecedant, 40);
-		
-			document.add(paragrapheAntecedant);
-			
-		}
-		
+		Set set = new HashSet(listeAnte);
+		for (int i = 0; i < listeAnte.size(); i++) {	
+	    		Paragraph paragrapheClasseAnt = new Paragraph("- "+listeAnte.get(i).getAntecedent().getClasse().getLibelle());
+				centrerPara(paragrapheClasseAnt, 20);
+				document.add(paragrapheClasseAnt);
+				
+				Paragraph paragrapheAntecedant = new Paragraph(""+new Chunk("\u2022", subFont)+listeAnte.get(i).getAntecedent().getLibelle());
+				centrerPara(paragrapheAntecedant, 40);
+				document.add(paragrapheAntecedant);
+	       }
 	}
 	
+
+	// Info Historique
+	public static void getInfoHistorique() throws DocumentException {
+		List<Consultation> listecon= patient.getConsultationListe();
+		Set set = new HashSet(listecon);
+		for (int i = 0; i < listecon.size(); i++) {	
+			
+				Paragraph paragraphehistorique = new Paragraph("  "+dateFormat.format(listecon.get(i).getDateConsultation())+"  -  "+listecon.get(i).getTypeConsultation().getLibelle()+"  -  "+listecon.get(i).getDonnees());
+				centrerPara(paragraphehistorique, 20);
+				document.add(paragraphehistorique);
+	       }
+	}
+	
+	
+	// Historique consultation
+	public static void consultationTitre() throws DocumentException {
+		Paragraph contact = new Paragraph("Historique consultation",subFont);
+		document.add(contact);		
+		sautLigne();
+	}
+	
+	
+	// Info Ordonnances
+	public static void getInfoOrdonnances() throws DocumentException {
+		List<Ordonnance> listeordonance= patient.getOrdonnanceListe();
+		Set set = new HashSet(listeordonance);
+		for (int i = 0; i < listeordonance.size(); i++) {	
+			String donne  = listeordonance.get(i).getDonnees().replace(";", " - ");
+				Paragraph paragrapheordonance = new Paragraph(" "+dateFormat.format(listeordonance.get(i).getDateOrdonnance())+" - "+donne+"   ");
+				centrerPara(paragrapheordonance, 20);
+				document.add(paragrapheordonance);
+	       }
+	}
+	
+	
+	// Historique Ordonnances
+	public static void OrdonnancesTitre() throws DocumentException {
+		Paragraph contact = new Paragraph("Ordonnances",subFont);
+		document.add(contact);		
+		sautLigne();
+	}
 	
 	// contructeur
 		public Facture(Integer idPatient) {
@@ -249,7 +292,14 @@ public class Facture {
 			 antecedantTitre();
 			 // GetInfoAntécédents
 			 getInfoAntecedant();
-			
+			 
+			//Historique consultation 
+			 consultationTitre();
+			 getInfoHistorique();
+			 
+			 // InfoOrdonnances()
+			 OrdonnancesTitre();
+			 getInfoOrdonnances();
 
 		} catch (Exception e) {
 			e.printStackTrace();
