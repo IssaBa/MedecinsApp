@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 import models.CiviliteEnum;
 import models.Patient;
 import models.Profession;
+import models.Session;
 import models.SexeEnum;
 
 /**
@@ -98,6 +99,8 @@ public class AddPatient extends javax.swing.JInternalFrame {
             Profession p = professionDAO.findProfessionByLibeller(professionConjointCombo.getSelectedItem().toString());
             patient.setProfession(p);
         }
+        
+        patient.setMedecinTraitant(Session.getUser());
 
         if (patientDAO.save(patient)) {
             JOptionPane.showMessageDialog(null, "PATIENT AJOUTé AVEC SUCCéS !", "NOUVEAU PATIENT", JOptionPane.INFORMATION_MESSAGE);

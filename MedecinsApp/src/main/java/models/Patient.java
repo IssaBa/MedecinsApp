@@ -98,7 +98,16 @@ public class Patient implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "patient")
     private List<PatientAntecedent> patientAntecedentListe;
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "patient")
+    private List<Ordonnance> ordonnanceListe;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "patient")
+    private List<Consultation> consultationListe;
+
     public Patient() {
+        this.patientAntecedentListe = new ArrayList<>();
+        this.ordonnanceListe = new ArrayList<>();
+        this.consultationListe = new ArrayList<>();
     }
 
     public Patient(Integer id) {
@@ -125,6 +134,8 @@ public class Patient implements Serializable {
         this.profession = profession;
         this.professionConjoint = professionConjoint;
         this.patientAntecedentListe = new ArrayList<>();
+        this.ordonnanceListe = new ArrayList<>();
+        this.consultationListe = new ArrayList<>();
     }
 
     public Integer getId() {
@@ -299,7 +310,50 @@ public class Patient implements Serializable {
                 patientAntecedentListe.remove(i);
             }
         }
+    }
 
+    public List<Ordonnance> getOrdonnanceListe() {
+        return ordonnanceListe;
+    }
+
+    public void setOrdonnanceListe(List<Ordonnance> ordonnanceListe) {
+        this.ordonnanceListe = ordonnanceListe;
+    }
+
+    public List<Consultation> getConsultationListe() {
+        return consultationListe;
+    }
+
+    public void setConsultationListe(List<Consultation> consultationListe) {
+        this.consultationListe = consultationListe;
+    }
+
+    public void addOrdonnance(Ordonnance ordonnance) {
+        ordonnance.setPatient(this);
+        this.ordonnanceListe.add(ordonnance);
+    }
+
+    public void removeOrdonnance(Ordonnance ordonnance) {
+        for (int i = 0; i < ordonnanceListe.size(); i++) {
+            if (ordonnanceListe.get(i).getId().equals(ordonnance.getId())) {
+                ordonnanceListe.get(i).setPatient(null);
+                ordonnanceListe.remove(i);
+            }
+        }
+    }
+
+    public void addConsultation(Consultation consultation) {
+        consultation.setPatient(this);
+        this.consultationListe.add(consultation);
+    }
+
+    public void removeConsultation(Consultation consultation) {
+        for (int i = 0; i < consultationListe.size(); i++) {
+            if (consultationListe.get(i).getId().equals(consultation.getId())) {
+                consultationListe.get(i).setPatient(null);
+                consultationListe.remove(i);
+            }
+        }
     }
 
 }

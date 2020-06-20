@@ -28,11 +28,7 @@ public class Consultation implements Serializable {
 
     @Column
     private String donnees;
-
-    @JoinColumn(name = "medecin_id", nullable = false)
-    @ManyToOne
-    private MedecinUser medecin;
-
+    
     @ManyToOne
     @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;
@@ -45,10 +41,9 @@ public class Consultation implements Serializable {
         this.id = id;
     }
 
-    public Consultation(Date dateConsultation, String donnees, MedecinUser medecin, Patient patient, TypeConsultation typeConsultation) {
+    public Consultation(Date dateConsultation, String donnees, Patient patient, TypeConsultation typeConsultation) {
         this.dateConsultation = dateConsultation;
         this.donnees = donnees;
-        this.medecin = medecin;
         this.patient = patient;
         this.typeConsultation = typeConsultation;
     }
@@ -78,14 +73,6 @@ public class Consultation implements Serializable {
 
     public void setDonnees(String donnees) {
         this.donnees = donnees;
-    }
-
-    public MedecinUser getMedecin() {
-        return medecin;
-    }
-
-    public void setMedecin(MedecinUser medecin) {
-        this.medecin = medecin;
     }
 
     public Patient getPatient() {

@@ -29,10 +29,6 @@ public class Ordonnance implements Serializable {
     @Column
     private String donnees;
 
-    @JoinColumn(name = "medecin_id", nullable = false)
-    @ManyToOne
-    private MedecinUser medecin;
-
     @JoinColumn(name = "patient_id", nullable = false)
     @ManyToOne
     private Patient patient;
@@ -44,10 +40,9 @@ public class Ordonnance implements Serializable {
         this.id = id;
     }
 
-    public Ordonnance(Date dateOrdonnance, String donnees, MedecinUser medecin, Patient patient) {
+    public Ordonnance(Date dateOrdonnance, String donnees, Patient patient) {
         this.dateOrdonnance = dateOrdonnance;
         this.donnees = donnees;
-        this.medecin = medecin;
         this.patient = patient;
     }
 
@@ -73,14 +68,6 @@ public class Ordonnance implements Serializable {
 
     public void setDonnees(String donnees) {
         this.donnees = donnees;
-    }
-
-    public MedecinUser getMedecin() {
-        return medecin;
-    }
-
-    public void setMedecin(MedecinUser medecin) {
-        this.medecin = medecin;
     }
 
     public Patient getPatient() {

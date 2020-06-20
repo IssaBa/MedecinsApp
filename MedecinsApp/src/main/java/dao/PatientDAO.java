@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import models.Consultation;
+import models.Ordonnance;
 import models.Patient;
 import models.config.HibernateUtil;
 import org.hibernate.Session;
@@ -73,6 +75,86 @@ public class PatientDAO {
         }
     }
 
+    public boolean editConsultation(Patient p, Consultation c) {
+        try {
+            for (int i = 0; i < p.getConsultationListe().size(); i++) {
+                if (p.getConsultationListe().get(i).getId().equals(c.getId())) {
+                    p.getConsultationListe().set(i, c);
+                }
+            }
+            openSession();
+            transaction = this.session.beginTransaction();
+            session.merge(p);
+            transaction.commit();
+            closeSession();
+            return true;
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "PatientDAO : " + e.getMessage(), e);
+            transaction.rollback();
+            return false;
+        }
+    }
+
+    public boolean deleteConsultation(Patient p, Consultation c) {
+        try {
+            for (int i = 0; i < p.getConsultationListe().size(); i++) {
+                if (p.getConsultationListe().get(i).getId().equals(c.getId())) {
+                    p.getConsultationListe().remove(i);
+                }
+            }
+            openSession();
+            transaction = this.session.beginTransaction();
+            session.merge(p);
+            transaction.commit();
+            closeSession();
+            return true;
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "PatientDAO : " + e.getMessage(), e);
+            transaction.rollback();
+            return false;
+        }
+    }
+    
+    public boolean editOrdonnance(Patient p, Ordonnance o) {
+        try {
+            for (int i = 0; i < p.getOrdonnanceListe().size(); i++) {
+                if (p.getOrdonnanceListe().get(i).getId().equals(o.getId())) {
+                    p.getOrdonnanceListe().set(i, o);
+                }
+            }
+            openSession();
+            transaction = this.session.beginTransaction();
+            session.merge(p);
+            transaction.commit();
+            closeSession();
+            return true;
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "PatientDAO : " + e.getMessage(), e);
+            transaction.rollback();
+            return false;
+        }
+    }
+
+    public boolean deleteOrdonnance(Patient p, Ordonnance c) {
+        try {
+            for (int i = 0; i < p.getOrdonnanceListe().size(); i++) {
+                if (p.getOrdonnanceListe().get(i).getId().equals(c.getId())) {
+                    p.getOrdonnanceListe().remove(i);
+                }
+            }
+            openSession();
+            transaction = this.session.beginTransaction();
+            session.merge(p);
+            transaction.commit();
+            closeSession();
+            return true;
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "PatientDAO : " + e.getMessage(), e);
+            transaction.rollback();
+            return false;
+        }
+    }
+
     public boolean delete(Patient p) {
         try {
             openSession();
@@ -87,7 +169,7 @@ public class PatientDAO {
             return false;
         }
     }
-    
+
     public void refresh(Patient p) {
         try {
             openSession();
@@ -96,7 +178,7 @@ public class PatientDAO {
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "PatientDAO : " + e.getMessage(), e);
         }
-    } 
+    }
 
     private void openSession() {
         this.session = HibernateUtil.getSessionFactory().openSession();
