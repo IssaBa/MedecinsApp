@@ -181,6 +181,10 @@ public class GestionMedecinUser extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">
     private void initComponents() {
 
+    	setClosable(true);
+        setIconifiable(true);
+        setMaximizable(true);
+        
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         ComboChoix = new javax.swing.JComboBox<>();

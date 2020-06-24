@@ -227,7 +227,7 @@ public class GestionAntecedant extends javax.swing.JInternalFrame {
         jLabel1 = new javax.swing.JLabel();
         ComboChoix = new javax.swing.JComboBox<>();
         choixBTX = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        jScrollPane2 = new javax.swing.JScrollPane();
         tableAntecedant = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
         searchTxt = new javax.swing.JTextField();
@@ -265,58 +265,6 @@ public class GestionAntecedant extends javax.swing.JInternalFrame {
             }
         });
 
-        javax.swing.GroupLayout PanelDonnerLayout = new javax.swing.GroupLayout(PanelDonner);
-        PanelDonner.setLayout(PanelDonnerLayout);
-        PanelDonnerLayout.setHorizontalGroup(
-            PanelDonnerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PanelDonnerLayout.createSequentialGroup()
-                .addGroup(PanelDonnerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(PanelDonnerLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(PanelDonnerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(PanelDonnerLayout.createSequentialGroup()
-                                .addGroup(PanelDonnerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(labelLibelle, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(labelClasseAnt)
-                                    .addComponent(labelcm10))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGroup(PanelDonnerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(libelleAn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(cim10, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(ComboClasseAntecedant, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(PanelDonnerLayout.createSequentialGroup()
-                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(57, 57, 57)
-                                .addComponent(ComboChoix, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(PanelDonnerLayout.createSequentialGroup()
-                        .addGap(127, 127, 127)
-                        .addComponent(choixBTX, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(55, Short.MAX_VALUE))
-        );
-        PanelDonnerLayout.setVerticalGroup(
-            PanelDonnerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PanelDonnerLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(PanelDonnerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(ComboChoix, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(16, 16, 16)
-                .addGroup(PanelDonnerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelLibelle)
-                    .addComponent(libelleAn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(26, 26, 26)
-                .addGroup(PanelDonnerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelClasseAnt)
-                    .addComponent(ComboClasseAntecedant, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(36, 36, 36)
-                .addGroup(PanelDonnerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelcm10)
-                    .addComponent(cim10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(56, 56, 56)
-                .addComponent(choixBTX)
-                .addContainerGap(84, Short.MAX_VALUE))
-        );
-
         tableAntecedant.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -328,7 +276,12 @@ public class GestionAntecedant extends javax.swing.JInternalFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(tableAntecedant);
+        tableAntecedant.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableAntecedantMouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(tableAntecedant);
 
         jLabel2.setText("Rechercher : ");
 
@@ -350,6 +303,79 @@ public class GestionAntecedant extends javax.swing.JInternalFrame {
             }
         });
 
+        javax.swing.GroupLayout PanelDonnerLayout = new javax.swing.GroupLayout(PanelDonner);
+        PanelDonner.setLayout(PanelDonnerLayout);
+        PanelDonnerLayout.setHorizontalGroup(
+            PanelDonnerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelDonnerLayout.createSequentialGroup()
+                .addGroup(PanelDonnerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(PanelDonnerLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(PanelDonnerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(PanelDonnerLayout.createSequentialGroup()
+                                .addGroup(PanelDonnerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(labelLibelle, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(labelClasseAnt)
+                                    .addComponent(labelcm10))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(PanelDonnerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(libelleAn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(cim10, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(ComboClasseAntecedant, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(PanelDonnerLayout.createSequentialGroup()
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(57, 57, 57)
+                                .addComponent(ComboChoix, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(PanelDonnerLayout.createSequentialGroup()
+                        .addGap(77, 77, 77)
+                        .addComponent(choixBTX, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 73, Short.MAX_VALUE)
+                .addGroup(PanelDonnerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(PanelDonnerLayout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(searchTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(162, 162, 162))
+                    .addGroup(PanelDonnerLayout.createSequentialGroup()
+                        .addGroup(PanelDonnerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 430, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(PanelDonnerLayout.createSequentialGroup()
+                                .addGap(296, 296, 296)
+                                .addComponent(showAllBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap(20, Short.MAX_VALUE))))
+        );
+        PanelDonnerLayout.setVerticalGroup(
+            PanelDonnerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PanelDonnerLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(PanelDonnerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(PanelDonnerLayout.createSequentialGroup()
+                        .addGroup(PanelDonnerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(ComboChoix, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(16, 16, 16)
+                        .addGroup(PanelDonnerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(labelLibelle)
+                            .addComponent(libelleAn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(26, 26, 26)
+                        .addGroup(PanelDonnerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(labelClasseAnt)
+                            .addComponent(ComboClasseAntecedant, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(36, 36, 36)
+                        .addGroup(PanelDonnerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(labelcm10)
+                            .addComponent(cim10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(choixBTX)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
+                .addGroup(PanelDonnerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(searchTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(showAllBtn))
+                .addGap(41, 41, 41))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -357,33 +383,14 @@ public class GestionAntecedant extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(30, 30, 30)
                 .addComponent(PanelDonner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 429, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(18, 18, 18)
-                        .addComponent(searchTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(showAllBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGap(30, 30, 30))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(PanelDonner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel2)
-                            .addComponent(searchTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(showAllBtn))
-                        .addGap(29, 29, 29))))
+                .addComponent(PanelDonner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(11, 11, 11))
         );
 
         pack();
@@ -405,6 +412,45 @@ public class GestionAntecedant extends javax.swing.JInternalFrame {
         sorter.setRowFilter(RowFilter.regexFilter(searchTxt.getText()));
         tableAntecedant.setRowSorter(sorter);
     }//GEN-LAST:event_searchTxtKeyTyped
+
+    private void tableAntecedantMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableAntecedantMouseClicked
+    	
+        if (reset == true) {
+            if (tableAntecedant.getSelectedRow() == -1) {
+                return;
+            } else {
+                JOptionPane.showMessageDialog(null, "Merci de refaire le choix d'action (AJOUTER / MODIFER / SUPPRIMER )", "GESTION PROFESSION", JOptionPane.ERROR_MESSAGE);
+                //desactiverChamps();
+                tableAntecedant.setEnabled(false);
+                reset = false;
+            }
+
+        } else {
+            if (ComboChoix.getSelectedItem().toString().equalsIgnoreCase("MODIFIER  ANTECEDANT") || ComboChoix.getSelectedItem().toString().equalsIgnoreCase("SUPPRIMER  ANTECEDANT")) {
+
+            	
+                DefaultTableModel defaultTableModel = (DefaultTableModel) tableAntecedant.getModel();
+                int selectRowsIndex = tableAntecedant.getSelectedRow();
+
+                AntecedantDAO antecedantDAO = new AntecedantDAO();
+                Antecedent antecedent = antecedantDAO.findAntecedant(defaultTableModel.getValueAt(selectRowsIndex, 1).toString());
+
+                //JOptionPane.showMessageDialog (null, antecedent.getClasse().getId() , "TEST", JOptionPane.ERROR_MESSAGE);
+                if (antecedent != null) {
+                    ClasseAntecedentDAO dao = new ClasseAntecedentDAO();
+                    ClasseAntecedent classeAntecedent = dao.findClAntById(antecedent.getClasse().getId());
+                    libelleAn.setText(antecedent.getLibelle());
+                    ComboClasseAntecedant.setSelectedItem(classeAntecedent.getLibelle());
+                    cim10.setText(antecedent.getCim10());
+                    idAntecedantModif = antecedent.getId();
+
+                } else {
+                    JOptionPane.showMessageDialog(null, "ANTECEDANT " + antecedent.getId() + "N'EXISTE PAS", "GESTION PROFESSION", JOptionPane.ERROR_MESSAGE);
+                }
+
+            }
+        }
+    }//GEN-LAST:event_tableAntecedantMouseClicked
 
     private void ComboClasseAntecedantItemStateChanged(java.awt.event.ItemEvent evt) {
 
@@ -505,6 +551,7 @@ public class GestionAntecedant extends javax.swing.JInternalFrame {
         // Supression antecedant
         if (choixBTX.getText().equalsIgnoreCase("SUPPRIMER  ANTECEDANT")) {
             if (verifChamps()) {
+            	
                 AntecedantDAO antecedantDAO = new AntecedantDAO();
                 Antecedent antecedentmodif = new Antecedent();
 
@@ -525,7 +572,7 @@ public class GestionAntecedant extends javax.swing.JInternalFrame {
                     remplirTableANTECEDANT();
 
                 } else {
-
+                
                     JOptionPane.showMessageDialog(null, "ECHEC SUPPRESSION  ANTECEANT", "GESTION  ANTECEDANT", JOptionPane.ERROR_MESSAGE);
                     model.setRowCount(0);
                     remplirTableANTECEDANT();
@@ -543,43 +590,7 @@ public class GestionAntecedant extends javax.swing.JInternalFrame {
 
     }
 
-    private void tableAntecedantMouseClicked(java.awt.event.MouseEvent evt) {
-        if (reset == true) {
-            if (tableAntecedant.getSelectedRow() == -1) {
-                return;
-            } else {
-                JOptionPane.showMessageDialog(null, "Merci de refaire le choix d'action (AJOUTER / MODIFER / SUPPRIMER )", "GESTION PROFESSION", JOptionPane.ERROR_MESSAGE);
-                //desactiverChamps();
-                tableAntecedant.setEnabled(false);
-                reset = false;
-            }
-
-        } else {
-            if (ComboChoix.getSelectedItem().toString().equalsIgnoreCase("MODIFIER  ANTECEDANT") || ComboChoix.getSelectedItem().toString().equalsIgnoreCase("SUPPRIMER  ANTECEDANT")) {
-
-                DefaultTableModel defaultTableModel = (DefaultTableModel) tableAntecedant.getModel();
-                int selectRowsIndex = tableAntecedant.getSelectedRow();
-
-                AntecedantDAO antecedantDAO = new AntecedantDAO();
-                Antecedent antecedent = antecedantDAO.findAntecedant(defaultTableModel.getValueAt(selectRowsIndex, 1).toString());
-
-                //JOptionPane.showMessageDialog (null, antecedent.getClasse().getId() , "TEST", JOptionPane.ERROR_MESSAGE);
-                if (antecedent != null) {
-                    ClasseAntecedentDAO dao = new ClasseAntecedentDAO();
-                    ClasseAntecedent classeAntecedent = dao.findClAntById(antecedent.getClasse().getId());
-                    libelleAn.setText(antecedent.getLibelle());
-                    ComboClasseAntecedant.setSelectedItem(classeAntecedent.getLibelle());
-                    cim10.setText(antecedent.getCim10());
-                    idAntecedantModif = antecedent.getId();
-
-                } else {
-                    JOptionPane.showMessageDialog(null, "ANTECEDANT " + antecedent.getId() + "N'EXISTE PAS", "GESTION PROFESSION", JOptionPane.ERROR_MESSAGE);
-                }
-
-            }
-        }
-
-    }
+    
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -590,7 +601,7 @@ public class GestionAntecedant extends javax.swing.JInternalFrame {
     private javax.swing.JTextField cim10;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel labelClasseAnt;
     private javax.swing.JLabel labelLibelle;
     private javax.swing.JLabel labelcm10;

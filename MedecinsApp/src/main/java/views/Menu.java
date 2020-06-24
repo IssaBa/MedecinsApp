@@ -45,6 +45,7 @@ public class Menu extends javax.swing.JFrame {
         jMenuItem3 = new javax.swing.JMenuItem();
         typeConsultationMenu = new javax.swing.JMenu();
         listeTypeConsultationMenuItem = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("FAYEMILOG");
@@ -59,7 +60,7 @@ public class Menu extends javax.swing.JFrame {
         );
         desktopPaneLayout.setVerticalGroup(
             desktopPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 494, Short.MAX_VALUE)
+            .addGap(0, 496, Short.MAX_VALUE)
         );
 
         medecinsMenu.setMnemonic('f');
@@ -87,6 +88,11 @@ public class Menu extends javax.swing.JFrame {
 
         professionMenu.setMnemonic('e');
         professionMenu.setText("Professions");
+        professionMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                professionMenuActionPerformed(evt);
+            }
+        });
 
         listeProfessionMenuItem.setMnemonic('t');
         listeProfessionMenuItem.setText("Gestion Profession");
@@ -155,6 +161,14 @@ public class Menu extends javax.swing.JFrame {
 
         menuBar.add(typeConsultationMenu);
 
+        jMenu1.setText("Deconnexion");
+        jMenu1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenu1ActionPerformed(evt);
+            }
+        });
+        menuBar.add(jMenu1);
+
         setJMenuBar(menuBar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -200,10 +214,17 @@ public class Menu extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_medecinsMenuKeyPressed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        BatchFiles batchFiles = new BatchFiles();
-        desktopPane.add(batchFiles).setVisible(true);
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    private void professionMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_professionMenuActionPerformed
+     BatchFiles batchFiles = new BatchFiles();
+     desktopPane.add(batchFiles).setVisible(true);
+    }//GEN-LAST:event_professionMenuActionPerformed
+
+    private void jMenu1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenu1ActionPerformed
+
+    	Login login = new Login();
+        login.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jMenu1ActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {
         GestionAntecedant gestionAntecedant = new GestionAntecedant();
@@ -255,6 +276,7 @@ public class Menu extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu classeAnteMenu;
     private javax.swing.JDesktopPane desktopPane;
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem3;
