@@ -26,7 +26,7 @@ import models.Patient;
 public class ListePatients extends javax.swing.JInternalFrame {
 
     private final PatientDAO patientDAO;
-    private Integer idPatientSelected;
+    private Long idPatientSelected;
     private final DefaultTableModel model;
     private final String[] entete = new String[]{"ID", "Prénom", "Nom", "Date de naissance", "Civilité", "Suivi depuis"};
     
@@ -205,7 +205,7 @@ public class ListePatients extends javax.swing.JInternalFrame {
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
         int selectedRowIndex = jTable1.getSelectedRow();
-        this.idPatientSelected = (Integer) dtm.getValueAt(selectedRowIndex, 0);
+        this.idPatientSelected = (Long) dtm.getValueAt(selectedRowIndex, 0);
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void supprimerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_supprimerBtnActionPerformed

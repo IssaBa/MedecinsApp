@@ -96,7 +96,7 @@ public class PatientAntecedentDAO {
         }
     }
 
-    public List<PatientAntecedent> findByPatient(Integer idPatient) {
+    public List<PatientAntecedent> findByPatient(Long idPatient) {
         try {
             openSession();
             return session.createNamedQuery("PatientAntecedent.findByPatient")
@@ -108,7 +108,7 @@ public class PatientAntecedentDAO {
         }
     }
 
-    public PatientAntecedent findByPatientAndAntecedent(Integer idPatient, Long idAntecedent) {
+    public PatientAntecedent findByPatientAndAntecedent(Long idPatient, Long idAntecedent) {
         try {
             openSession();
             ArrayList<PatientAntecedent> patientAntecedents = (ArrayList<PatientAntecedent>) session.createNamedQuery("PatientAntecedent.findByPatientAndAntecedent")

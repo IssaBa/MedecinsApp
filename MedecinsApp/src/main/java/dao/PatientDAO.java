@@ -35,7 +35,7 @@ public class PatientDAO {
         }
     }
 
-    public Patient findById(Integer id) {
+    public Patient findById(Long id) {
         try {
             openSession();
             return session.get(Patient.class, id);

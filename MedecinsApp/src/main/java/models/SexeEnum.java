@@ -10,7 +10,8 @@ package models;
 public enum SexeEnum {
 
     MASCULIN("MASCULIN"),
-    FEMININ("FEMININ");
+    FEMININ("FEMININ"),
+    INCONNU("INCONNU");
 
     private final String name;
 

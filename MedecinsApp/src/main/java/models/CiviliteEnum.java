@@ -11,7 +11,8 @@ public enum CiviliteEnum {
 
     MADAME("MADAME"),
     MADEMOISELLE("MADEMOISELLE"),
-    MONSIEUR("MONSIEUR");
+    MONSIEUR("MONSIEUR"),
+    INCONNU("INCONNU");
 
     private final String name;
 

@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -20,13 +21,14 @@ public class Consultation implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Long id;
 
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateConsultation;
 
-    @Column
+    @Lob
+    @Column(length = 2000)
     private String donnees;
     
     @ManyToOne
@@ -37,7 +39,7 @@ public class Consultation implements Serializable {
     @JoinColumn(name = "type_consultation_id", nullable = false)
     private TypeConsultation typeConsultation;
 
-    public Consultation(Integer id) {
+    public Consultation(Long id) {
         this.id = id;
     }
 
@@ -51,11 +53,11 @@ public class Consultation implements Serializable {
     public Consultation() {
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

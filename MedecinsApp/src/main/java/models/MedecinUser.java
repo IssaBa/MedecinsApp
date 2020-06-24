@@ -13,23 +13,23 @@ import javax.persistence.Table;
 public class MedecinUser implements Serializable {
 
     /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
-	@Id
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    
+
     @Column(nullable = false)
     private String prenom;
-    
+
     @Column(nullable = false)
     private String nom;
-    
+
     @Column(nullable = false)
     private String username;
-    
+
     @Column(nullable = false)
     private String password;
 
@@ -46,7 +46,6 @@ public class MedecinUser implements Serializable {
         this.username = username;
         this.password = password;
     }
-    
 
     public Long getId() {
         return id;

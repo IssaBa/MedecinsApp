@@ -36,7 +36,7 @@ public class Menu extends javax.swing.JFrame {
         jMenuItem4 = new javax.swing.JMenuItem();
         professionMenu = new javax.swing.JMenu();
         listeProfessionMenuItem = new javax.swing.JMenuItem();
-        batchMenuItem = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
         patientsMenu = new javax.swing.JMenu();
         listePatientsMenuItem = new javax.swing.JMenuItem();
         classeAnteMenu = new javax.swing.JMenu();
@@ -97,14 +97,13 @@ public class Menu extends javax.swing.JFrame {
         });
         professionMenu.add(listeProfessionMenuItem);
 
-        batchMenuItem.setMnemonic('y');
-        batchMenuItem.setText("BATCH");
-        batchMenuItem.addActionListener(new java.awt.event.ActionListener() {
+        jMenuItem1.setText("Batch");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                //batchMenuItemActionPerformed(evt);
+                jMenuItem1ActionPerformed(evt);
             }
         });
-        professionMenu.add(batchMenuItem);
+        professionMenu.add(jMenuItem1);
 
         menuBar.add(professionMenu);
 
@@ -172,11 +171,6 @@ public class Menu extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void copyMenuItemActionPerformed(java.awt.event.ActionEvent evt) {
-        BatchFiles batchFiles = new BatchFiles();
-        desktopPane.add(batchFiles).setVisible(true);
-    }
-
     private void listeProfessionMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listeProfessionMenuItemActionPerformed
         GestionProfession gestionProfession = new GestionProfession();
         desktopPane.add(gestionProfession).setVisible(true);
@@ -205,6 +199,11 @@ public class Menu extends javax.swing.JFrame {
     private void medecinsMenuKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_medecinsMenuKeyPressed
         // TODO add your handling code here:
     }//GEN-LAST:event_medecinsMenuKeyPressed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        BatchFiles batchFiles = new BatchFiles();
+        desktopPane.add(batchFiles).setVisible(true);
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {
         GestionAntecedant gestionAntecedant = new GestionAntecedant();
@@ -254,10 +253,10 @@ public class Menu extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenuItem batchMenuItem;
     private javax.swing.JMenu classeAnteMenu;
     private javax.swing.JDesktopPane desktopPane;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem listeClasseAnteMenuItem;

@@ -5,16 +5,24 @@
  */
 package views;
 
+import com.itextpdf.text.DocumentException;
 import dao.AntecedantDAO;
 import dao.ClasseAntecedentDAO;
 import dao.PatientAntecedentDAO;
 import dao.PatientDAO;
 import dao.TypeConsultationDAO;
+import facture.DossierPdf;
+import java.awt.Desktop;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -39,7 +47,7 @@ import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 public class DossierPatient extends javax.swing.JInternalFrame {
 
     private Patient patient;
-    private final Integer ID_PATIENT;
+    private final Long ID_PATIENT;
     private final PatientDAO patientDAO;
     private final ClasseAntecedentDAO classeAntecedentDAO;
     private final AntecedantDAO antecedentDAO;
@@ -99,7 +107,7 @@ public class DossierPatient extends javax.swing.JInternalFrame {
      */
     //Reouvrir liste on close
     //Change all ToggleButton by Button
-    public DossierPatient(Integer idPatient) {
+    public DossierPatient(Long idPatient) {
         initComponents();
         ID_PATIENT = idPatient;
         patientDAO = new PatientDAO();
@@ -119,15 +127,15 @@ public class DossierPatient extends javax.swing.JInternalFrame {
         remplirComboActionOrdonnance();
         remplirTableauOrdonnance();
     }
-    
+
     private void setTableOrdonnanceHauteurLigne() {
         int plusLongString = 0;
-        for(Ordonnance o : patient.getOrdonnanceListe()) {
-            if(o.getDonnees().length() > plusLongString) {
+        for (Ordonnance o : patient.getOrdonnanceListe()) {
+            if (o.getDonnees().length() > plusLongString) {
                 plusLongString = o.getDonnees().length();
             }
         }
-        
+
         int uniteLigne = tableOrdonnance.getRowHeight();
         int nombreLigne = plusLongString / ROW_LENGTH + 1;
         tableOrdonnance.setRowHeight(uniteLigne * nombreLigne);
@@ -240,7 +248,7 @@ public class DossierPatient extends javax.swing.JInternalFrame {
         }
         return null;
     }
-    
+
     private Ordonnance findOrdonnanceInPatient(Long idOrdo) {
         for (int i = 0; i < this.patient.getOrdonnanceListe().size(); i++) {
             if (this.patient.getOrdonnanceListe().get(i).getId().equals(idOrdo)) {
@@ -300,7 +308,7 @@ public class DossierPatient extends javax.swing.JInternalFrame {
         String profConjoint = patient.getProfessionConjoint() == null ? "" : patient.getProfessionConjoint().getLibelle();
         this.setLabelValue(professionConjointLabel, profConjoint);
 
-        this.setLabelValue(medecinTraitantLabel, "");
+        this.setLabelValue(medecinTraitantLabel, patient.getMedecinTraitant().getPrenom() + " " + patient.getMedecinTraitant().getNom());
         suiviDepuisLabel.setText(patient.getConnuDepuis() == null ? "Non renseigné(e)" : dateFormat.format(patient.getConnuDepuis()));
     }
 
@@ -385,7 +393,7 @@ public class DossierPatient extends javax.swing.JInternalFrame {
         ordonnanceBtn = new javax.swing.JButton();
         jScrollPane6 = new javax.swing.JScrollPane();
         tableOrdonnance = new javax.swing.JTable();
-        imprimerBtn = new javax.swing.JToggleButton();
+        imprimerBtn = new javax.swing.JButton();
 
         setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -877,19 +885,25 @@ public class DossierPatient extends javax.swing.JInternalFrame {
 
         jTabbedPane1.addTab("Ordonnances", jPanel4);
 
-        imprimerBtn.setText("IMPRIMER");
+        imprimerBtn.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        imprimerBtn.setText("Générer dossier en PDF");
+        imprimerBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                imprimerBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTabbedPane1)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(imprimerBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jTabbedPane1))
+                        .addComponent(imprimerBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -897,9 +911,8 @@ public class DossierPatient extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(29, 29, 29)
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 394, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(imprimerBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(26, 26, 26)
+                .addComponent(imprimerBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 47, Short.MAX_VALUE))
         );
 
         pack();
@@ -1201,6 +1214,25 @@ public class DossierPatient extends javax.swing.JInternalFrame {
 
     }//GEN-LAST:event_ordonnanceBtnActionPerformed
 
+    private void imprimerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_imprimerBtnActionPerformed
+        try {
+            DossierPdf dossierPdf = new DossierPdf(ID_PATIENT);
+            String path = DossierPdf.InitDocument(ID_PATIENT);
+            JOptionPane.showMessageDialog(null, "DOSSIER GENERE AVEC SUCCES", "SUCCES", JOptionPane.INFORMATION_MESSAGE);
+            if (Desktop.isDesktopSupported()) {
+
+                File myFile = new File(path);
+                Desktop.getDesktop().open(myFile);
+            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(DossierPatient.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "ECHEC DE LA CREATION", "ERREUR", JOptionPane.ERROR_MESSAGE);
+        } catch (DocumentException | IOException ex) {
+            Logger.getLogger(DossierPatient.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "ECHEC DE LA CREATION", "ERREUR", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_imprimerBtnActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> actionConsultationCbx;
@@ -1215,7 +1247,7 @@ public class DossierPatient extends javax.swing.JInternalFrame {
     private com.toedter.calendar.JDateChooser dateOrdonnanceTxt;
     private javax.swing.JTextArea detailsConsultationTxt;
     private javax.swing.JTextArea detailsOrdonnanceTxt;
-    private javax.swing.JToggleButton imprimerBtn;
+    private javax.swing.JButton imprimerBtn;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;

@@ -32,7 +32,7 @@ public class Patient implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Long id;
 
     @Column(nullable = false)
     private String prenom;
@@ -110,7 +110,7 @@ public class Patient implements Serializable {
         this.consultationListe = new ArrayList<>();
     }
 
-    public Patient(Integer id) {
+    public Patient(Long id) {
         this.id = id;
     }
 
@@ -138,11 +138,11 @@ public class Patient implements Serializable {
         this.consultationListe = new ArrayList<>();
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
