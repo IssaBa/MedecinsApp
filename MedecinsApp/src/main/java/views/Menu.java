@@ -36,7 +36,6 @@ public class Menu extends javax.swing.JFrame {
         jMenuItem4 = new javax.swing.JMenuItem();
         professionMenu = new javax.swing.JMenu();
         listeProfessionMenuItem = new javax.swing.JMenuItem();
-        jMenuItem1 = new javax.swing.JMenuItem();
         patientsMenu = new javax.swing.JMenu();
         listePatientsMenuItem = new javax.swing.JMenuItem();
         classeAnteMenu = new javax.swing.JMenu();
@@ -102,14 +101,6 @@ public class Menu extends javax.swing.JFrame {
             }
         });
         professionMenu.add(listeProfessionMenuItem);
-
-        jMenuItem1.setText("Batch");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
-            }
-        });
-        professionMenu.add(jMenuItem1);
 
         menuBar.add(professionMenu);
 
@@ -278,7 +269,6 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JDesktopPane desktopPane;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem listeClasseAnteMenuItem;
