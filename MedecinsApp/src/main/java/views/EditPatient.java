@@ -16,6 +16,7 @@ import models.CiviliteEnum;
 import models.Patient;
 import models.Profession;
 import models.SexeEnum;
+import org.hibernate.Hibernate;
 
 /**
  *
@@ -35,11 +36,13 @@ public class EditPatient extends javax.swing.JInternalFrame {
         initComponents();
         remplirProfessionCombo();
         this.editedPatient = patient;
+        Hibernate.initialize(this.editedPatient.getProfession());
+        Hibernate.initialize(this.editedPatient.getProfessionConjoint());
         setChampsForm();
     }
 
     private void remplirProfessionCombo() {
-        List<Profession> professions = professionDAO.getAllProfession();
+        List<Profession> professions = professionDAO.findAll();
         professionCombo.removeAllItems();
         professionConjointCombo.removeAllItems();
         professionCombo.addItem("");

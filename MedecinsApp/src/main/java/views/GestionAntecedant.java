@@ -13,6 +13,8 @@ import javax.swing.table.DefaultTableModel;
 
 import dao.AntecedantDAO;
 import dao.ClasseAntecedentDAO;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.RowFilter;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableRowSorter;
@@ -31,12 +33,10 @@ public class GestionAntecedant extends javax.swing.JInternalFrame {
     DefaultTableModel model = new DefaultTableModel();
 
     Long idAntecedantModif;
-
     Long idClasseAntecedant;
-
     String libeleModif = null;
-
     boolean reset = false;
+    private static final Logger LOGGER = Logger.getLogger(GestionAntecedant.class.getName());
 
     public void remplirTableANTECEDANT() {
         try {
@@ -56,13 +56,13 @@ public class GestionAntecedant extends javax.swing.JInternalFrame {
             } else {
                 tableAntecedant.setEnabled(true);
             }
-            
+
             TableColumnModel tcm = tableAntecedant.getColumnModel();
             tcm.removeColumn(tcm.getColumn(0));
             tableAntecedant.setAutoCreateRowSorter(true);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
 
     }
@@ -87,7 +87,7 @@ public class GestionAntecedant extends javax.swing.JInternalFrame {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
     }
 
@@ -102,7 +102,7 @@ public class GestionAntecedant extends javax.swing.JInternalFrame {
                 return null;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
 
         return null;
@@ -118,7 +118,7 @@ public class GestionAntecedant extends javax.swing.JInternalFrame {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
     }
 
@@ -130,7 +130,7 @@ public class GestionAntecedant extends javax.swing.JInternalFrame {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
     }
 
@@ -147,7 +147,7 @@ public class GestionAntecedant extends javax.swing.JInternalFrame {
                 return null;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
 
         return null;
@@ -397,7 +397,7 @@ public class GestionAntecedant extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void searchTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchTxtActionPerformed
-        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>((DefaultTableModel)tableAntecedant.getModel());
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>((DefaultTableModel) tableAntecedant.getModel());
         sorter.setRowFilter(RowFilter.regexFilter(searchTxt.getText()));
         tableAntecedant.setRowSorter(sorter);
     }//GEN-LAST:event_searchTxtActionPerformed
@@ -408,13 +408,13 @@ public class GestionAntecedant extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_showAllBtnActionPerformed
 
     private void searchTxtKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchTxtKeyTyped
-        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>((DefaultTableModel)tableAntecedant.getModel());
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>((DefaultTableModel) tableAntecedant.getModel());
         sorter.setRowFilter(RowFilter.regexFilter(searchTxt.getText()));
         tableAntecedant.setRowSorter(sorter);
     }//GEN-LAST:event_searchTxtKeyTyped
 
     private void tableAntecedantMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableAntecedantMouseClicked
-    	
+
         if (reset == true) {
             if (tableAntecedant.getSelectedRow() == -1) {
                 return;
@@ -428,7 +428,6 @@ public class GestionAntecedant extends javax.swing.JInternalFrame {
         } else {
             if (ComboChoix.getSelectedItem().toString().equalsIgnoreCase("MODIFIER  ANTECEDANT") || ComboChoix.getSelectedItem().toString().equalsIgnoreCase("SUPPRIMER  ANTECEDANT")) {
 
-            	
                 DefaultTableModel defaultTableModel = (DefaultTableModel) tableAntecedant.getModel();
                 int selectRowsIndex = tableAntecedant.getSelectedRow();
 
@@ -551,7 +550,7 @@ public class GestionAntecedant extends javax.swing.JInternalFrame {
         // Supression antecedant
         if (choixBTX.getText().equalsIgnoreCase("SUPPRIMER  ANTECEDANT")) {
             if (verifChamps()) {
-            	
+
                 AntecedantDAO antecedantDAO = new AntecedantDAO();
                 Antecedent antecedentmodif = new Antecedent();
 
@@ -572,7 +571,7 @@ public class GestionAntecedant extends javax.swing.JInternalFrame {
                     remplirTableANTECEDANT();
 
                 } else {
-                
+
                     JOptionPane.showMessageDialog(null, "ECHEC SUPPRESSION  ANTECEANT", "GESTION  ANTECEDANT", JOptionPane.ERROR_MESSAGE);
                     model.setRowCount(0);
                     remplirTableANTECEDANT();
@@ -589,8 +588,6 @@ public class GestionAntecedant extends javax.swing.JInternalFrame {
         }
 
     }
-
-    
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

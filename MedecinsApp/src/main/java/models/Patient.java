@@ -31,7 +31,7 @@ import javax.persistence.TemporalType;
 public class Patient implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
@@ -87,11 +87,11 @@ public class Patient implements Serializable {
     @JoinColumn
     private MedecinUser medecinTraitant;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Profession profession;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Profession professionConjoint;
 

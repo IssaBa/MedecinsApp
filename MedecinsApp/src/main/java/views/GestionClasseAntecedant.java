@@ -12,6 +12,11 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 import dao.ClasseAntecedentDAO;
+import java.io.IOException;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 import models.ClasseAntecedent;
 
 /**
@@ -27,6 +32,7 @@ public class GestionClasseAntecedant extends javax.swing.JInternalFrame {
     Long idUpdateJtable;
     String libeleModif = null;
     boolean reset = false;
+    private static final Logger LOGGER = Logger.getLogger(GestionClasseAntecedant.class.getName());
 
     public void remplirTableCLASSEANTECEDANT() {
         try {
@@ -48,7 +54,7 @@ public class GestionClasseAntecedant extends javax.swing.JInternalFrame {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
 
     }
@@ -73,7 +79,7 @@ public class GestionClasseAntecedant extends javax.swing.JInternalFrame {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
     }
 
@@ -85,7 +91,7 @@ public class GestionClasseAntecedant extends javax.swing.JInternalFrame {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
 
     }
@@ -103,7 +109,7 @@ public class GestionClasseAntecedant extends javax.swing.JInternalFrame {
                 return null;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
 
         return null;
@@ -142,7 +148,6 @@ public class GestionClasseAntecedant extends javax.swing.JInternalFrame {
         initComponents();
         refrechALL();
         // checkChoixSelect(ComboChoix.getSelectedItem().toString());
-
     }
 
     public void afterActionChoix() {
@@ -308,7 +313,7 @@ public class GestionClasseAntecedant extends javax.swing.JInternalFrame {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
     }
 

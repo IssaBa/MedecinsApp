@@ -12,6 +12,7 @@ import dao.PatientAntecedentDAO;
 import dao.PatientDAO;
 import dao.TypeConsultationDAO;
 import facture.DossierPdf;
+import java.awt.Component;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -25,7 +26,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -44,6 +48,8 @@ import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
  *
  * @author Baye Lahad DIAGNE
  */
+
+
 public class DossierPatient extends javax.swing.JInternalFrame {
 
     private Patient patient;
@@ -61,9 +67,9 @@ public class DossierPatient extends javax.swing.JInternalFrame {
     private final String AJOUTER_ORDONNANCE = "Nouvelle ordonnance";
     private final String MODIFIER_ORDONNANCE = "Modifier ordonnance";
     private final String SUPPRIMER_ORDONNANCE = "Supprimer ordonnance";
-    private final int ROW_LENGTH = 25;
     private Consultation consultationEdit;
     private Ordonnance ordonnanceEdit;
+    private static final Logger LOGGER = Logger.getLogger(DossierPatient.class.getName());
 
     public class TableauAntecedentsModel extends DefaultTableModel {
 
@@ -100,6 +106,24 @@ public class DossierPatient extends javax.swing.JInternalFrame {
         }
     }
 
+    static class WordWrapCellRenderer extends JTextArea implements TableCellRenderer {
+
+        WordWrapCellRenderer() {
+            setLineWrap(true);
+            setWrapStyleWord(true);
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            setText(value.toString());
+            setSize(table.getColumnModel().getColumn(column).getWidth(), getPreferredSize().height);
+            if (table.getRowHeight(row) != getPreferredSize().height) {
+                table.setRowHeight(row, getPreferredSize().height);
+            }
+            return this;
+        }
+    }
+
     /**
      * Creates new form DossierPatient
      *
@@ -116,6 +140,8 @@ public class DossierPatient extends javax.swing.JInternalFrame {
         antecedentDAO = new AntecedantDAO();
         paDAO = new PatientAntecedentDAO();
         patient = patientDAO.findById(idPatient);
+        Hibernate.initialize(patient.getProfession());
+        Hibernate.initialize(patient.getProfessionConjoint());
         Hibernate.initialize(patient.getPatientAntecedentListe());
         remplirSignaletique();
         this.setTitle(patient.getPrenom() + " " + patient.getNom());
@@ -126,19 +152,6 @@ public class DossierPatient extends javax.swing.JInternalFrame {
         remplirComboActionConsultation();
         remplirComboActionOrdonnance();
         remplirTableauOrdonnance();
-    }
-
-    private void setTableOrdonnanceHauteurLigne() {
-        int plusLongString = 0;
-        for (Ordonnance o : patient.getOrdonnanceListe()) {
-            if (o.getDonnees().length() > plusLongString) {
-                plusLongString = o.getDonnees().length();
-            }
-        }
-
-        int uniteLigne = tableOrdonnance.getRowHeight();
-        int nombreLigne = plusLongString / ROW_LENGTH + 1;
-        tableOrdonnance.setRowHeight(uniteLigne * nombreLigne);
     }
 
     private void remplirTree() {
@@ -177,7 +190,7 @@ public class DossierPatient extends javax.swing.JInternalFrame {
             }
             AutoCompleteDecorator.decorate(comboClasses);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
     }
 
@@ -190,7 +203,7 @@ public class DossierPatient extends javax.swing.JInternalFrame {
                 typeConsultationCbx.addItem(tc.getLibelle());
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
     }
 
@@ -206,9 +219,11 @@ public class DossierPatient extends javax.swing.JInternalFrame {
             }
             this.tableConsultations.setModel(model);
             TableColumnModel tcm = tableConsultations.getColumnModel();
+            tcm.getColumn(3).setCellRenderer(new WordWrapCellRenderer());
+            tcm.getColumn(2).setCellRenderer(new WordWrapCellRenderer());
             tcm.removeColumn(tcm.getColumn(0));
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
     }
 
@@ -227,7 +242,7 @@ public class DossierPatient extends javax.swing.JInternalFrame {
             tcm.removeColumn(tcm.getColumn(0));
             //setTableOrdonnanceHauteurLigne();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
     }
 
@@ -272,7 +287,7 @@ public class DossierPatient extends javax.swing.JInternalFrame {
             TableColumnModel tcm = tableAntecedentsPatient.getColumnModel();
             tcm.removeColumn(tcm.getColumn(2));
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
     }
 
@@ -294,9 +309,12 @@ public class DossierPatient extends javax.swing.JInternalFrame {
         this.setLabelValue(nomLabel, patient.getNom());
         dateNaissanceLabel.setText(patient.getDateNaissance() == null ? "Non renseigné(e)" : dateFormat.format(patient.getDateNaissance()));
         this.setLabelValue(lieuNaissanceLabel, patient.getLieuNaissance());
-        this.setLabelValue(sexeLabel, patient.getSexe().getName());
-        this.setLabelValue(civiliteLabel, patient.getCivilite().getName());
-        this.setLabelValue(professionLabel, patient.getProfession().getLibelle());
+        String libelleSexe = patient.getSexe() != null ? patient.getSexe().getName() : "";
+        this.setLabelValue(sexeLabel, libelleSexe);
+        String libelleCivilite = patient.getCivilite() != null ? patient.getCivilite().getName() : "";
+        this.setLabelValue(civiliteLabel, libelleCivilite);
+        String libelleProfession = patient.getProfession() != null ? patient.getProfession().getLibelle() : "";
+        this.setLabelValue(professionLabel, libelleProfession);
         this.setLabelValue(numeroDossierLabel, patient.getNumeroDossier());
         this.setLabelValue(adresseLabel, patient.getAdresse());
         this.setLabelValue(telPortableLabel, patient.getTelephonePortable());
@@ -307,8 +325,8 @@ public class DossierPatient extends javax.swing.JInternalFrame {
         this.setLabelValue(telConjointLabel, patient.getTelephoneConjoint());
         String profConjoint = patient.getProfessionConjoint() == null ? "" : patient.getProfessionConjoint().getLibelle();
         this.setLabelValue(professionConjointLabel, profConjoint);
-
-        this.setLabelValue(medecinTraitantLabel, patient.getMedecinTraitant().getPrenom() + " " + patient.getMedecinTraitant().getNom());
+        String nomMedecin = patient.getMedecinTraitant() != null ? patient.getMedecinTraitant().getPrenom() + " " + patient.getMedecinTraitant().getNom() : "";
+        this.setLabelValue(medecinTraitantLabel, nomMedecin);
         suiviDepuisLabel.setText(patient.getConnuDepuis() == null ? "Non renseigné(e)" : dateFormat.format(patient.getConnuDepuis()));
     }
 
@@ -394,11 +412,9 @@ public class DossierPatient extends javax.swing.JInternalFrame {
         jScrollPane6 = new javax.swing.JScrollPane();
         tableOrdonnance = new javax.swing.JTable();
         imprimerBtn = new javax.swing.JButton();
+        closeDossierBtn = new javax.swing.JButton();
 
-        setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setIconifiable(true);
-        setMaximizable(true);
 
         jLabel1.setText("Prénom :");
 
@@ -893,6 +909,14 @@ public class DossierPatient extends javax.swing.JInternalFrame {
             }
         });
 
+        closeDossierBtn.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        closeDossierBtn.setText("Fermer");
+        closeDossierBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                closeDossierBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -902,8 +926,10 @@ public class DossierPatient extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jTabbedPane1)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(imprimerBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(354, 354, 354)
+                        .addComponent(imprimerBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(closeDossierBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -912,7 +938,10 @@ public class DossierPatient extends javax.swing.JInternalFrame {
                 .addGap(29, 29, 29)
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 394, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(26, 26, 26)
-                .addComponent(imprimerBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 47, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(imprimerBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE)
+                    .addComponent(closeDossierBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -934,7 +963,7 @@ public class DossierPatient extends javax.swing.JInternalFrame {
             if ((Boolean) dtm.getValueAt(i, 1) && patAnt == null) {
                 patAnt = new PatientAntecedent();
                 //patAnt.setId(paDAO.newID());
-                patAnt.setPatient(this.patient);
+                //patAnt.setPatient(this.patient);
                 Antecedent ant = antecedentDAO.findById(idAntecedent);
                 patAnt.setAntecedent(ant);
                 patAnt.setCommentaire("");
@@ -1007,6 +1036,7 @@ public class DossierPatient extends javax.swing.JInternalFrame {
 
     private void actionConsultationCbxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_actionConsultationCbxActionPerformed
         String action = (String) actionConsultationCbx.getSelectedItem();
+        detailsConsultationTxt.setText("");
         switch (action) {
             case "":
                 disableFormConsultation();
@@ -1015,6 +1045,7 @@ public class DossierPatient extends javax.swing.JInternalFrame {
                 break;
             case AJOUTER_CONSULTATION:
                 enableFormConsultation();
+                detailsConsultationTxt.setText("Le " + dateFormat.format(new Date()) + " Docteur " + Session.getUser().getNom());
                 consultationBtn.setEnabled(true);
                 consultationBtn.setText(AJOUTER_CONSULTATION);
                 break;
@@ -1043,7 +1074,7 @@ public class DossierPatient extends javax.swing.JInternalFrame {
             try {
                 selectedID = (Integer) m.getValueAt(tableConsultations.getSelectedRow(), 0);
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
                 JOptionPane.showMessageDialog(null, "VEUILLEZ SELECTIONNER UN ELEMENT VALIDE", "ERREUR", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -1150,7 +1181,7 @@ public class DossierPatient extends javax.swing.JInternalFrame {
             try {
                 selectedID = (Long) m.getValueAt(tableOrdonnance.getSelectedRow(), 0);
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
                 JOptionPane.showMessageDialog(null, "VEUILLEZ SELECTIONNER UN ELEMENT VALIDE", "ERREUR", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -1216,8 +1247,7 @@ public class DossierPatient extends javax.swing.JInternalFrame {
 
     private void imprimerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_imprimerBtnActionPerformed
         try {
-            DossierPdf dossierPdf = new DossierPdf(ID_PATIENT);
-            String path = DossierPdf.InitDocument(ID_PATIENT);
+            String path = DossierPdf.initDocument(ID_PATIENT);
             JOptionPane.showMessageDialog(null, "DOSSIER GENERE AVEC SUCCES", "SUCCES", JOptionPane.INFORMATION_MESSAGE);
             if (Desktop.isDesktopSupported()) {
 
@@ -1225,13 +1255,19 @@ public class DossierPatient extends javax.swing.JInternalFrame {
                 Desktop.getDesktop().open(myFile);
             }
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(DossierPatient.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(null, "ECHEC DE LA CREATION", "ERREUR", JOptionPane.ERROR_MESSAGE);
         } catch (DocumentException | IOException ex) {
-            Logger.getLogger(DossierPatient.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(null, "ECHEC DE LA CREATION", "ERREUR", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_imprimerBtnActionPerformed
+
+    private void closeDossierBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeDossierBtnActionPerformed
+        ListePatients listePatients = new ListePatients();
+        this.getDesktopPane().add(listePatients).setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_closeDossierBtnActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1240,6 +1276,7 @@ public class DossierPatient extends javax.swing.JInternalFrame {
     private javax.swing.JLabel adresseLabel;
     private javax.swing.JTree antecedentsTree;
     private javax.swing.JLabel civiliteLabel;
+    private javax.swing.JButton closeDossierBtn;
     private javax.swing.JComboBox<String> comboClasses;
     private javax.swing.JButton consultationBtn;
     private com.toedter.calendar.JDateChooser dateConsultationTxt;

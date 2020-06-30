@@ -26,6 +26,8 @@ public class Login extends javax.swing.JFrame {
      */
     public Login() {
         initComponents();
+        //pour centrer la fenêtre
+        this.setLocationRelativeTo(null);
     }
 
     /**
@@ -122,14 +124,14 @@ public class Login extends javax.swing.JFrame {
 
             if (username != null && !username.isEmpty() && password != null && !password.isEmpty()) {
                 MedecinUserDAO medecinUserDAO = new MedecinUserDAO();
-                MedecinUser medecinUser = medecinUserDAO.findUserByMatricule(username);
-                if (username.equals(medecinUser.getUsername()) && password.equals(medecinUser.getPassword())) {
+                MedecinUser medecinUser = medecinUserDAO.findUserByUsername(username);
+                if (medecinUser != null && username.equals(medecinUser.getUsername()) && password.equals(medecinUser.getPassword())) {
                     Session.setUser(medecinUser);
                     Menu menu = new Menu();
                     menu.setVisible(true);
                     this.dispose();
                 } else {
-                    JOptionPane.showMessageDialog(null, "LOGIN OU PASSWORD ! ", "INCORECTE", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "LOGIN OU PASSWORD INCORECT ! ", "ERREUR", JOptionPane.ERROR_MESSAGE);
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "Veuillez remplir les champs Merci! ");

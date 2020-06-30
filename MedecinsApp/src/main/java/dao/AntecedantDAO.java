@@ -2,25 +2,28 @@ package dao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import models.Antecedent;
-import models.ClasseAntecedent;
 import models.config.HibernateUtil;
+import org.hibernate.HibernateException;
 
 public class AntecedantDAO {
 
     private static Transaction transaction = null;
     Session session = HibernateUtil.getSessionFactory().openSession();
+    private static final Logger LOGGER = Logger.getLogger(AntecedantDAO.class.getName());
 
     public Antecedent findById(Long id) {
         try {
             session = HibernateUtil.getSessionFactory().openSession();
             return session.get(Antecedent.class, id);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (HibernateException e) {
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
             return null;
         }
     }
@@ -36,7 +39,7 @@ public class AntecedantDAO {
             return true;
         } catch (Exception e) {
             transaction.rollback();
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
             return false;
         }
     }
@@ -48,8 +51,8 @@ public class AntecedantDAO {
         try {
             classeAntecedent2 = session.createQuery("from Antecedent ant", Antecedent.class).list().get(0);
             session.flush();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (HibernateException e) {
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
 
         return classeAntecedent2;
@@ -63,7 +66,7 @@ public class AntecedantDAO {
                     .setParameter("libelle", libelle)
                     .getResultList();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
             return null;
         }
     }
@@ -71,7 +74,7 @@ public class AntecedantDAO {
     // Search Antecedent via son libelle
     public Antecedent findAntecedant(String libelle) {
 
-        List<Antecedent> antecedent = null;
+        List<Antecedent> antecedent;
         try {
             antecedent = session.createQuery("FROM  Antecedent ant  WHERE ant.libelle=:lib").setParameter("lib", libelle).list();
             // session.flush();
@@ -82,7 +85,7 @@ public class AntecedantDAO {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
         return null;
     }
@@ -95,7 +98,7 @@ public class AntecedantDAO {
             session.flush();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
 
     }
@@ -106,7 +109,7 @@ public class AntecedantDAO {
         try {
             lisAntecedent = (ArrayList<Antecedent>) session.createQuery("FROM  Antecedent clAnt ").list();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
         return lisAntecedent;
     }
@@ -121,7 +124,7 @@ public class AntecedantDAO {
             session.close();
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
             return false;
         }
 
@@ -136,7 +139,7 @@ public class AntecedantDAO {
             session.close();
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
             return false;
         }
 

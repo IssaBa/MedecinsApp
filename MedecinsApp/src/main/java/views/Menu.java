@@ -5,8 +5,6 @@
  */
 package views;
 
-import javax.swing.JOptionPane;
-
 /**
  *
  * @author A663588
@@ -32,19 +30,17 @@ public class Menu extends javax.swing.JFrame {
 
         desktopPane = new javax.swing.JDesktopPane();
         menuBar = new javax.swing.JMenuBar();
+        patientsMenu = new javax.swing.JMenu();
+        listePatientsMenuItem = new javax.swing.JMenuItem();
         medecinsMenu = new javax.swing.JMenu();
         jMenuItem4 = new javax.swing.JMenuItem();
         professionMenu = new javax.swing.JMenu();
         listeProfessionMenuItem = new javax.swing.JMenuItem();
-        patientsMenu = new javax.swing.JMenu();
-        listePatientsMenuItem = new javax.swing.JMenuItem();
-        classeAnteMenu = new javax.swing.JMenu();
-        listeClasseAnteMenuItem = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
+        listeClasseAnteMenuItem = new javax.swing.JMenuItem();
         typeConsultationMenu = new javax.swing.JMenu();
         listeTypeConsultationMenuItem = new javax.swing.JMenuItem();
-        jMenu1 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("FAYEMILOG");
@@ -59,8 +55,20 @@ public class Menu extends javax.swing.JFrame {
         );
         desktopPaneLayout.setVerticalGroup(
             desktopPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 496, Short.MAX_VALUE)
+            .addGap(0, 498, Short.MAX_VALUE)
         );
+
+        patientsMenu.setText("Patients");
+
+        listePatientsMenuItem.setText("Liste des patients");
+        listePatientsMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                listePatientsMenuItemActionPerformed(evt);
+            }
+        });
+        patientsMenu.add(listePatientsMenuItem);
+
+        menuBar.add(patientsMenu);
 
         medecinsMenu.setMnemonic('f');
         medecinsMenu.setText("Médecins");
@@ -75,7 +83,7 @@ public class Menu extends javax.swing.JFrame {
             }
         });
 
-        jMenuItem4.setText("Gestion Medecin");
+        jMenuItem4.setText("Gestion des utilisateurs");
         jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem4ActionPerformed(evt);
@@ -104,39 +112,23 @@ public class Menu extends javax.swing.JFrame {
 
         menuBar.add(professionMenu);
 
-        patientsMenu.setText("Patients");
+        jMenu2.setText("Antécedent");
 
-        listePatientsMenuItem.setText("Liste des patients");
-        listePatientsMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                listePatientsMenuItemActionPerformed(evt);
-            }
-        });
-        patientsMenu.add(listePatientsMenuItem);
-
-        menuBar.add(patientsMenu);
-
-        classeAnteMenu.setText("Classe Antecedant");
-
-        listeClasseAnteMenuItem.setText("Gestion CL ANT");
-        listeClasseAnteMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                listeClasseAnteMenuItemActionPerformed(evt);
-            }
-        });
-        classeAnteMenu.add(listeClasseAnteMenuItem);
-
-        menuBar.add(classeAnteMenu);
-
-        jMenu2.setText("Antecedant");
-
-        jMenuItem3.setText("Gestion Antecedant");
+        jMenuItem3.setText("Gestion Antécedents");
         jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem3ActionPerformed(evt);
             }
         });
         jMenu2.add(jMenuItem3);
+
+        listeClasseAnteMenuItem.setText("Gestion Classes d'antécedents");
+        listeClasseAnteMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                listeClasseAnteMenuItemActionPerformed(evt);
+            }
+        });
+        jMenu2.add(listeClasseAnteMenuItem);
 
         menuBar.add(jMenu2);
 
@@ -151,14 +143,6 @@ public class Menu extends javax.swing.JFrame {
         typeConsultationMenu.add(listeTypeConsultationMenuItem);
 
         menuBar.add(typeConsultationMenu);
-
-        jMenu1.setText("Deconnexion");
-        jMenu1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenu1ActionPerformed(evt);
-            }
-        });
-        menuBar.add(jMenu1);
 
         setJMenuBar(menuBar);
 
@@ -210,13 +194,6 @@ public class Menu extends javax.swing.JFrame {
      desktopPane.add(batchFiles).setVisible(true);
     }//GEN-LAST:event_professionMenuActionPerformed
 
-    private void jMenu1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenu1ActionPerformed
-
-    	Login login = new Login();
-        login.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_jMenu1ActionPerformed
-
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {
         GestionAntecedant gestionAntecedant = new GestionAntecedant();
         desktopPane.add(gestionAntecedant).setVisible(true);
@@ -265,9 +242,7 @@ public class Menu extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenu classeAnteMenu;
     private javax.swing.JDesktopPane desktopPane;
-    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;

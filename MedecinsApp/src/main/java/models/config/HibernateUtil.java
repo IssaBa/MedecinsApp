@@ -1,5 +1,8 @@
 package models.config;
 
+import facture.DossierPdf;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
@@ -7,8 +10,10 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
 public class HibernateUtil {
+
     private static StandardServiceRegistry registry;
     private static SessionFactory sessionFactory;
+    private static final Logger LOGGER = Logger.getLogger(HibernateUtil.class.getName());
 
     public static SessionFactory getSessionFactory() {
         if (sessionFactory == null) {
@@ -25,8 +30,8 @@ public class HibernateUtil {
                 // Create SessionFactory
                 sessionFactory = metadata.getSessionFactoryBuilder().build();
 
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (SecurityException e) {
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
                 if (registry != null) {
                     StandardServiceRegistryBuilder.destroy(registry);
                 }

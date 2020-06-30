@@ -12,10 +12,12 @@ import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableRowSorter;
 
 import models.Patient;
 
@@ -27,15 +29,15 @@ public class ListePatients extends javax.swing.JInternalFrame {
 
     private final PatientDAO patientDAO;
     private Long idPatientSelected;
-    private final DefaultTableModel model;
+    private DefaultTableModel model;
     private final String[] entete = new String[]{"ID", "Prénom", "Nom", "Date de naissance", "Civilité", "Suivi depuis"};
-    
-    TableCellRenderer tableCellRenderer = new DefaultTableCellRenderer(){
+
+    TableCellRenderer tableCellRenderer = new DefaultTableCellRenderer() {
         SimpleDateFormat format = new SimpleDateFormat("dd MMMM YYYY");
-        
+
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            if(value instanceof Date) {
+            if (value instanceof Date) {
                 value = format.format(value);
             }
             return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
@@ -45,6 +47,7 @@ public class ListePatients extends javax.swing.JInternalFrame {
     private void remplirTablePatients() {
         this.model.setRowCount(0);
         this.model.setColumnIdentifiers(this.entete);
+        jTable1.setRowHeight(25);
         List<Patient> patients = patientDAO.findAll();
         for (int i = 0; i < patients.size(); i++) {
             this.model.addRow(new Object[]{
@@ -58,13 +61,22 @@ public class ListePatients extends javax.swing.JInternalFrame {
         }
         this.jTable1.setModel(this.model);
         this.jTable1.setEnabled(true);
+        this.jScrollPane1.setViewportView(jTable1);
         /*
-        Je cache l'id
+        Affichage date
          */
         TableColumnModel tcm = this.jTable1.getColumnModel();
-        tcm.removeColumn(tcm.getColumn(0));
-        tcm.getColumn(2).setCellRenderer(tableCellRenderer);
-        tcm.getColumn(4).setCellRenderer(tableCellRenderer);
+        tcm.getColumn(3).setCellRenderer(tableCellRenderer);
+        tcm.getColumn(5).setCellRenderer(tableCellRenderer);
+        
+        /*
+        HIDE IDs
+        */
+        
+        jTable1.getColumnModel().getColumn(0).setMinWidth(0);
+        jTable1.getColumnModel().getColumn(0).setMaxWidth(0);
+        jTable1.getColumnModel().getColumn(0).setWidth(0);
+        nbElementLabel.setText(jTable1.getRowCount() + " éléments");
     }
 
     /**
@@ -92,6 +104,9 @@ public class ListePatients extends javax.swing.JInternalFrame {
         modifierBtn = new javax.swing.JToggleButton();
         supprimerBtn = new javax.swing.JToggleButton();
         openDossierBtn = new javax.swing.JToggleButton();
+        searchPatientTxt = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        nbElementLabel = new javax.swing.JLabel();
 
         setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -117,6 +132,7 @@ public class ListePatients extends javax.swing.JInternalFrame {
             }
         });
         jScrollPane1.setViewportView(jTable1);
+        jTable1.getAccessibleContext().setAccessibleParent(null);
 
         ajouterBtn.setText("AJOUTER");
         ajouterBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -147,6 +163,21 @@ public class ListePatients extends javax.swing.JInternalFrame {
             }
         });
 
+        searchPatientTxt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchPatientTxtActionPerformed(evt);
+            }
+        });
+        searchPatientTxt.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                searchPatientTxtKeyTyped(evt);
+            }
+        });
+
+        jLabel1.setText("Rechercher :");
+
+        nbElementLabel.setText("nbr éléments");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -154,12 +185,21 @@ public class ListePatients extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 623, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(ajouterBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(modifierBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(supprimerBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(openDossierBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(ajouterBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(modifierBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(supprimerBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(openDossierBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(searchPatientTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(nbElementLabel))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -171,12 +211,18 @@ public class ListePatients extends javax.swing.JInternalFrame {
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
                         .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(searchPatientTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(nbElementLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
                         .addComponent(ajouterBtn)
                         .addGap(18, 18, 18)
                         .addComponent(modifierBtn)
                         .addGap(18, 18, 18)
                         .addComponent(supprimerBtn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 150, Short.MAX_VALUE)
+                        .addGap(73, 73, 73)
                         .addComponent(openDossierBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(122, 122, 122))))
         );
@@ -204,8 +250,8 @@ public class ListePatients extends javax.swing.JInternalFrame {
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
-        int selectedRowIndex = jTable1.getSelectedRow();
-        this.idPatientSelected = (Long) dtm.getValueAt(selectedRowIndex, 0);
+        int indexModel = jTable1.getSelectedRow();
+        this.idPatientSelected = (Long) jTable1.getValueAt(indexModel, 0);
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void supprimerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_supprimerBtnActionPerformed
@@ -214,16 +260,16 @@ public class ListePatients extends javax.swing.JInternalFrame {
         } else {
             //reponse : 0 == oui, 1 == non 
             int reponse = JOptionPane.showConfirmDialog(null, "Voulez vous supprimer ce patient ?", "SUPPRESSION", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-            if(reponse == 0) {
+            if (reponse == 0) {
                 Patient p = patientDAO.findById(this.idPatientSelected);
-                if(patientDAO.delete(p)) {
+                if (patientDAO.delete(p)) {
                     JOptionPane.showMessageDialog(null, "SUPRESSION REUSSIE", "PATIENTS", JOptionPane.INFORMATION_MESSAGE);
                     this.idPatientSelected = null;
                     remplirTablePatients();
                 } else {
                     JOptionPane.showMessageDialog(null, "ECHEC DE LA SUPRESSION", "PATIENTS", JOptionPane.ERROR_MESSAGE);
                 }
-            } 
+            }
         }
     }//GEN-LAST:event_supprimerBtnActionPerformed
 
@@ -235,15 +281,29 @@ public class ListePatients extends javax.swing.JInternalFrame {
             this.getDesktopPane().add(dossierPatient).setVisible(true);
             this.dispose();
         }
-        
+
     }//GEN-LAST:event_openDossierBtnActionPerformed
+
+    private void searchPatientTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchPatientTxtActionPerformed
+
+    }//GEN-LAST:event_searchPatientTxtActionPerformed
+
+    private void searchPatientTxtKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchPatientTxtKeyTyped
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>((DefaultTableModel) jTable1.getModel());
+        sorter.setRowFilter(RowFilter.regexFilter(searchPatientTxt.getText()));
+        jTable1.setRowSorter(sorter);
+        nbElementLabel.setText(jTable1.getRowCount() + " éléments");
+    }//GEN-LAST:event_searchPatientTxtKeyTyped
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToggleButton ajouterBtn;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JToggleButton modifierBtn;
+    private javax.swing.JLabel nbElementLabel;
     private javax.swing.JToggleButton openDossierBtn;
+    private javax.swing.JTextField searchPatientTxt;
     private javax.swing.JToggleButton supprimerBtn;
     // End of variables declaration//GEN-END:variables
 }

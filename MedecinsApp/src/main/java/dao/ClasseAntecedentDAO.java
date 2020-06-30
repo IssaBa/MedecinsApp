@@ -3,18 +3,20 @@ package dao;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import models.ClasseAntecedent;
-import models.Patient;
 import models.config.HibernateUtil;
 
 public class ClasseAntecedentDAO {
 
     private static Transaction transaction = null;
     Session session = HibernateUtil.getSessionFactory().openSession();
+    private static final Logger LOGGER = Logger.getLogger(ClasseAntecedentDAO.class.getName());
 
+   
     // Ajouter ClasseAntecedent
     public boolean saveClasseAntecedant(ClasseAntecedent classeAntecedent) {
 
@@ -26,12 +28,12 @@ public class ClasseAntecedentDAO {
             return true;
         } catch (Exception e) {
             transaction.rollback();
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
             return false;
         }
 
     }
-    
+
     //Search ClasseAntecedent via un objet
     public ClasseAntecedent searchClasseAntecedant(ClasseAntecedent classeAntecedent) {
 
@@ -40,7 +42,7 @@ public class ClasseAntecedentDAO {
             classeAntecedent2 = session.createQuery("from ClasseAntecedent p", ClasseAntecedent.class).list().get(0);
             session.flush();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
 
         return classeAntecedent2;
@@ -60,7 +62,7 @@ public class ClasseAntecedentDAO {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
         return null;
     }
@@ -73,7 +75,7 @@ public class ClasseAntecedentDAO {
             session.flush();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
 
     }
@@ -84,7 +86,7 @@ public class ClasseAntecedentDAO {
         try {
             lisClasseAntecedent = (ArrayList<ClasseAntecedent>) session.createQuery("FROM  ClasseAntecedent clAnt ").list();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
         return lisClasseAntecedent;
     }
@@ -99,7 +101,7 @@ public class ClasseAntecedentDAO {
             session.close();
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
             return false;
         }
 
@@ -114,7 +116,7 @@ public class ClasseAntecedentDAO {
             session.close();
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
             return false;
         }
 

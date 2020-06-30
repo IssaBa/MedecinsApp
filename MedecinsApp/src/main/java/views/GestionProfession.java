@@ -5,13 +5,15 @@
  */
 package views;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 import dao.ProfessionDAO;
+import java.awt.HeadlessException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import models.Profession;
 
 /**
@@ -25,125 +27,90 @@ public class GestionProfession extends javax.swing.JInternalFrame {
      */
     DefaultTableModel model = new DefaultTableModel();
     Long idUpdateJtable;
+    private static final Logger LOGGER = Logger.getLogger(GestionProfession.class.getName());
+    private final String AJOUTER = "AJOUTER PROFESSION";
+    private final String MODIFIER = "MODIFIER PROFESSION";
+    private final String SUPPRIMER = "SUPPRIMER PROFESSION";
+    private final ProfessionDAO PROFESSION_DAO;
 
     public void remplirTableProfession() {
         try {
             model.setRowCount(0);
-            ProfessionDAO dao = new ProfessionDAO();
-
             model.setColumnIdentifiers(new String[]{"ID", "LIBELLE"});
 
-            List<Profession> professions = dao.getAllProfession();
-            if (professions.size() > 0) {
-
-                for (int i = 0; i < professions.size(); i++) {
-                    model.addRow(new String[]{professions.get(i).getId().toString(), professions.get(i).getLibelle()});
-                }
-                tableProfession.setModel(model);
-                tableProfession.setEnabled(false);
+            List<Profession> professions = PROFESSION_DAO.findAll();
+            for (int i = 0; i < professions.size(); i++) {
+                model.addRow(new Object[]{professions.get(i).getId(), professions.get(i).getLibelle()});
             }
+            tableProfession.setModel(model);
 
+            tableProfession.getColumnModel().getColumn(0).setMinWidth(0);
+            tableProfession.getColumnModel().getColumn(0).setMaxWidth(0);
+            tableProfession.getColumnModel().getColumn(0).setWidth(0);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
 
-    }
-
-    public boolean isValueValide(Object[] value) {
-        int size = model.getRowCount();
-        for (int i = 0; i < size; i++) {
-            if (value[0].equals(model.getValueAt(i, 0))) {
-                return false;
-            }
-        }
-        return true;
     }
 
     public void checkChoixSelect(String choixAction) {
-        try {
-            if (choixAction.equalsIgnoreCase("")) {
-                desactiverChamps();
-            } else if (choixAction.equalsIgnoreCase("AJOUTER PROFESSION")) {
-                activerChamps();
-                choixBTX.setText("AJOUTER PROFESSION");
-                libelle.setText("");
-                libelle.setEnabled(true);
-
-            } else if (choixAction.equalsIgnoreCase("MODIFIER PROFESSION")) {
-                activerChamps();
-                choixBTX.setText("MODIFIER PROFESSION");
-                tableProfession.setEnabled(true);
-                libelle.setText("");
-                libelle.setEnabled(true);
-            } else if (choixAction.equalsIgnoreCase("SUPRIMER PROFESSION")) {
-                activerChamps();
-                choixBTX.setText("SUPRIMER PROFESSION");
-                tableProfession.setEnabled(true);
-                libelle.setText("");
-                libelle.setEnabled(false);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (choixAction.equalsIgnoreCase("")) {
+            desactiverChamps();
+            choixBTX.setEnabled(false);
+            choixBTX.setText("Aucune action");
+        } else if (choixAction.equalsIgnoreCase(AJOUTER)) {
+            activerChamps();
+            choixBTX.setText(AJOUTER);
+            choixBTX.setEnabled(true);
+            activerChamps();
+            viderChamps();
+        } else if (choixAction.equalsIgnoreCase(MODIFIER)) {
+            activerChamps();
+            choixBTX.setText(MODIFIER);
+            choixBTX.setEnabled(true);
+            activerChamps();
+            viderChamps();
+        } else if (choixAction.equalsIgnoreCase(SUPPRIMER)) {
+            activerChamps();
+            choixBTX.setText(SUPPRIMER);
+            choixBTX.setEnabled(true);
+            desactiverChamps();
+            viderChamps();
         }
     }
 
     public void remplirComboChoix() {
-        ComboChoix.removeAll();
-        try {
-            for (int i = 0; i < listItemCombo().size(); i++) {
-                ComboChoix.addItem(listItemCombo().get(i));
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public List<String> listItemCombo() {
-        try {
-            List<String> list = new ArrayList<String>();
-            list.add("");
-            list.add("AJOUTER PROFESSION");
-            list.add("MODIFIER PROFESSION");
-            list.add("SUPRIMER PROFESSION");
-            return list;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        comboChoixAction.removeAll();
+        comboChoixAction.addItem("");
+        comboChoixAction.addItem(AJOUTER);
+        comboChoixAction.addItem(MODIFIER);
+        comboChoixAction.addItem(SUPPRIMER);
+        comboChoixAction.setSelectedIndex(0);
     }
 
     public void desactiverChamps() {
-        labelprofession.setVisible(false);
-        libelle.setVisible(false);
-        choixBTX.setVisible(false);
+        libelle.setEnabled(false);
     }
 
     public void activerChamps() {
-        labelprofession.setVisible(true);
-        libelle.setVisible(true);
-        choixBTX.setVisible(true);
+        libelle.setEnabled(true);
     }
 
     public void viderChamps() {
-        labelprofession.setText("");
-        labelprofession.setText("");
         libelle.setText("");
     }
 
-    private void refrechALL() {
+    private void refreshAll() {
         desactiverChamps();
-        remplirComboChoix();
-        model.setRowCount(0);
         remplirTableProfession();
+        viderChamps();
     }
 
     public GestionProfession() {
         initComponents();
-        refrechALL();
+        this.PROFESSION_DAO = new ProfessionDAO();
+        refreshAll();
+        remplirComboChoix();
     }
 
     /**
@@ -157,29 +124,35 @@ public class GestionProfession extends javax.swing.JInternalFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        ComboChoix = new javax.swing.JComboBox<>();
+        comboChoixAction = new javax.swing.JComboBox<>();
         labelprofession = new javax.swing.JLabel();
         libelle = new javax.swing.JTextField();
+        jSeparator1 = new javax.swing.JSeparator();
         choixBTX = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tableProfession = new javax.swing.JTable();
 
         setClosable(true);
         setIconifiable(true);
         setMaximizable(true);
+        setTitle("Gestion des professions");
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         jLabel1.setText("Choix Action");
 
-        ComboChoix.addItemListener(new java.awt.event.ItemListener() {
+        comboChoixAction.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                ComboChoixItemStateChanged(evt);
+                comboChoixActionItemStateChanged(evt);
+            }
+        });
+        comboChoixAction.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboChoixActionActionPerformed(evt);
             }
         });
 
-        labelprofession.setText("Libelle Proffession");
+        labelprofession.setText("Nom de la profession");
 
         choixBTX.setText("jButton1");
         choixBTX.addActionListener(new java.awt.event.ActionListener() {
@@ -192,22 +165,28 @@ public class GestionProfession extends javax.swing.JInternalFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(ComboChoix, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(labelprofession)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
-                        .addComponent(libelle, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(41, 41, 41))
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(49, 49, 49)
-                .addComponent(choixBTX, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel1)
+                        .addGap(63, 63, 63)
+                        .addComponent(comboChoixAction, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jSeparator1)))
+                .addContainerGap())
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(labelprofession)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(libelle, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(choixBTX, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(61, 61, 61))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -215,14 +194,16 @@ public class GestionProfession extends javax.swing.JInternalFrame {
                 .addGap(25, 25, 25)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(ComboChoix, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(75, 75, 75)
+                    .addComponent(comboChoixAction, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(libelle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(labelprofession))
-                .addGap(81, 81, 81)
+                    .addComponent(labelprofession)
+                    .addComponent(libelle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
                 .addComponent(choixBTX)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         tableProfession.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -246,23 +227,6 @@ public class GestionProfession extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(tableProfession);
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1)
-                .addContainerGap())
-        );
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -270,120 +234,105 @@ public class GestionProfession extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(66, 66, 66)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(42, Short.MAX_VALUE))
+                .addGap(33, 33, 33)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(25, 25, 25)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(81, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 418, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void tableProfessionMouseClicked(java.awt.event.MouseEvent evt) {
-
-        String combo = ComboChoix.getSelectedItem().toString();
-        if (!combo.equalsIgnoreCase("") && !combo.equalsIgnoreCase("AJOUTER PROFESSION")) {
-
+    private void tableProfessionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableProfessionMouseClicked
+        idUpdateJtable = null;
+        String choix = comboChoixAction.getSelectedItem().toString();
+        if (choix.equals(MODIFIER) || choix.equals(SUPPRIMER)) {
             DefaultTableModel defaultTableModel = (DefaultTableModel) tableProfession.getModel();
             int selectRowsIndex = tableProfession.getSelectedRow();
             libelle.setText(defaultTableModel.getValueAt(selectRowsIndex, 1).toString());
-
-            ProfessionDAO dao = new ProfessionDAO();
-            Profession p = dao.findProfessionByLibeller(defaultTableModel.getValueAt(selectRowsIndex, 1).toString());
-            //JOptionPane.showMessageDialog (null, p.getLibelle() , "GESTION PROFESSION" , JOptionPane.ERROR_MESSAGE);
-
-            if (p != null) {
-                this.idUpdateJtable = p.getId();
-            }
+            idUpdateJtable = (Long) defaultTableModel.getValueAt(selectRowsIndex, 0);
+        } else if (choix.isEmpty()) {
+            tableProfession.clearSelection();
+            JOptionPane.showMessageDialog(this, "Merci de choisir une action", "Gestion des professions", JOptionPane.ERROR_MESSAGE);
         }
+    }//GEN-LAST:event_tableProfessionMouseClicked
 
-    }
+    private void comboChoixActionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboChoixActionActionPerformed
+        checkChoixSelect(comboChoixAction.getSelectedItem().toString());
+    }//GEN-LAST:event_comboChoixActionActionPerformed
 
-    private void choixBTXActionPerformed(java.awt.event.ActionEvent evt) {
-        try {
+    private void choixBTXActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_choixBTXActionPerformed
 
-            ProfessionDAO dao = new ProfessionDAO();
+        if (choixBTX.getText().equals(AJOUTER)) {
+            Profession professionCheck = PROFESSION_DAO.findProfessionByLibeller(libelle.getText());
 
-            if (choixBTX.getText().equalsIgnoreCase("AJOUTER PROFESSION")) {
-
-                Profession professionCheck = dao.findProfessionByLibeller(libelle.getText().toString());
-
-                if (professionCheck != null) {
-
-                    JOptionPane.showMessageDialog(null, "CETTE PROFESSION EXISTE DEJA MERCI !", "GESTION PROFESSION", JOptionPane.ERROR_MESSAGE);
-                    remplirTableProfession();
+            if (professionCheck != null) {
+                JOptionPane.showMessageDialog(null, "CETTE PROFESSION EXISTE DEJA MERCI !", "GESTION PROFESSION", JOptionPane.ERROR_MESSAGE);
+            } else {
+                //System.out.println("Libelle :  null");
+                Profession newProfession = new Profession();
+                newProfession.setLibelle(libelle.getText());
+                if (PROFESSION_DAO.save(newProfession)) {
+                    JOptionPane.showMessageDialog(null, "PROFESSION AJOUTEE AVEC SUCCES", "GESTION PROFESSION", JOptionPane.INFORMATION_MESSAGE);
                 } else {
-                    //System.out.println("Libelle :  null");
-                    Profession newProfession = new Profession();
-                    newProfession.setLibelle(libelle.getText());
-                    dao.saveProfession(newProfession);
-                    JOptionPane.showMessageDialog(null, "PROFESSION AJOUTER AVEC SUCCESS", "GESTION PROFESSION", JOptionPane.INFORMATION_MESSAGE);
-                    model.setRowCount(0);
-                    remplirTableProfession();
-                    viderChamps();
-                }
-
-            } else if (choixBTX.getText().equalsIgnoreCase("MODIFIER PROFESSION")) {
-                if (libelle.getText().equalsIgnoreCase("")) {
-                    JOptionPane.showMessageDialog(null, "LE LIBELLE NE DOIT PAS ETRE VIDE !", "GESTION PROFESSION", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    Profession newProfession = new Profession();
-
-                    newProfession.setId(idUpdateJtable);
-                    newProfession.setLibelle(libelle.getText());
-                    dao.updateProfession(newProfession);
-                    JOptionPane.showMessageDialog(null, "PROFESSION MODIFIER AVEC SUCCESS", "GESTION PROFESSION", JOptionPane.INFORMATION_MESSAGE);
-                    remplirTableProfession();
-                    viderChamps();
-                    //remplirComboChoix();
-                }
-
-            } else if (choixBTX.getText().equalsIgnoreCase("SUPRIMER PROFESSION")) {
-                if (libelle.getText().equalsIgnoreCase("")) {
-                    JOptionPane.showMessageDialog(null, "LE LIBELLE NE DOIT PAS ETRE VIDE !", "GESTION PROFESSION", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    Profession newProfession = new Profession();
-
-                    newProfession.setId(idUpdateJtable);
-                    newProfession.setLibelle(libelle.getText());
-                    if (dao.deleteProfession(newProfession)) {
-                        JOptionPane.showMessageDialog(null, "PROFESSION SUPRIMER AVEC SUCCESS", "GESTION PROFESSION", JOptionPane.INFORMATION_MESSAGE);
-                        remplirTableProfession();
-                        viderChamps();
-                    } else {
-                        JOptionPane.showMessageDialog(null, "ECHEC DE LA SUPPRESSION", "GESTION PROFESSION", JOptionPane.ERROR_MESSAGE);
-                    }
-
-                    //remplirComboChoix();
+                    JOptionPane.showMessageDialog(null, "ECHEC DE LA CREATION DE LA PROFESSION", "GESTION PROFESSION", JOptionPane.ERROR_MESSAGE);
                 }
             }
+        } else if (choixBTX.getText().equalsIgnoreCase(MODIFIER)) {
+            if (libelle.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "LE LIBELLE NE DOIT PAS ETRE VIDE !", "GESTION PROFESSION", JOptionPane.ERROR_MESSAGE);
+            } else if (idUpdateJtable == null) {
+                JOptionPane.showMessageDialog(null, "CHAMP SELECTIONNE INTROUVABLE", "GESTION PROFESSION", JOptionPane.ERROR_MESSAGE);
+            } else {
+                Profession newProfession = new Profession();
+                newProfession.setId(idUpdateJtable);
+                newProfession.setLibelle(libelle.getText());
+                PROFESSION_DAO.updateProfession(newProfession);
+                JOptionPane.showMessageDialog(null, "PROFESSION MODIFIEE AVEC SUCCESS", "GESTION PROFESSION", JOptionPane.INFORMATION_MESSAGE);
+            }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } else if (choixBTX.getText().equalsIgnoreCase(SUPPRIMER)) {
+            if (idUpdateJtable == null) {
+                JOptionPane.showMessageDialog(null, "CHAMP SELECTIONNE INTROUVABLE", "GESTION PROFESSION", JOptionPane.ERROR_MESSAGE);
+            } else {
+                Profession newProfession = new Profession();
+                newProfession.setId(idUpdateJtable);
+                newProfession.setLibelle(libelle.getText());
+                if (PROFESSION_DAO.deleteProfession(newProfession)) {
+                    JOptionPane.showMessageDialog(null, "PROFESSION SUPRIMEE AVEC SUCCESS", "GESTION PROFESSION", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(null, "ECHEC DE LA SUPPRESSION", "GESTION PROFESSION", JOptionPane.ERROR_MESSAGE);
+                }
+            }
         }
+        tableProfession.clearSelection();
+        refreshAll();
+        comboChoixAction.setSelectedIndex(0);
+        choixBTX.setText("Aucune action");
+        choixBTX.setEnabled(false);
+    }//GEN-LAST:event_choixBTXActionPerformed
 
-    }
-
-    private void ComboChoixItemStateChanged(java.awt.event.ItemEvent evt) {
-        checkChoixSelect(ComboChoix.getSelectedItem().toString());
+    private void comboChoixActionItemStateChanged(java.awt.event.ItemEvent evt) {
     }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> ComboChoix;
     private javax.swing.JButton choixBTX;
+    private javax.swing.JComboBox<String> comboChoixAction;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel labelprofession;
     private javax.swing.JTextField libelle;
     private javax.swing.JTable tableProfession;

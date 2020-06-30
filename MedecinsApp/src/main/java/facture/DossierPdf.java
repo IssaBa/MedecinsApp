@@ -3,6 +3,7 @@ package facture;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,22 +16,31 @@ import com.itextpdf.text.Font.FontFamily;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.LineSeparator;
+import dao.PatientAntecedentDAO;
 
 import dao.PatientDAO;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import models.ClasseAntecedent;
+import models.Consultation;
+import models.Ordonnance;
 import models.Patient;
 import models.PatientAntecedent;
+import org.hibernate.Hibernate;
 
 public class DossierPdf {
 
     private static File file;
     private static File file1;
-    private static Document document = new Document();
-    private static Font subFont = new Font(Font.FontFamily.TIMES_ROMAN, 15, Font.BOLD);
-    private static Font font = new Font(FontFamily.TIMES_ROMAN, 8);
-
+    private static final Document DOCUMENT = new Document();
+    private static final Font SUB_FONT = new Font(Font.FontFamily.TIMES_ROMAN, 15, Font.BOLD);
+    private static final Font FONT = new Font(FontFamily.TIMES_ROMAN, 8);
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd MMMM YYYY");
+    private static String message;
     private static Patient patient;
-
+    private static PatientAntecedentDAO paDAO = new PatientAntecedentDAO();
     static PatientDAO patientDAO = new PatientDAO();
+    private static final Logger LOGGER = Logger.getLogger(DossierPdf.class.getName());
 
     public static File generationRepertoireFacture(String dossierMedical) {
         if (!dossierMedical.equals("")) {
@@ -56,7 +66,21 @@ public class DossierPdf {
         return file;
     }
 
-    // Generation aléatoire du numero de facture 
+    // Verife  liste
+    public static Boolean verifListeNull(List list) {
+
+        if (patient.getConsultationListe().size() < 0) {
+            message = "la Liste consultation du patient" + patient.getPrenom() + " est vide Merci";
+            return true;
+        }
+        if (patient.getOrdonnanceListe().size() < 0) {
+            message = " Le patient" + patient.getPrenom() + " n'a pas d'ordonnace Merci";
+            return true;
+        }
+        return false;
+    }
+
+    // Generation aléatoire du numero de facture
     public static String generateNumeroFacture() {
         try {
             String chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
@@ -83,47 +107,88 @@ public class DossierPdf {
 
     //  close document a la fin du job
     public static void closeDocument() throws DocumentException {
-        document.close();
+        DOCUMENT.close();
     }
 
     // separateur
     public static void separateur() throws DocumentException {
         LineSeparator sep = new LineSeparator();
         sep.setOffset(5);
-        document.add(sep);
+        DOCUMENT.add(sep);
     }
 
     public static void sautLigne() throws DocumentException {
         Paragraph sautligne = new Paragraph(" ");
-        document.add(sautligne);
+        DOCUMENT.add(sautligne);
     }
 
     // dossier patient
-    public static void dossierPatient(Long idpatient) throws DocumentException {
-        patient = patientDAO.findById(idpatient);
-        Paragraph paragraphnumerodossier = new Paragraph(
-                "Dossier du patient n°  " + patient.getNumeroDossier() + "", subFont);
+    public static void dossierPatient() throws DocumentException {
+        String text = "Dossier du patient ";
+        if (patient.getNumeroDossier() != null && !patient.getNumeroDossier().isEmpty()) {
+            text += patient.getNumeroDossier();
+        }
+        Paragraph paragraphnumerodossier = new Paragraph(text, SUB_FONT);
         paragraphnumerodossier.setAlignment(Element.ALIGN_CENTER);
-        document.add(paragraphnumerodossier);
+        DOCUMENT.add(paragraphnumerodossier);
         sautLigne();
     }
 
     // getInfosPersoPatient
-    public static void infoPersoPatient(Long idPatient) throws DocumentException {
-        ArrayList<Paragraph> paralist = new ArrayList<Paragraph>();
+    public static void infoPersoPatient() throws DocumentException {
+        ArrayList<Paragraph> paralist = new ArrayList<>();
+        Hibernate.initialize(patient.getProfession());
+        Hibernate.initialize(patient.getProfessionConjoint());
 
         if (patient != null) {
-            separateur();
-            Paragraph p1 = new Paragraph("Prénom :  " + patient.getPrenom() + "  ");
-            Paragraph p2 = new Paragraph("Nom :  " + patient.getNom() + "  ");
-            Paragraph p3 = new Paragraph(
-                    "Né(e) le  " + patient.getDateNaissance() + "   à  " + patient.getLieuNaissance() + "  ");
-            Paragraph p4 = new Paragraph("Civilité :  " + patient.getCivilite().getName() + "  ");
-            Paragraph p5 = new Paragraph("Profession :  " + patient.getProfession().getLibelle() + "  ");
-            Paragraph p6 = new Paragraph("Sexe :  " + patient.getSexe().getName() + "  ");
-            Paragraph p7 = new Paragraph("Adresse :  " + patient.getAdresse() + "  ");
-            Paragraph p8 = new Paragraph("Suivi depuis :  " + patient.getConnuDepuis() + "   par   "
-                    + patient.getMedecinTraitant().getNom() + "  ");
+            String prenom = "Non renseigné";
+            String nom = "Non renseigné";
+            String dateNaissance = "Non renseigné";
+            String lieuNaissance = "Non renseigné";
+            String civilite = "Non renseigné";
+            String profession = "Non renseigné";
+            String sexe = "Non renseigné";
+            String adresse = "Non renseigné";
+            String medecin = "Non renseigné";
+            String dateSuivi = "Non renseigné";
+            if (patient.getPrenom() != null && !patient.getPrenom().isEmpty()) {
+                prenom = patient.getPrenom();
+            }
+            if (patient.getNom() != null && !patient.getNom().isEmpty()) {
+                nom = patient.getNom();
+            }
+            if (patient.getDateNaissance() != null) {
+                dateNaissance = DATE_FORMAT.format(patient.getDateNaissance());
+            }
+            if (patient.getLieuNaissance() != null && !patient.getLieuNaissance().isEmpty()) {
+                lieuNaissance = patient.getLieuNaissance();
+            }
+            if (patient.getCivilite() != null) {
+                civilite = patient.getCivilite().getName();
+            }
+            if (patient.getProfession() != null) {
+                profession = patient.getProfession().getLibelle();
+            }
+            if (patient.getSexe() != null) {
+                sexe = patient.getSexe().getName();
+            }
+            if (patient.getAdresse() != null && !patient.getAdresse().isEmpty()) {
+                adresse = patient.getAdresse();
+            }
+            if (patient.getMedecinTraitant() != null) {
+                medecin = "Docteur " + patient.getMedecinTraitant().getPrenom() + " " + patient.getMedecinTraitant().getNom();
+            }
+            if (patient.getConnuDepuis() != null) {
+                dateSuivi = DATE_FORMAT.format(patient.getConnuDepuis());
+            }
+            Paragraph p1 = new Paragraph("Prénom :  " + prenom);
+            Paragraph p2 = new Paragraph("Nom :  " + nom);
+            Paragraph p3 = new Paragraph("Né(e) le  " + dateNaissance + " à " + lieuNaissance);
+            Paragraph p4 = new Paragraph("Civilité :  " + civilite);
+            Paragraph p5 = new Paragraph("Profession :  " + profession);
+            Paragraph p6 = new Paragraph("Sexe :  " + sexe);
+            Paragraph p7 = new Paragraph("Adresse :  " + adresse);
+            Paragraph p8 = new Paragraph("Suivi depuis : " + dateSuivi + " par " + medecin);
 
             paralist.add(p1);
             paralist.add(p2);
@@ -138,46 +203,59 @@ public class DossierPdf {
                 centrerPara(paralist.get(i), 20);
                 paralist.get(i).setLeading(1, 1);
                 paralist.get(i).setAlignment(Element.ALIGN_JUSTIFIED);
-                document.add(paralist.get(i));
+                DOCUMENT.add(paralist.get(i));
                 sautLigne();
             }
-
         }
-
     }
 
     // contacts titre
     public static void contactTitre() throws DocumentException {
-        Paragraph contact = new Paragraph("Contacts", subFont);
-        document.add(contact);
+        Paragraph contact = new Paragraph("Contacts", SUB_FONT);
+        DOCUMENT.add(contact);
         sautLigne();
+        separateur();
     }
 
     // getInfoContact
-    public static void getInfoContact(Long idPatient) throws DocumentException {
-        ArrayList<Paragraph> paralist = new ArrayList<Paragraph>();
+    public static void getInfoContact() throws DocumentException {
+        ArrayList<Paragraph> paralist = new ArrayList<>();
 
         if (patient != null) {
-            separateur();
-            Paragraph p1 = new Paragraph("Portable : " + patient.getTelephonePortable() + " ");
-            Paragraph p2 = new Paragraph("Domicile :  " + patient.getTelephoneDomicile() + " ");
-            Paragraph p3 = new Paragraph("Bureau  " + patient.getTelephoneBureau() + "  ");
-            Paragraph p4 = new Paragraph("Conjoint :  " + patient.getPrenomConjoint() + "   " + patient.getNomConjoint() + " ");
-            Paragraph p5 = new Paragraph("Contact conjoint :  " + patient.getTelephoneConjoint() + "  ");
-            Paragraph p6 = new Paragraph("Profession conjoint :  " + patient.getProfessionConjoint() + "  ");
+            if (patient.getTelephonePortable() != null && !patient.getTelephonePortable().isEmpty()) {
+                Paragraph p1 = new Paragraph("Téléphone portable : " + patient.getTelephonePortable());
+                paralist.add(p1);
+            }
+            if (patient.getTelephoneDomicile() != null && !patient.getTelephoneDomicile().isEmpty()) {
+                Paragraph p2 = new Paragraph("Téléphone domicile : " + patient.getTelephoneDomicile());
+                paralist.add(p2);
+            }
+            if (patient.getTelephoneBureau() != null && !patient.getTelephoneBureau().isEmpty()) {
+                Paragraph p3 = new Paragraph("Téléphone bureau : " + patient.getTelephoneBureau());
+                paralist.add(p3);
+            }
+            if (patient.getNomConjoint() != null && !patient.getNomConjoint().isEmpty()) {
+                Paragraph p4 = new Paragraph("Nom du conjoint : " + patient.getPrenomConjoint() + " " + patient.getNomConjoint());
+                paralist.add(p4);
+            }
+            if (patient.getTelephoneConjoint() != null && !patient.getTelephoneConjoint().isEmpty()) {
+                Paragraph p5 = new Paragraph("Contact conjoint : " + patient.getTelephoneConjoint());
+                paralist.add(p5);
+            }
+            if (patient.getProfessionConjoint() != null) {
+                Paragraph p6 = new Paragraph("Profession conjoint :  " + patient.getProfessionConjoint().getLibelle());
+                paralist.add(p6);
+            }
 
-            paralist.add(p1);
-            paralist.add(p2);
-            paralist.add(p3);
-            paralist.add(p4);
-            paralist.add(p5);
-            paralist.add(p6);
+            if (paralist.isEmpty()) {
+                paralist.add(new Paragraph("Aucun contact renseigné"));
+            }
 
             for (int i = 0; i < paralist.size(); i++) {
                 centrerPara(paralist.get(i), 20);
                 paralist.get(i).setLeading(1, 1);
                 paralist.get(i).setAlignment(Element.ALIGN_JUSTIFIED);
-                document.add(paralist.get(i));
+                DOCUMENT.add(paralist.get(i));
                 sautLigne();
             }
 
@@ -185,97 +263,150 @@ public class DossierPdf {
 
     }
 
-    public static void ficheSignaletique() throws DocumentException {
-        Paragraph ficheSignaletique = new Paragraph("Fiche Signalétique", subFont);
-        document.add(ficheSignaletique);
-        sautLigne();
-    }
-
-    // AntecedantTitre
-    public static void antecedantTitre() throws DocumentException {
-        Paragraph antecedent = new Paragraph("Antécédents", subFont);
-        document.add(antecedent);
+    public static void ficheSignaletiqueTitre() throws DocumentException {
+        Paragraph ficheSignaletique = new Paragraph("Fiche Signalétique", SUB_FONT);
+        DOCUMENT.add(ficheSignaletique);
         sautLigne();
         separateur();
     }
 
-    // funtion pour centre les paragraphes 
+    // AntecedantTitre
+    public static void antecedentTitre() throws DocumentException {
+        Paragraph ficheSignaletique = new Paragraph("Antécédents", SUB_FONT);
+        DOCUMENT.add(ficheSignaletique);
+        sautLigne();
+        separateur();
+    }
+
+    // funtion pour centre les paragraphes
     public static void centrerPara(Paragraph paragraphe, int valeur) {
-        paragraphe.setFont(font);
+        paragraphe.setFont(FONT);
         paragraphe.setAlignment(Element.ALIGN_JUSTIFIED);
         paragraphe.setIndentationLeft(valeur);
         paragraphe.setIndentationRight(valeur);
     }
 
     // Info antécedant
-    public static void getInfoAntecedant() throws DocumentException {
+    public static void getInfoAntecedent() throws DocumentException {
+        List<PatientAntecedent> pas = patient.getPatientAntecedentListe();
+        if (pas.isEmpty()) {
+            DOCUMENT.add(new Paragraph("Aucun antécédent"));
+        } else {
+            List<ClasseAntecedent> lca = paDAO.getClassesFrom(pas);
+            for (ClasseAntecedent ca : lca) {
+                Paragraph paragrapheClasseAnt = new Paragraph("- " + ca.getLibelle());
+                centrerPara(paragrapheClasseAnt, 20);
+                DOCUMENT.add(paragrapheClasseAnt);
+                for (PatientAntecedent pa : pas) {
+                    Paragraph paragrapheAntecedant = new Paragraph(new Chunk("\u2022", SUB_FONT) + " " + pa.getAntecedent().getLibelle());
+                    centrerPara(paragrapheAntecedant, 40);
+                    DOCUMENT.add(paragrapheAntecedant);
+                }
+            }
+        }
+    }
 
-        List<PatientAntecedent> listeAnte = patient.getPatientAntecedentListe();
+    // Info Historique
+    public static void getInfoConsultations() throws DocumentException {
+        List<Consultation> listecon = patient.getConsultationListe();
+        if (!listecon.isEmpty()) {
+            for (int i = 0; i < listecon.size(); i++) {
+                Paragraph paragraphehistorique = new Paragraph(new Chunk("\u2022", SUB_FONT) + " " + "[" + DATE_FORMAT.format(listecon.get(i).getDateConsultation()) + "] - " + listecon.get(i).getTypeConsultation().getLibelle() + " - " + listecon.get(i).getDonnees());
+                DOCUMENT.add(paragraphehistorique);
+            }
+        } else {
+            DOCUMENT.add(new Paragraph("Aucune consultation"));
+        }
+    }
 
-        for (int i = 0; i < listeAnte.size(); i++) {
-            Paragraph paragrapheClasseAnt = new Paragraph("- " + listeAnte.get(i).getAntecedent().getClasse().getLibelle());
-            centrerPara(paragrapheClasseAnt, 20);
+    // Historique consultation
+    public static void consultationTitre() throws DocumentException {
+        Paragraph contact = new Paragraph("Historique consultation", SUB_FONT);
+        DOCUMENT.add(contact);
+        sautLigne();
+        separateur();
+    }
 
-            document.add(paragrapheClasseAnt);
-
-            Paragraph paragrapheAntecedant = new Paragraph("" + new Chunk("\u2022", subFont) + listeAnte.get(i).getAntecedent().getLibelle());
-            centrerPara(paragrapheAntecedant, 40);
-
-            document.add(paragrapheAntecedant);
-
+    // Info Ordonnances
+    public static void getInfoOrdonnances() throws DocumentException {
+        List<Ordonnance> listeordonance = patient.getOrdonnanceListe();
+        if (!listeordonance.isEmpty()) {
+            for (int i = 0; i < listeordonance.size(); i++) {
+                String donne = listeordonance.get(i).getDonnees().replace(";", " - ");
+                Paragraph paragrapheordonance = new Paragraph(" " + DATE_FORMAT.format(listeordonance.get(i).getDateOrdonnance()) + " - " + donne + "   ");
+                centrerPara(paragrapheordonance, 20);
+                DOCUMENT.add(paragrapheordonance);
+            }
+        } else {
+            DOCUMENT.add(new Paragraph("Aucune ordonnance"));
         }
 
     }
 
-    // contructeur
-    public DossierPdf(Long idPatient) {
-        patient = patientDAO.findById(idPatient);
+    // Historique Ordonnances
+    public static void ordonnancesTitre() throws DocumentException {
+        Paragraph contact = new Paragraph("Ordonnances", SUB_FONT);
+        DOCUMENT.add(contact);
+        sautLigne();
+        separateur();
     }
 
     // get data patient
-    public static void getDataPatient(Long idpatient) {
+    public static void getDataPatient() {
+
         try {
+
             // dossier numero :
-            dossierPatient(idpatient);
+            dossierPatient();
 
-            // ficheSignaletique
-            ficheSignaletique();
+            // ficheSignaletiqueTitre
+            ficheSignaletiqueTitre();
             // getInfosPersoPatient
-            infoPersoPatient(idpatient);
+            infoPersoPatient();
 
-            //contact titre 
+            //contact titre
             contactTitre();
             // info contact
-            getInfoContact(idpatient);
+            getInfoContact();
 
             // AntécédentTitre
-            antecedantTitre();
+            antecedentTitre();
             // GetInfoAntécédents
-            getInfoAntecedant();
+            getInfoAntecedent();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+            //Historique consultation
+            consultationTitre();
+            getInfoConsultations();
+
+            // InfoOrdonnances()
+            ordonnancesTitre();
+            getInfoOrdonnances();
+
+        } catch (DocumentException | SecurityException e) {
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
     }
 
-    // InitDocument
-    public static String InitDocument(Long idpatient) throws FileNotFoundException, DocumentException {
-        File file = generationRepertoireFacture("patient");
+    // initDocument
+    public static String initDocument(Long idpatient) throws FileNotFoundException, DocumentException {
+        if (DossierPdf.patient == null) {
+            patient = patientDAO.findById(idpatient);
+        }
+        File fileDoc = generationRepertoireFacture("patient");
         String extention = ".pdf";
-        String path = file.getPath() + "\\" + generateNumeroFacture() + extention;
-        if (verifRep(file)) {
+        String path = fileDoc.getPath() + "\\" + patient.getPrenom() + patient.getNom() + generateNumeroFacture() + extention;
+        if (verifRep(fileDoc)) {
             // creation document
-
-            PdfWriter.getInstance(document, new FileOutputStream(path));
+            PdfWriter.getInstance(DOCUMENT, new FileOutputStream(path));
             // Ouverture document
-            document.open();
+            DOCUMENT.open();
             // getDataPatient
-            getDataPatient(idpatient);
+            getDataPatient();
             // infoPatient
-
             // close document
             closeDocument();
         }
         return path;
     }
+
 }

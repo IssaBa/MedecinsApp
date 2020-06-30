@@ -1,132 +1,99 @@
 package dao;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import models.MedecinUser;
 import models.config.HibernateUtil;
+import org.hibernate.HibernateException;
 
 public class MedecinUserDAO {
 
     private static Transaction transaction = null;
-    Session session = HibernateUtil.getSessionFactory().openSession();
+    private Session session;
+    private static final Logger LOGGER = Logger.getLogger(MedecinUserDAO.class.getName());
 
     // Ajout d'un user
-    public boolean saveUser(MedecinUser users) {
-
+    public boolean save(MedecinUser user) {
         try {
-
+            openSession();
             transaction = session.beginTransaction();
-            session.save(users);
+            session.save(user);
             transaction.commit();
-            session.close();
+            closeSession();
             return true;
-
         } catch (Exception e) {
             transaction.rollback();
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
             return false;
         }
 
     }
 
-    //Search usermedecin via un objet
-    public MedecinUser searchUser(MedecinUser users) {
-
-        MedecinUser usersSearch = null;
-        try {
-            session = HibernateUtil.getSessionFactory().openSession();
-
-            usersSearch = session.createQuery("from Medecin_User", MedecinUser.class).list().get(0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return usersSearch;
-    }
-
     // Search d'un userMedecin via son matricule
-    public MedecinUser findUserByMatricule(String matricule) {
-
-        MedecinUser medecinUser = null;
+    public MedecinUser findUserByUsername(String username) {
         try {
-            session = HibernateUtil.getSessionFactory().openSession();
-            MedecinUser medecin = (MedecinUser) session.createQuery("FROM  MedecinUser m  WHERE m.username=:mat").setParameter("mat", matricule).getSingleResult();
-            if (medecin != null) {
-                return medecin;
-            } else {
-                return null;
-            }
-
+            openSession();
+            MedecinUser medecin = (MedecinUser) session.createQuery("FROM  MedecinUser m  WHERE m.username=:mat").setParameter("mat", username).getSingleResult();
+            return medecin;
         } catch (Exception e) {
-            //e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            return null;
         }
-        return medecinUser;
     }
 
-    // Delete d'un userMedecin via son matricule
-    public void deleteMedecinUserById(String matricule) {
-        try {
-            MedecinUser medecinUser = findUserByMatricule(matricule);
-            session.delete(medecinUser);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-    
     public ArrayList<MedecinUser> getAllMedecinuser() {
-    	
-    	try {
-			
-    		 session = HibernateUtil.getSessionFactory().openSession();
-    		 ArrayList<MedecinUser> listmedecin = (ArrayList<MedecinUser>) session.createQuery("FROM  MedecinUser m ").list();
-    		 if(listmedecin.size()>0) {
-    			 return listmedecin;
-    		 }else {
-    			 return null;
-    		 }
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-    	return null;
-	}
-    
-    public boolean UpdateMedecinUser(MedecinUser medecinUser) {
-    	try {
-    		
-    		transaction = session.beginTransaction();
+
+        try {
+            openSession();
+            ArrayList<MedecinUser> listmedecin = (ArrayList<MedecinUser>) session.createQuery("FROM MedecinUser m").list();
+            closeSession();
+            return listmedecin;
+        } catch (HibernateException e) {
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            return null;
+        }
+    }
+
+    public boolean update(MedecinUser medecinUser) {
+        try {
+            openSession();
+            transaction = session.beginTransaction();
             session.update(medecinUser);
             transaction.commit();
             session.close();
             return true;
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-		
-	}
-    
-    
-    public boolean DeleteMedecinUser(MedecinUser medecinUser) {
-    	try {
-    		
-    		transaction = session.beginTransaction();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            return false;
+        }
+
+    }
+
+    public boolean delete(MedecinUser medecinUser) {
+        try {
+            openSession();
+            transaction = session.beginTransaction();
             session.delete(medecinUser);
             transaction.commit();
             session.close();
             return true;
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-		
-	}
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            return false;
+        }
+
+    }
+
+    private void openSession() {
+        this.session = HibernateUtil.getSessionFactory().openSession();
+    }
+
+    private void closeSession() {
+        this.session.close();
+    }
 
 }
