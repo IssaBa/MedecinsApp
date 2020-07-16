@@ -26,7 +26,7 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "Patient", schema = "PUBLIC", catalog = "PUBLIC")
 @NamedQueries({
-    @NamedQuery(name = "Patient.findAll", query = "SELECT p FROM Patient p")
+    @NamedQuery(name = "Patient.findAll", query = "SELECT p FROM Patient p ORDER BY p.nom ASC, p.prenom ASC")
 })
 public class Patient implements Serializable {
 

@@ -139,21 +139,22 @@ public class GestionProfession extends javax.swing.JInternalFrame {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel1.setText("Choix Action");
 
-        comboChoixAction.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                comboChoixActionItemStateChanged(evt);
-            }
-        });
+        comboChoixAction.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         comboChoixAction.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 comboChoixActionActionPerformed(evt);
             }
         });
 
+        labelprofession.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         labelprofession.setText("Nom de la profession");
 
+        libelle.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+
+        choixBTX.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         choixBTX.setText("jButton1");
         choixBTX.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -165,28 +166,23 @@ public class GestionProfession extends javax.swing.JInternalFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel1)
-                        .addGap(63, 63, 63)
-                        .addComponent(comboChoixAction, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jSeparator1)))
-                .addContainerGap())
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(labelprofession)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(libelle, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(choixBTX, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(61, 61, 61))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jSeparator1)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(labelprofession)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(libelle))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 80, Short.MAX_VALUE)
+                        .addComponent(comboChoixAction, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -201,12 +197,13 @@ public class GestionProfession extends javax.swing.JInternalFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(labelprofession)
                     .addComponent(libelle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
+                .addGap(52, 52, 52)
                 .addComponent(choixBTX)
                 .addContainerGap())
         );
 
         tableProfession.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        tableProfession.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         tableProfession.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
@@ -220,6 +217,7 @@ public class GestionProfession extends javax.swing.JInternalFrame {
         ));
         tableProfession.setEditingColumn(0);
         tableProfession.setEditingRow(0);
+        tableProfession.setRowHeight(25);
         tableProfession.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tableProfessionMouseClicked(evt);
@@ -233,9 +231,9 @@ public class GestionProfession extends javax.swing.JInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(33, 33, 33)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 437, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -274,7 +272,7 @@ public class GestionProfession extends javax.swing.JInternalFrame {
     private void choixBTXActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_choixBTXActionPerformed
 
         if (choixBTX.getText().equals(AJOUTER)) {
-            Profession professionCheck = PROFESSION_DAO.findProfessionByLibeller(libelle.getText());
+            Profession professionCheck = PROFESSION_DAO.findByLibelle(libelle.getText());
 
             if (professionCheck != null) {
                 JOptionPane.showMessageDialog(null, "CETTE PROFESSION EXISTE DEJA MERCI !", "GESTION PROFESSION", JOptionPane.ERROR_MESSAGE);
@@ -320,10 +318,8 @@ public class GestionProfession extends javax.swing.JInternalFrame {
         comboChoixAction.setSelectedIndex(0);
         choixBTX.setText("Aucune action");
         choixBTX.setEnabled(false);
+        idUpdateJtable = null;
     }//GEN-LAST:event_choixBTXActionPerformed
-
-    private void comboChoixActionItemStateChanged(java.awt.event.ItemEvent evt) {
-    }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

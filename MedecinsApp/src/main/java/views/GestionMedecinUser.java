@@ -23,9 +23,6 @@ import models.MedecinUser;
 public class GestionMedecinUser extends javax.swing.JInternalFrame {
 
     DefaultTableModel model = new DefaultTableModel();
-    Long idAntecedantModif;
-    Long idClasseAntecedant;
-    String libeleModif = null;
     private final String AJOUTER = "AJOUTER MEDECIN";
     private final String MODIFIER = "MODIFIER MEDECIN";
     private final String SUPPRIMER = "SUPPRIMER MEDECIN";
@@ -131,8 +128,8 @@ public class GestionMedecinUser extends javax.swing.JInternalFrame {
         password2Txt.setText("");
     }
 
-    public boolean verifPassword(String pwd1, String pwd2) {
-        return pwd1.equals(pwd2);
+    public boolean verifPassword() {
+        return String.copyValueOf(password1Txt.getPassword()).equals(String.copyValueOf(password2Txt.getPassword()));
     }
 
     public GestionMedecinUser() {
@@ -168,16 +165,32 @@ public class GestionMedecinUser extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setMaximizable(true);
 
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel2.setText("Nom d'utilisateur");
 
+        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel3.setText("Nom");
 
+        jLabel4.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel4.setText("Prénom");
 
+        jLabel5.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel5.setText("Mot de passe");
 
+        usernameTxt.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+
+        nomTxt.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+
+        prenomTxt.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+
+        password1Txt.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+
+        jLabel6.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel6.setText("Confirmer mot de passe");
 
+        password2Txt.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+
+        choixBTX.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         choixBTX.setText("jButton1");
         choixBTX.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -185,8 +198,10 @@ public class GestionMedecinUser extends javax.swing.JInternalFrame {
             }
         });
 
-        jLabel1.setText("Action");
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel1.setText("Choix Action");
 
+        comboChoix.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         comboChoix.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 comboChoixItemStateChanged(evt);
@@ -203,36 +218,26 @@ public class GestionMedecinUser extends javax.swing.JInternalFrame {
         panelDonneesLayout.setHorizontalGroup(
             panelDonneesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelDonneesLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(panelDonneesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelDonneesLayout.createSequentialGroup()
-                        .addContainerGap()
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(password2Txt, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(panelDonneesLayout.createSequentialGroup()
                         .addGroup(panelDonneesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(panelDonneesLayout.createSequentialGroup()
-                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(19, 19, 19)
-                                .addComponent(prenomTxt))
-                            .addGroup(panelDonneesLayout.createSequentialGroup()
-                                .addComponent(jLabel6)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(password2Txt, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(panelDonneesLayout.createSequentialGroup()
-                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(password1Txt, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 1, Short.MAX_VALUE))
-                            .addGroup(panelDonneesLayout.createSequentialGroup()
-                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(19, 19, 19)
-                                .addComponent(nomTxt))))
-                    .addGroup(panelDonneesLayout.createSequentialGroup()
-                        .addGap(108, 108, 108)
-                        .addComponent(choixBTX, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(panelDonneesLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(74, 74, 74)
-                        .addComponent(comboChoix, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(panelDonneesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(nomTxt)
+                            .addComponent(prenomTxt)
+                            .addComponent(password1Txt, javax.swing.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelDonneesLayout.createSequentialGroup()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(comboChoix, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
             .addGroup(panelDonneesLayout.createSequentialGroup()
                 .addContainerGap()
@@ -242,9 +247,13 @@ public class GestionMedecinUser extends javax.swing.JInternalFrame {
                         .addContainerGap())
                     .addGroup(panelDonneesLayout.createSequentialGroup()
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(usernameTxt)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(usernameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(13, 13, 13))))
+            .addGroup(panelDonneesLayout.createSequentialGroup()
+                .addGap(72, 72, 72)
+                .addComponent(choixBTX, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panelDonneesLayout.setVerticalGroup(
             panelDonneesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -276,10 +285,11 @@ public class GestionMedecinUser extends javax.swing.JInternalFrame {
                     .addComponent(password2Txt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6))
                 .addGap(18, 18, 18)
-                .addComponent(choixBTX)
-                .addGap(36, 36, 36))
+                .addComponent(choixBTX, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(23, 23, 23))
         );
 
+        tablemedecin.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         tablemedecin.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
@@ -303,14 +313,14 @@ public class GestionMedecinUser extends javax.swing.JInternalFrame {
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 496, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, 0)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 342, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 385, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -331,53 +341,56 @@ public class GestionMedecinUser extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(panelDonnees, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(96, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void comboChoixItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_comboChoixItemStateChanged
-        
+
     }//GEN-LAST:event_comboChoixItemStateChanged
 
     private void choixBTXActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_choixBTXActionPerformed
 
         //Ajout Medecin
-        if (choixBTX.getText().equalsIgnoreCase(AJOUTER)) {
+        if (comboChoix.getSelectedItem().toString().equalsIgnoreCase(AJOUTER)) {
 
             if (verifChamps()) {
-                if (verifPassword(password1Txt.getText(), password2Txt.getText())) {
+                if (verifPassword()) {
 
                     MedecinUser medecinUserCheck = MU_DAO.findUserByUsername(usernameTxt.getText());
                     if (medecinUserCheck == null) {
                         MedecinUser medecinUserNew = new MedecinUser();
-
                         medecinUserNew.setNom(nomTxt.getText());
                         medecinUserNew.setPrenom(prenomTxt.getText());
                         medecinUserNew.setUsername(usernameTxt.getText());
-                        medecinUserNew.setPassword(password1Txt.getText());
+                        medecinUserNew.setPassword(String.copyValueOf(password1Txt.getPassword()));
                         if (MU_DAO.save(medecinUserNew)) {
                             JOptionPane.showMessageDialog(this, "UTILISATEUR AJOUTE AVEC SUCCES", "GESTION  MEDECIN", JOptionPane.INFORMATION_MESSAGE);
                         } else {
                             JOptionPane.showMessageDialog(this, "ECHEC AJOUT D'UTILISATEUR !", "GESTION MEDECIN", JOptionPane.ERROR_MESSAGE);
+                            return;
                         }
 
                     } else {
                         JOptionPane.showMessageDialog(this, "Un utilisateur porte déjà ce nom d'utilisateur", "GESTION MEDECIN", JOptionPane.ERROR_MESSAGE);
+                        return;
                     }
 
                 } else {
                     JOptionPane.showMessageDialog(this, "Les deux mots de passe doivent être identiques", "GESTION MEDECIN", JOptionPane.ERROR_MESSAGE);
                     reinitialiserPwd();
+                    return;
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "TOUS LES CHAMPS SONT OBLIGATOIRES MERCI", "GESTION MEDECIN", JOptionPane.ERROR_MESSAGE);
+                return;
             }
-        } else if (choixBTX.getText().equalsIgnoreCase(MODIFIER)) {
+        } else if (comboChoix.getSelectedItem().toString().equalsIgnoreCase(MODIFIER)) {
             // Modifier Medecin
             if (verifChamps()) {
-                if (verifPassword(password1Txt.getText(), password2Txt.getText())) {
+                if (verifPassword()) {
 
                     MedecinUser medecinUserCheck = MU_DAO.findUserByUsername(usernameTxt.getText());
                     if (medecinUserCheck != null) {
@@ -387,21 +400,24 @@ public class GestionMedecinUser extends javax.swing.JInternalFrame {
                         medecinUserNew.setNom(nomTxt.getText());
                         medecinUserNew.setPrenom(prenomTxt.getText());
                         medecinUserNew.setUsername(usernameTxt.getText());
-                        medecinUserNew.setPassword(password1Txt.getText());
+                        medecinUserNew.setPassword(String.copyValueOf(password1Txt.getPassword()));
                         if (MU_DAO.update(medecinUserNew)) {
                             JOptionPane.showMessageDialog(null, "UTILISATEUR MODIFIE AVEC SUCCESS", "GESTION  MEDECIN", JOptionPane.INFORMATION_MESSAGE);
                         } else {
                             JOptionPane.showMessageDialog(null, "ECHEC MODIFICATION DE L'UTILISATEUR ! ", "GESTION MEDECIN", JOptionPane.ERROR_MESSAGE);
+                            return;
                         }
                     }
                 } else {
                     JOptionPane.showMessageDialog(null, "Les deux mots de passe ne correspondent pas", "GESTION MEDECIN", JOptionPane.ERROR_MESSAGE);
                     reinitialiserPwd();
+                    return;
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "TOUS LES CHAMPS SONT OBLIGATOIRES MERCI", "GESTION MEDECIN", JOptionPane.ERROR_MESSAGE);
+                return;
             }
-        } else if (choixBTX.getText().equalsIgnoreCase(SUPPRIMER)) {
+        } else if (comboChoix.getSelectedItem().toString().equalsIgnoreCase(SUPPRIMER)) {
             // Suppression Medecin
             MedecinUser medecinUserCheck = MU_DAO.findUserByUsername(usernameTxt.getText());
             if (medecinUserCheck != null) {
@@ -409,6 +425,7 @@ public class GestionMedecinUser extends javax.swing.JInternalFrame {
                     JOptionPane.showMessageDialog(null, "MEDECIN SUPPRIME AVEC SUCCESS", "GESTION  MEDECIN", JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(null, "ECHEC SUPPRESSION DU MEDECIN ! ", "GESTION MEDECIN", JOptionPane.ERROR_MESSAGE);
+                    return;
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "UTILISATEUR INTROUVABLE !", "GESTION MEDECIN", JOptionPane.ERROR_MESSAGE);
@@ -419,6 +436,10 @@ public class GestionMedecinUser extends javax.swing.JInternalFrame {
         remplirTableMedecin();
         viderChamps();
         desactiverChamps();
+        comboChoix.setSelectedIndex(0);
+        choixBTX.setEnabled(false);
+        choixBTX.setText("Aucune action");
+
     }//GEN-LAST:event_choixBTXActionPerformed
 
     private void tablemedecinMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablemedecinMouseClicked
@@ -430,21 +451,27 @@ public class GestionMedecinUser extends javax.swing.JInternalFrame {
             tablemedecin.clearSelection();
             JOptionPane.showMessageDialog(this, "Merci de choisir une action", "GESTION DE MEDECINS", JOptionPane.ERROR_MESSAGE);
         } else if (action.equals(MODIFIER) || action.equals(SUPPRIMER)) {
-            MedecinUser medecinUser = MU_DAO.findUserByUsername(defaultTableModel.getValueAt(selectRowsIndex, 1).toString());
-            if (medecinUser != null) {
-                usernameTxt.setText(medecinUser.getUsername());
-                nomTxt.setText(medecinUser.getNom());
-                prenomTxt.setText(medecinUser.getPrenom());
-                password1Txt.setText(medecinUser.getPassword());
-                password2Txt.setText(medecinUser.getPassword());
+            try {
+                String username = defaultTableModel.getValueAt(selectRowsIndex, 1).toString();
+                MedecinUser medecinUser = MU_DAO.findUserByUsername(username);
+                if (medecinUser != null) {
+                    usernameTxt.setText(medecinUser.getUsername());
+                    nomTxt.setText(medecinUser.getNom());
+                    prenomTxt.setText(medecinUser.getPrenom());
+                    password1Txt.setText(medecinUser.getPassword());
+                    password2Txt.setText(medecinUser.getPassword());
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Champ selectionné invalide ! Veuillez réessayer", "GESTION DE MEDECINS", JOptionPane.ERROR_MESSAGE);
             }
+
         }
 
     }//GEN-LAST:event_tablemedecinMouseClicked
 
     private void comboChoixActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboChoixActionPerformed
-        checkChoixSelect(comboChoix.getSelectedItem().toString());
         tablemedecin.clearSelection();
+        checkChoixSelect(comboChoix.getSelectedItem().toString());
     }//GEN-LAST:event_comboChoixActionPerformed
 
 

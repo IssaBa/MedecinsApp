@@ -124,8 +124,13 @@ public class Facture {
             Paragraph p1 = new Paragraph("Prénom :  " + patient.getPrenom() + "  ");
             Paragraph p2 = new Paragraph("Nom :  " + patient.getNom() + "  ");
             Paragraph p3 = new Paragraph(
-                    "Né(e) le  " + patient.getDateNaissance() + "   à  " + patient.getLieuNaissance() + "  ");
-            Paragraph p4 = new Paragraph("Civilité :  " + patient.getCivilite().getName() + "  ");
+                    "Né(e) le " + patient.getDateNaissance() + " à " + patient.getLieuNaissance() + "  ");
+            Paragraph p4;
+            try {
+                p4 = new Paragraph("Civilité :  " + patient.getCivilite().getName() + "  ");
+            } catch (Exception e) {
+                p4 = new Paragraph("Civilité : Non renseignée");
+            }
             Paragraph p5 = new Paragraph("Profession :  " + patient.getProfession().getLibelle() + "  ");
             Paragraph p6 = new Paragraph("Sexe :  " + patient.getSexe().getName() + "  ");
             Paragraph p7 = new Paragraph("Adresse :  " + patient.getAdresse() + "  ");

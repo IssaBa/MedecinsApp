@@ -7,12 +7,18 @@ package views;
 
 import dao.PatientDAO;
 import java.awt.Component;
+import java.awt.Cursor;
+import java.beans.PropertyVetoException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.RowFilter;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -30,7 +36,9 @@ public class ListePatients extends javax.swing.JInternalFrame {
     private final PatientDAO patientDAO;
     private Long idPatientSelected;
     private DefaultTableModel model;
-    private final String[] entete = new String[]{"ID", "Prénom", "Nom", "Date de naissance", "Civilité", "Suivi depuis"};
+    private final String[] entete = new String[]{"ID", "Nom", "Prénom", "Date de naissance", "Civilité", "Suivi depuis"};
+    private TableRowSorter<DefaultTableModel> sorter;
+    private List<RowFilter<Object, Object>> filters;
 
     TableCellRenderer tableCellRenderer = new DefaultTableCellRenderer() {
         SimpleDateFormat format = new SimpleDateFormat("dd MMMM YYYY");
@@ -48,14 +56,16 @@ public class ListePatients extends javax.swing.JInternalFrame {
         this.model.setRowCount(0);
         this.model.setColumnIdentifiers(this.entete);
         jTable1.setRowHeight(25);
+
         List<Patient> patients = patientDAO.findAll();
         for (int i = 0; i < patients.size(); i++) {
+            String civilite = patients.get(i).getCivilite() == null ? "Non renseignée" : patients.get(i).getCivilite().getName();
             this.model.addRow(new Object[]{
                 patients.get(i).getId(),
-                patients.get(i).getPrenom(),
                 patients.get(i).getNom(),
+                patients.get(i).getPrenom(),
                 patients.get(i).getDateNaissance(),
-                patients.get(i).getCivilite().getName(),
+                civilite,
                 patients.get(i).getConnuDepuis()
             });
         }
@@ -68,15 +78,18 @@ public class ListePatients extends javax.swing.JInternalFrame {
         TableColumnModel tcm = this.jTable1.getColumnModel();
         tcm.getColumn(3).setCellRenderer(tableCellRenderer);
         tcm.getColumn(5).setCellRenderer(tableCellRenderer);
-        
+
         /*
         HIDE IDs
-        */
-        
+         */
         jTable1.getColumnModel().getColumn(0).setMinWidth(0);
         jTable1.getColumnModel().getColumn(0).setMaxWidth(0);
         jTable1.getColumnModel().getColumn(0).setWidth(0);
+
+        /*ROW SORTING*/
         nbElementLabel.setText(jTable1.getRowCount() + " éléments");
+        this.sorter = new TableRowSorter<>((DefaultTableModel) jTable1.getModel());
+        this.jTable1.setRowSorter(sorter);
     }
 
     /**
@@ -84,8 +97,15 @@ public class ListePatients extends javax.swing.JInternalFrame {
      */
     public ListePatients() {
         initComponents();
-        this.model = new DefaultTableModel();
+        this.model = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+
+        };
         this.patientDAO = new PatientDAO();
+        filters = new ArrayList<>(2);
         this.remplirTablePatients();
     }
 
@@ -100,21 +120,23 @@ public class ListePatients extends javax.swing.JInternalFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        ajouterBtn = new javax.swing.JToggleButton();
-        modifierBtn = new javax.swing.JToggleButton();
-        supprimerBtn = new javax.swing.JToggleButton();
-        openDossierBtn = new javax.swing.JToggleButton();
-        searchPatientTxt = new javax.swing.JTextField();
+        nomSearchPatientTxt = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         nbElementLabel = new javax.swing.JLabel();
+        openDossierBtn = new javax.swing.JButton();
+        ajouterBtn = new javax.swing.JButton();
+        modifierBtn = new javax.swing.JButton();
+        supprimerBtn = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        prenomSearchTxt = new javax.swing.JTextField();
 
         setClosable(true);
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setIconifiable(true);
         setMaximizable(true);
-        setResizable(true);
         setTitle("Liste des Patients");
 
+        jTable1.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -126,14 +148,47 @@ public class ListePatients extends javax.swing.JInternalFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
+        jTable1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jTable1.setName(""); // NOI18N
+        jTable1.setRowHeight(25);
         jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jTable1MouseClicked(evt);
             }
         });
         jScrollPane1.setViewportView(jTable1);
-        jTable1.getAccessibleContext().setAccessibleParent(null);
 
+        nomSearchPatientTxt.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        nomSearchPatientTxt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nomSearchPatientTxtActionPerformed(evt);
+            }
+        });
+        nomSearchPatientTxt.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                nomSearchPatientTxtKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                nomSearchPatientTxtKeyTyped(evt);
+            }
+        });
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel1.setText("Rechercher :");
+
+        nbElementLabel.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        nbElementLabel.setText("nbr éléments");
+
+        openDossierBtn.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        openDossierBtn.setText("OUVRIR LE DOSSIER");
+        openDossierBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openDossierBtnActionPerformed(evt);
+            }
+        });
+
+        ajouterBtn.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         ajouterBtn.setText("AJOUTER");
         ajouterBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -141,6 +196,7 @@ public class ListePatients extends javax.swing.JInternalFrame {
             }
         });
 
+        modifierBtn.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         modifierBtn.setText("MODIFIER");
         modifierBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -148,6 +204,7 @@ public class ListePatients extends javax.swing.JInternalFrame {
             }
         });
 
+        supprimerBtn.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         supprimerBtn.setText("SUPPRIMER");
         supprimerBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -155,28 +212,23 @@ public class ListePatients extends javax.swing.JInternalFrame {
             }
         });
 
-        openDossierBtn.setText("OUVRIR DOSSIER DU PATIENT");
-        openDossierBtn.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        openDossierBtn.addActionListener(new java.awt.event.ActionListener() {
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel2.setText("Par nom");
+
+        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel3.setText("Par prénom");
+
+        prenomSearchTxt.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        prenomSearchTxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                openDossierBtnActionPerformed(evt);
+                prenomSearchTxtActionPerformed(evt);
             }
         });
-
-        searchPatientTxt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                searchPatientTxtActionPerformed(evt);
+        prenomSearchTxt.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                prenomSearchTxtKeyReleased(evt);
             }
         });
-        searchPatientTxt.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                searchPatientTxtKeyTyped(evt);
-            }
-        });
-
-        jLabel1.setText("Rechercher :");
-
-        nbElementLabel.setText("nbr éléments");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -184,22 +236,42 @@ public class ListePatients extends javax.swing.JInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 623, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 967, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(ajouterBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(modifierBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(supprimerBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(openDossierBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(layout.createSequentialGroup()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(searchPatientTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(nbElementLabel))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(openDossierBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGap(48, 48, 48)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(jLabel1)
+                                                .addComponent(nbElementLabel))
+                                            .addGap(168, 168, 168))
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addGroup(layout.createSequentialGroup()
+                                                    .addComponent(jLabel2)
+                                                    .addGap(48, 48, 48))
+                                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                    .addComponent(jLabel3)
+                                                    .addGap(23, 23, 23)))
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                .addComponent(nomSearchPatientTxt)
+                                                .addComponent(prenomSearchTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE))))))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(supprimerBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(modifierBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(ajouterBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -207,28 +279,111 @@ public class ListePatients extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
-                        .addContainerGap())
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 583, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(searchPatientTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(nomSearchPatientTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(prenomSearchTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(27, 27, 27)
                         .addComponent(nbElementLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
-                        .addComponent(ajouterBtn)
+                        .addGap(49, 49, 49)
+                        .addComponent(ajouterBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(modifierBtn)
+                        .addComponent(modifierBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(supprimerBtn)
-                        .addGap(73, 73, 73)
-                        .addComponent(openDossierBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(122, 122, 122))))
+                        .addComponent(supprimerBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(39, 39, 39)
+                        .addComponent(openDossierBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        int indexModel = jTable1.getSelectedRow();
+        this.idPatientSelected = (Long) jTable1.getValueAt(indexModel, 0);
+        if (evt.getClickCount() > 1) {
+            if (this.idPatientSelected == null) {
+                JOptionPane.showMessageDialog(null, "VEUILLEZ SELECTIONNER UN PATIENT", "ERROR", JOptionPane.ERROR_MESSAGE);
+            } else {
+                DossierPatient dossierPatient = new DossierPatient(idPatientSelected);
+                this.getDesktopPane().add(dossierPatient).setVisible(true);
+                try {
+                    dossierPatient.setMaximum(true);
+                } catch (PropertyVetoException ex) {
+                    Logger.getLogger(ListePatients.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                this.dispose();
+            }
+        }
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+
+    }//GEN-LAST:event_jTable1MouseClicked
+
+    private void nomSearchPatientTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nomSearchPatientTxtActionPerformed
+
+    }//GEN-LAST:event_nomSearchPatientTxtActionPerformed
+
+    private void nomSearchPatientTxtKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nomSearchPatientTxtKeyTyped
+
+    }//GEN-LAST:event_nomSearchPatientTxtKeyTyped
+
+    private void nomSearchPatientTxtKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nomSearchPatientTxtKeyReleased
+        /**
+         * public static <M,I> RowFilter<M,I> regexFilter(String regex, int...
+         * indices) Returns a RowFilter that uses a regular expression to
+         * determine which entries to include. Only entries with at least one
+         * matching value are included. For example, the following creates a
+         * RowFilter that includes entries with at least one value starting with
+         * "a": RowFilter.regexFilter("^a");
+         *
+         * The returned filter uses Matcher.find() to test for inclusion. To
+         * test for exact matches use the characters '^' and '$' to match the
+         * beginning and end of the string respectively. For example, "^foo$"
+         * includes only rows whose string is exactly "foo" and not, for
+         * example, "food". See Pattern for a complete description of the
+         * supported regular-expression constructs.
+         *
+         * Parameters: regex - the regular expression to filter on indices - the
+         * indices of the values to check. If not supplied all values are
+         * evaluated Returns: a RowFilter implementing the specified criteria
+         */
+        filters.add(RowFilter.regexFilter(nomSearchPatientTxt.getText(), 1));
+        filters.add(RowFilter.regexFilter(prenomSearchTxt.getText(), 2));
+        sorter.setRowFilter(RowFilter.andFilter(filters));
+        jTable1.setRowSorter(sorter);
+        nbElementLabel.setText(jTable1.getRowCount() + " éléments");
+    }//GEN-LAST:event_nomSearchPatientTxtKeyReleased
+
+    private void openDossierBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openDossierBtnActionPerformed
+        if (this.idPatientSelected == null) {
+            JOptionPane.showMessageDialog(null, "VEUILLEZ SELECTIONNER UN PATIENT", "ERROR", JOptionPane.ERROR_MESSAGE);
+        } else {
+            DossierPatient dossierPatient = new DossierPatient(idPatientSelected);
+            this.getDesktopPane().add(dossierPatient).setVisible(true);
+            try {
+                dossierPatient.setMaximum(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(ListePatients.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.dispose();
+        }
+    }//GEN-LAST:event_openDossierBtnActionPerformed
+
+    private void ajouterBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ajouterBtnActionPerformed
+        AddPatient addPatientForm = new AddPatient();
+        this.getDesktopPane().add(addPatientForm).setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_ajouterBtnActionPerformed
 
     private void modifierBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifierBtnActionPerformed
         if (idPatientSelected == null) {
@@ -242,26 +397,18 @@ public class ListePatients extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_modifierBtnActionPerformed
 
-    private void ajouterBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ajouterBtnActionPerformed
-        AddPatient addPatientForm = new AddPatient();
-        this.getDesktopPane().add(addPatientForm).setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_ajouterBtnActionPerformed
-
-    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
-        DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
-        int indexModel = jTable1.getSelectedRow();
-        this.idPatientSelected = (Long) jTable1.getValueAt(indexModel, 0);
-    }//GEN-LAST:event_jTable1MouseClicked
-
     private void supprimerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_supprimerBtnActionPerformed
         if (this.idPatientSelected == null) {
             JOptionPane.showMessageDialog(null, "VEUILLEZ SELECTIONNER UN PATIENT", "ERROR", JOptionPane.ERROR_MESSAGE);
         } else {
-            //reponse : 0 == oui, 1 == non 
+
+            //reponse : 0 == oui, 1 == non
             int reponse = JOptionPane.showConfirmDialog(null, "Voulez vous supprimer ce patient ?", "SUPPRESSION", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             if (reponse == 0) {
                 Patient p = patientDAO.findById(this.idPatientSelected);
+                p.setConsultationListe(null);
+                p.setOrdonnanceListe(null);
                 if (patientDAO.delete(p)) {
                     JOptionPane.showMessageDialog(null, "SUPRESSION REUSSIE", "PATIENTS", JOptionPane.INFORMATION_MESSAGE);
                     this.idPatientSelected = null;
@@ -270,40 +417,34 @@ public class ListePatients extends javax.swing.JInternalFrame {
                     JOptionPane.showMessageDialog(null, "ECHEC DE LA SUPRESSION", "PATIENTS", JOptionPane.ERROR_MESSAGE);
                 }
             }
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         }
     }//GEN-LAST:event_supprimerBtnActionPerformed
 
-    private void openDossierBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openDossierBtnActionPerformed
-        if (this.idPatientSelected == null) {
-            JOptionPane.showMessageDialog(null, "VEUILLEZ SELECTIONNER UN PATIENT", "ERROR", JOptionPane.ERROR_MESSAGE);
-        } else {
-            DossierPatient dossierPatient = new DossierPatient(idPatientSelected);
-            this.getDesktopPane().add(dossierPatient).setVisible(true);
-            this.dispose();
-        }
+    private void prenomSearchTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_prenomSearchTxtActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_prenomSearchTxtActionPerformed
 
-    }//GEN-LAST:event_openDossierBtnActionPerformed
-
-    private void searchPatientTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchPatientTxtActionPerformed
-
-    }//GEN-LAST:event_searchPatientTxtActionPerformed
-
-    private void searchPatientTxtKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchPatientTxtKeyTyped
-        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>((DefaultTableModel) jTable1.getModel());
-        sorter.setRowFilter(RowFilter.regexFilter(searchPatientTxt.getText()));
+    private void prenomSearchTxtKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_prenomSearchTxtKeyReleased
+        filters.add(RowFilter.regexFilter(nomSearchPatientTxt.getText(), 1));
+        filters.add(RowFilter.regexFilter(prenomSearchTxt.getText(), 2));
+        sorter.setRowFilter(RowFilter.andFilter(filters));
         jTable1.setRowSorter(sorter);
         nbElementLabel.setText(jTable1.getRowCount() + " éléments");
-    }//GEN-LAST:event_searchPatientTxtKeyTyped
+    }//GEN-LAST:event_prenomSearchTxtKeyReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JToggleButton ajouterBtn;
+    private javax.swing.JButton ajouterBtn;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JToggleButton modifierBtn;
+    private javax.swing.JButton modifierBtn;
     private javax.swing.JLabel nbElementLabel;
-    private javax.swing.JToggleButton openDossierBtn;
-    private javax.swing.JTextField searchPatientTxt;
-    private javax.swing.JToggleButton supprimerBtn;
+    private javax.swing.JTextField nomSearchPatientTxt;
+    private javax.swing.JButton openDossierBtn;
+    private javax.swing.JTextField prenomSearchTxt;
+    private javax.swing.JButton supprimerBtn;
     // End of variables declaration//GEN-END:variables
 }

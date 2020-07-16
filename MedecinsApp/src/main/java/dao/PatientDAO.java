@@ -12,6 +12,7 @@ import models.Consultation;
 import models.Ordonnance;
 import models.Patient;
 import models.config.HibernateUtil;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -28,7 +29,9 @@ public class PatientDAO {
     public List<Patient> findAll() {
         try {
             openSession();
-            return session.createNamedQuery("Patient.findAll").getResultList();
+            List<Patient> patients = session.createNamedQuery("Patient.findAll").getResultList();
+            closeSession();
+            return patients;
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
             return new ArrayList<>();
@@ -38,7 +41,14 @@ public class PatientDAO {
     public Patient findById(Long id) {
         try {
             openSession();
-            return session.get(Patient.class, id);
+            Patient p = session.get(Patient.class, id);
+            Hibernate.initialize(p.getProfession());
+            Hibernate.initialize(p.getProfessionConjoint());
+            Hibernate.initialize(p.getPatientAntecedentListe());
+            Hibernate.initialize(p.getConsultationListe());
+            Hibernate.initialize(p.getOrdonnanceListe());
+            closeSession();
+            return p;
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
             return null;
@@ -114,7 +124,7 @@ public class PatientDAO {
             return false;
         }
     }
-    
+
     public boolean editOrdonnance(Patient p, Ordonnance o) {
         try {
             for (int i = 0; i < p.getOrdonnanceListe().size(); i++) {

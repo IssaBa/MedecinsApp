@@ -16,15 +16,19 @@ public class ClasseAntecedentDAO {
     Session session = HibernateUtil.getSessionFactory().openSession();
     private static final Logger LOGGER = Logger.getLogger(ClasseAntecedentDAO.class.getName());
 
-   
-    // Ajouter ClasseAntecedent
-    public boolean saveClasseAntecedant(ClasseAntecedent classeAntecedent) {
+    /**
+     * Ajouter ClasseAntecedent
+     * @param classeAntecedent
+     * @return 
+     */
+    public boolean save(ClasseAntecedent classeAntecedent) {
 
         try {
+            openSession();
             transaction = session.beginTransaction();
             session.save(classeAntecedent);
             transaction.commit();
-            session.close();
+            closeSession();
             return true;
         } catch (Exception e) {
             transaction.rollback();
@@ -34,71 +38,46 @@ public class ClasseAntecedentDAO {
 
     }
 
-    //Search ClasseAntecedent via un objet
-    public ClasseAntecedent searchClasseAntecedant(ClasseAntecedent classeAntecedent) {
-
-        ClasseAntecedent classeAntecedent2 = null;
+    /**
+     * 
+     * @param libelle
+     * @return ClasseAntecedent via son libelle
+     */
+    public ClasseAntecedent findByLibelle(String libelle) {
         try {
-            classeAntecedent2 = session.createQuery("from ClasseAntecedent p", ClasseAntecedent.class).list().get(0);
-            session.flush();
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
-        }
-
-        return classeAntecedent2;
-    }
-
-    // Search ClasseAntecedent via son libelle
-    public ClasseAntecedent findClasseAntecedant(String libelle) {
-
-        List<ClasseAntecedent> classeAntecedent = null;
-        try {
-            classeAntecedent = session.createQuery("FROM  ClasseAntecedent cl  WHERE cl.libelle=:lib").setParameter("lib", libelle).list();
-            // session.flush();
+            openSession();
+            List<ClasseAntecedent> classeAntecedent = session.createQuery("FROM  ClasseAntecedent cl  WHERE cl.libelle=:lib").setParameter("lib", libelle).list();
             if (classeAntecedent.size() > 0) {
                 return classeAntecedent.get(0);
-            } else {
-                return null;
             }
-
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
         return null;
     }
 
-    // Delete ClasseAntecedent via son libelle
-    public void deleteClasseAntecedent(String libelle) {
+    /**
+     *
+     * @return la liste de tous les ClasseAntecedent
+     */
+    public List<ClasseAntecedent> findAll() {
         try {
-            ClasseAntecedent classeAntecedent = findClasseAntecedant(libelle);
-            session.delete(classeAntecedent);
-            session.flush();
-
+            openSession();
+            return session.createQuery("FROM  ClasseAntecedent clAnt").list();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            return new ArrayList<>();
         }
-
-    }
-
-    // la liste de tous les ClasseAntecedent
-    public ArrayList<ClasseAntecedent> getAllClasseAntecedent() {
-        ArrayList<ClasseAntecedent> lisClasseAntecedent = new ArrayList<>();
-        try {
-            lisClasseAntecedent = (ArrayList<ClasseAntecedent>) session.createQuery("FROM  ClasseAntecedent clAnt ").list();
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
-        }
-        return lisClasseAntecedent;
     }
 
     // Modifier ClasseAntecedent
-    public boolean updateClasseAntecedent(ClasseAntecedent classeAntecedent) {
-        //session.flush();
+    public boolean update(ClasseAntecedent classeAntecedent) {
         try {
+            openSession();
             transaction = session.beginTransaction();
-            session.update(classeAntecedent);
+            session.merge(classeAntecedent);
             transaction.commit();
-            session.close();
+            closeSession();
             return true;
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
@@ -108,12 +87,13 @@ public class ClasseAntecedentDAO {
     }
 
     // Delete ClasseAntecedent
-    public boolean deleteProfession(ClasseAntecedent classeAntecedent) {
+    public boolean delete(ClasseAntecedent classeAntecedent) {
         try {
+            openSession();
             transaction = session.beginTransaction();
-            session.delete(classeAntecedent);
+            session.remove(classeAntecedent);
             transaction.commit();
-            session.close();
+            closeSession();
             return true;
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
@@ -122,13 +102,22 @@ public class ClasseAntecedentDAO {
 
     }
 
-    public ClasseAntecedent findClAntById(Long id) {
+    public ClasseAntecedent findById(Long id) {
         try {
+            openSession();
             return session.get(ClasseAntecedent.class, id);
         } catch (Exception e) {
-
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
             return null;
         }
+    }
+
+    private void openSession() {
+        this.session = HibernateUtil.getSessionFactory().openSession();
+    }
+
+    private void closeSession() {
+        this.session.close();
     }
 
 }

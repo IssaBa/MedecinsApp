@@ -46,13 +46,16 @@ public class TypeConsultationDAO {
     public TypeConsultation findByLibelle(String libelle) {
         try {
             openSession();
-            return (TypeConsultation) session.createQuery("SELECT tc FROM TypeConsultation tc WHERE tc.libelle = :libelle")
+            List tcs = session.createQuery("SELECT tc FROM TypeConsultation tc WHERE tc.libelle = :libelle")
                     .setParameter("libelle", libelle)
-                    .getSingleResult();
+                    .getResultList();
+            if (tcs.size() > 0) {
+                return (TypeConsultation) tcs.get(0);
+            }
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
-            return null;
         }
+        return null;
     }
 
     public boolean save(TypeConsultation p) {

@@ -5,11 +5,18 @@
  */
 package views;
 
+import java.awt.Cursor;
+import java.beans.PropertyVetoException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author A663588
  */
 public class Menu extends javax.swing.JFrame {
+
+    private ListePatients listePatients;
 
     /**
      * Creates new form Menu
@@ -17,6 +24,19 @@ public class Menu extends javax.swing.JFrame {
     public Menu() {
         initComponents();
         this.setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
+        desktopPane.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        this.listePatients = new ListePatients();
+        desktopPane.add(listePatients).setVisible(true);
+        try {
+            listePatients.setMaximum(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(ListePatients.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        desktopPane.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+    }
+
+    public ListePatients getListePatients() {
+        return listePatients;
     }
 
     /**
@@ -43,7 +63,7 @@ public class Menu extends javax.swing.JFrame {
         listeTypeConsultationMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("FAYEMILOG");
+        setTitle("GYNELOGBIS");
 
         desktopPane.setBackground(new java.awt.Color(204, 204, 255));
 
@@ -59,7 +79,9 @@ public class Menu extends javax.swing.JFrame {
         );
 
         patientsMenu.setText("Patients");
+        patientsMenu.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
 
+        listePatientsMenuItem.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         listePatientsMenuItem.setText("Liste des patients");
         listePatientsMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -72,17 +94,14 @@ public class Menu extends javax.swing.JFrame {
 
         medecinsMenu.setMnemonic('f');
         medecinsMenu.setText("Médecins");
-        medecinsMenu.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                medecinsMenuActionPerformed(evt);
-            }
-        });
+        medecinsMenu.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         medecinsMenu.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 medecinsMenuKeyPressed(evt);
             }
         });
 
+        jMenuItem4.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jMenuItem4.setText("Gestion des utilisateurs");
         jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -95,14 +114,16 @@ public class Menu extends javax.swing.JFrame {
 
         professionMenu.setMnemonic('e');
         professionMenu.setText("Professions");
+        professionMenu.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         professionMenu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 professionMenuActionPerformed(evt);
             }
         });
 
+        listeProfessionMenuItem.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         listeProfessionMenuItem.setMnemonic('t');
-        listeProfessionMenuItem.setText("Gestion Profession");
+        listeProfessionMenuItem.setText("Gestion des professions");
         listeProfessionMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 listeProfessionMenuItemActionPerformed(evt);
@@ -112,9 +133,11 @@ public class Menu extends javax.swing.JFrame {
 
         menuBar.add(professionMenu);
 
-        jMenu2.setText("Antécedent");
+        jMenu2.setText("Antécedents");
+        jMenu2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
 
-        jMenuItem3.setText("Gestion Antécedents");
+        jMenuItem3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jMenuItem3.setText("Gestion des antécedents");
         jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem3ActionPerformed(evt);
@@ -122,7 +145,8 @@ public class Menu extends javax.swing.JFrame {
         });
         jMenu2.add(jMenuItem3);
 
-        listeClasseAnteMenuItem.setText("Gestion Classes d'antécedents");
+        listeClasseAnteMenuItem.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        listeClasseAnteMenuItem.setText("Gestion des classes d'antécedents");
         listeClasseAnteMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 listeClasseAnteMenuItemActionPerformed(evt);
@@ -132,9 +156,11 @@ public class Menu extends javax.swing.JFrame {
 
         menuBar.add(jMenu2);
 
-        typeConsultationMenu.setText("Type de consultation");
+        typeConsultationMenu.setText("Types de consultation");
+        typeConsultationMenu.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
 
-        listeTypeConsultationMenuItem.setText("Liste des types");
+        listeTypeConsultationMenuItem.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        listeTypeConsultationMenuItem.setText("Gestion des types");
         listeTypeConsultationMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 listeTypeConsultationMenuItemActionPerformed(evt);
@@ -167,8 +193,21 @@ public class Menu extends javax.swing.JFrame {
 
 
     private void listePatientsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listePatientsMenuItemActionPerformed
-        ListePatients listePatients = new ListePatients();
-        desktopPane.add(listePatients).setVisible(true);
+        if (listePatients != null) {
+            listePatients.setVisible(true);
+        } else {
+            desktopPane.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            listePatients = new ListePatients();
+            desktopPane.add(listePatients).setVisible(true);
+            try {
+                listePatients.setMaximum(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(ListePatients.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            desktopPane.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        }
+
+
     }//GEN-LAST:event_listePatientsMenuItemActionPerformed
 
     private void listeTypeConsultationMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listeTypeConsultationMenuItemActionPerformed
@@ -176,7 +215,7 @@ public class Menu extends javax.swing.JFrame {
         desktopPane.add(gestionTypeConsultation).setVisible(true);
     }//GEN-LAST:event_listeTypeConsultationMenuItemActionPerformed
     private void listeClasseAnteMenuItemActionPerformed(java.awt.event.ActionEvent evt) {
-        GestionClasseAntecedant classeAntecedant = new GestionClasseAntecedant();
+        GestionClasseAntecedent classeAntecedant = new GestionClasseAntecedent();
         desktopPane.add(classeAntecedant).setVisible(true);
     }
 
@@ -190,26 +229,15 @@ public class Menu extends javax.swing.JFrame {
     }//GEN-LAST:event_medecinsMenuKeyPressed
 
     private void professionMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_professionMenuActionPerformed
-     BatchFiles batchFiles = new BatchFiles();
-     desktopPane.add(batchFiles).setVisible(true);
+        BatchFiles batchFiles = new BatchFiles();
+        desktopPane.add(batchFiles).setVisible(true);
     }//GEN-LAST:event_professionMenuActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {
-        GestionAntecedant gestionAntecedant = new GestionAntecedant();
+        GestionAntecedent gestionAntecedant = new GestionAntecedent();
         desktopPane.add(gestionAntecedant).setVisible(true);
     }
 
-    private void medecinsMenuActionPerformed(java.awt.event.ActionEvent evt) {
-        GestionMedecinUser gestionMedecins = new GestionMedecinUser();
-        desktopPane.add(gestionMedecins).setVisible(true);
-
-    }
-
-    private void addMedecinMenuItemActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-        GestionMedecinUser gestionMedecins = new GestionMedecinUser();
-        desktopPane.add(gestionMedecins).setVisible(true);
-    }
 
     /**
      * @param args the command line arguments

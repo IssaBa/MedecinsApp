@@ -6,19 +6,21 @@
 package views;
 
 import com.itextpdf.text.DocumentException;
-import dao.AntecedantDAO;
+import dao.AntecedentDAO;
 import dao.ClasseAntecedentDAO;
 import dao.PatientAntecedentDAO;
 import dao.PatientDAO;
 import dao.TypeConsultationDAO;
 import facture.DossierPdf;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Desktop;
+import java.awt.Font;
+import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
@@ -41,22 +43,19 @@ import models.Patient;
 import models.PatientAntecedent;
 import models.Session;
 import models.TypeConsultation;
-import org.hibernate.Hibernate;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 /**
  *
  * @author Baye Lahad DIAGNE
  */
-
-
 public class DossierPatient extends javax.swing.JInternalFrame {
 
     private Patient patient;
     private final Long ID_PATIENT;
     private final PatientDAO patientDAO;
     private final ClasseAntecedentDAO classeAntecedentDAO;
-    private final AntecedantDAO antecedentDAO;
+    private final AntecedentDAO antecedentDAO;
     private final PatientAntecedentDAO paDAO;
     private final TypeConsultationDAO typeConsultationDAO;
     private DefaultTreeModel myTreeModel;
@@ -70,6 +69,7 @@ public class DossierPatient extends javax.swing.JInternalFrame {
     private Consultation consultationEdit;
     private Ordonnance ordonnanceEdit;
     private static final Logger LOGGER = Logger.getLogger(DossierPatient.class.getName());
+    private final List<TypeConsultation> typesConsultationArray;
 
     public class TableauAntecedentsModel extends DefaultTableModel {
 
@@ -115,6 +115,8 @@ public class DossierPatient extends javax.swing.JInternalFrame {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            Font police = new Font("Tahoma", 0, 18);
+            setFont(police);
             setText(value.toString());
             setSize(table.getColumnModel().getColumn(column).getWidth(), getPreferredSize().height);
             if (table.getRowHeight(row) != getPreferredSize().height) {
@@ -137,16 +139,14 @@ public class DossierPatient extends javax.swing.JInternalFrame {
         patientDAO = new PatientDAO();
         classeAntecedentDAO = new ClasseAntecedentDAO();
         typeConsultationDAO = new TypeConsultationDAO();
-        antecedentDAO = new AntecedantDAO();
+        antecedentDAO = new AntecedentDAO();
         paDAO = new PatientAntecedentDAO();
         patient = patientDAO.findById(idPatient);
-        Hibernate.initialize(patient.getProfession());
-        Hibernate.initialize(patient.getProfessionConjoint());
-        Hibernate.initialize(patient.getPatientAntecedentListe());
         remplirSignaletique();
         this.setTitle(patient.getPrenom() + " " + patient.getNom());
         remplirComboClassesAntecedent();
         remplirTree();
+        typesConsultationArray = typeConsultationDAO.findAll();
         remplirComboTypeConsultation();
         remplirTableauConsultation();
         remplirComboActionConsultation();
@@ -182,7 +182,7 @@ public class DossierPatient extends javax.swing.JInternalFrame {
 
     private void remplirComboClassesAntecedent() {
         try {
-            List<ClasseAntecedent> classes = classeAntecedentDAO.getAllClasseAntecedent();
+            List<ClasseAntecedent> classes = classeAntecedentDAO.findAll();
             comboClasses.removeAll();
             comboClasses.addItem("");
             for (ClasseAntecedent c : classes) {
@@ -196,10 +196,9 @@ public class DossierPatient extends javax.swing.JInternalFrame {
 
     private void remplirComboTypeConsultation() {
         try {
-            List<TypeConsultation> types = typeConsultationDAO.findAll();
             typeConsultationCbx.removeAll();
-            typeConsultationCbx.addItem("");
-            for (TypeConsultation tc : types) {
+            //typeConsultationCbx.addItem("");
+            for (TypeConsultation tc : typesConsultationArray) {
                 typeConsultationCbx.addItem(tc.getLibelle());
             }
         } catch (Exception e) {
@@ -239,6 +238,7 @@ public class DossierPatient extends javax.swing.JInternalFrame {
             }
             this.tableOrdonnance.setModel(model);
             TableColumnModel tcm = tableOrdonnance.getColumnModel();
+            tcm.getColumn(2).setCellRenderer(new WordWrapCellRenderer());
             tcm.removeColumn(tcm.getColumn(0));
             //setTableOrdonnanceHauteurLigne();
         } catch (Exception e) {
@@ -255,7 +255,7 @@ public class DossierPatient extends javax.swing.JInternalFrame {
         return null;
     }
 
-    private Consultation findConsultationInPatient(Integer idConsultation) {
+    private Consultation findConsultationInPatient(Long idConsultation) {
         for (int i = 0; i < this.patient.getConsultationListe().size(); i++) {
             if (this.patient.getConsultationListe().get(i).getId().equals(idConsultation)) {
                 return this.patient.getConsultationListe().get(i);
@@ -278,7 +278,7 @@ public class DossierPatient extends javax.swing.JInternalFrame {
             TableauAntecedentsModel model = new TableauAntecedentsModel();
             model.setRowCount(0);
             model.setColumnIdentifiers(new String[]{"Nom de l'antécédent", "Selectionné", "ID"});
-            ArrayList<Antecedent> antecedents = antecedentDAO.findByClasseName(libelleClasse);
+            List<Antecedent> antecedents = antecedentDAO.findByClasseName(libelleClasse);
             for (Antecedent a : antecedents) {
                 Boolean checkBox = paDAO.findByPatientAndAntecedent(patient.getId(), a.getId()) != null;
                 model.addRow(new Object[]{a.getLibelle(), checkBox, a.getId()});
@@ -384,7 +384,7 @@ public class DossierPatient extends javax.swing.JInternalFrame {
         jLabel17 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tableAntecedentsPatient = new javax.swing.JTable();
-        updateAntecedantsBtn = new javax.swing.JToggleButton();
+        updateAntecedentsBtn = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tableConsultations = new javax.swing.JTable();
@@ -415,95 +415,117 @@ public class DossierPatient extends javax.swing.JInternalFrame {
         closeDossierBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setMaximizable(true);
+        setResizable(true);
 
+        jTabbedPane1.setFont(new java.awt.Font("Tahoma", 0, 20)); // NOI18N
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel1.setText("Prénom :");
 
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel2.setText("Nom :");
 
+        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel3.setText("Né(e) le :");
 
+        jLabel4.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel4.setText("À :");
 
+        jLabel5.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel5.setText("Sexe :");
 
+        jLabel6.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel6.setText("Civilité :");
 
+        jLabel7.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel7.setText("Profession :");
 
+        jLabel8.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel8.setText("No de dossier :");
 
+        jLabel9.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel9.setText("Adresse : ");
 
+        jLabel10.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel10.setText("Téléphone (port.) : ");
 
+        jLabel11.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel11.setText("Téléphone (dom.) :");
 
+        jLabel12.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel12.setText("Téléphone (bur.) :");
 
+        jLabel13.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel13.setText("Prénom du conjoint :");
 
+        jLabel14.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel14.setText("Nom du conjoint :");
 
+        jLabel15.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel15.setText("Profession du conjoint :");
 
+        jLabel16.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel16.setText("Téléphone du conjoint :");
 
-        prenomLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        prenomLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         prenomLabel.setText("jLabel17");
 
-        dateNaissanceLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        dateNaissanceLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         dateNaissanceLabel.setText("jLabel17");
 
-        nomLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        nomLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         nomLabel.setText("jLabel17");
 
-        lieuNaissanceLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        lieuNaissanceLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         lieuNaissanceLabel.setText("jLabel17");
 
-        sexeLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        sexeLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         sexeLabel.setText("jLabel17");
 
-        civiliteLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        civiliteLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         civiliteLabel.setText("jLabel17");
 
-        professionLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        professionLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         professionLabel.setText("jLabel17");
 
-        numeroDossierLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        numeroDossierLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         numeroDossierLabel.setText("jLabel17");
 
-        adresseLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        adresseLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         adresseLabel.setText("jLabel17");
 
-        telPortableLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        telPortableLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         telPortableLabel.setText("jLabel17");
 
-        telDomicileLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        telDomicileLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         telDomicileLabel.setText("jLabel17");
 
-        telBureauLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        telBureauLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         telBureauLabel.setText("jLabel17");
 
-        prenomConjointLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        prenomConjointLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         prenomConjointLabel.setText("jLabel17");
 
-        nomConjointLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        nomConjointLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         nomConjointLabel.setText("jLabel17");
 
-        professionConjointLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        professionConjointLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         professionConjointLabel.setText("jLabel17");
 
-        telConjointLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        telConjointLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         telConjointLabel.setText("jLabel17");
 
+        jLabel18.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel18.setText("Patient du docteur ");
 
-        medecinTraitantLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        medecinTraitantLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         medecinTraitantLabel.setText("Label18");
 
+        jLabel19.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel19.setText("depuis le");
 
-        suiviDepuisLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        suiviDepuisLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         suiviDepuisLabel.setText("Label18");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -514,40 +536,36 @@ public class DossierPatient extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addGap(66, 66, 66)
-                                .addComponent(dateNaissanceLabel))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addGap(104, 104, 104)
-                                .addComponent(lieuNaissanceLabel))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addGap(84, 84, 84)
-                                .addComponent(sexeLabel))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel6)
-                                .addGap(75, 75, 75)
-                                .addComponent(civiliteLabel))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel7)
-                                .addGap(53, 53, 53)
-                                .addComponent(professionLabel))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel8)
-                                .addGap(34, 34, 34)
-                                .addComponent(numeroDossierLabel))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel1)
                                     .addComponent(jLabel2))
-                                .addGap(68, 68, 68)
+                                .addGap(66, 66, 66)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(nomLabel)
-                                    .addComponent(prenomLabel))))
-                        .addGap(150, 150, 150)
+                                    .addComponent(prenomLabel)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel8)
+                                    .addComponent(jLabel7))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(professionLabel)
+                                    .addComponent(numeroDossierLabel)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel6)
+                                    .addComponent(jLabel5)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jLabel3))
+                                .addGap(63, 63, 63)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(dateNaissanceLabel)
+                                    .addComponent(lieuNaissanceLabel)
+                                    .addComponent(sexeLabel)
+                                    .addComponent(civiliteLabel))))
+                        .addGap(166, 166, 166)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel16)
@@ -565,10 +583,10 @@ public class DossierPatient extends javax.swing.JInternalFrame {
                                     .addComponent(jLabel12)
                                     .addComponent(jLabel13)
                                     .addComponent(jLabel14))
-                                .addGap(30, 30, 30)
+                                .addGap(39, 39, 39)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(nomConjointLabel)
                                     .addComponent(prenomConjointLabel)
+                                    .addComponent(nomConjointLabel)
                                     .addComponent(telBureauLabel)
                                     .addComponent(telDomicileLabel)
                                     .addComponent(telPortableLabel)
@@ -581,93 +599,98 @@ public class DossierPatient extends javax.swing.JInternalFrame {
                         .addComponent(jLabel19)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(suiviDepuisLabel)))
-                .addContainerGap(206, Short.MAX_VALUE))
+                .addContainerGap(367, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(25, 25, 25)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jLabel9)
                     .addComponent(prenomLabel)
                     .addComponent(adresseLabel))
-                .addGap(18, 18, 18)
+                .addGap(25, 25, 25)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(jLabel10)
                     .addComponent(nomLabel)
                     .addComponent(telPortableLabel))
-                .addGap(18, 18, 18)
+                .addGap(25, 25, 25)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(jLabel11)
                     .addComponent(dateNaissanceLabel)
                     .addComponent(telDomicileLabel))
-                .addGap(18, 18, 18)
+                .addGap(25, 25, 25)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(jLabel12)
                     .addComponent(lieuNaissanceLabel)
                     .addComponent(telBureauLabel))
-                .addGap(18, 18, 18)
+                .addGap(25, 25, 25)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(jLabel13)
                     .addComponent(sexeLabel)
                     .addComponent(prenomConjointLabel))
-                .addGap(18, 18, 18)
+                .addGap(25, 25, 25)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(jLabel14)
                     .addComponent(civiliteLabel)
                     .addComponent(nomConjointLabel))
-                .addGap(18, 18, 18)
+                .addGap(25, 25, 25)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
                     .addComponent(jLabel15)
                     .addComponent(professionLabel)
                     .addComponent(professionConjointLabel))
-                .addGap(18, 18, 18)
+                .addGap(25, 25, 25)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
                     .addComponent(jLabel16)
                     .addComponent(numeroDossierLabel)
                     .addComponent(telConjointLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
+                .addGap(62, 62, 62)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel18)
                     .addComponent(medecinTraitantLabel)
                     .addComponent(jLabel19)
                     .addComponent(suiviDepuisLabel))
-                .addContainerGap())
+                .addContainerGap(137, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Signalétique", jPanel1);
 
-        antecedentsTree.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
+        antecedentsTree.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         antecedentsTree.setModel(this.myTreeModel);
         antecedentsTree.setFocusable(false);
         jScrollPane1.setViewportView(antecedentsTree);
 
         comboClasses.setEditable(true);
+        comboClasses.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         comboClasses.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 comboClassesActionPerformed(evt);
             }
         });
 
+        jLabel17.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel17.setText("Classe de l'antécédent");
 
         jScrollPane2.setMaximumSize(new java.awt.Dimension(32767, 10000));
 
+        tableAntecedentsPatient.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        tableAntecedentsPatient.setRowHeight(25);
         tableAntecedentsPatient.setRowSelectionAllowed(false);
         jScrollPane2.setViewportView(tableAntecedentsPatient);
 
-        updateAntecedantsBtn.setText("Mettre à jour les éléments sélectionnés");
-        updateAntecedantsBtn.addActionListener(new java.awt.event.ActionListener() {
+        updateAntecedentsBtn.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        updateAntecedentsBtn.setText("Mettre les antécédents à jour");
+        updateAntecedentsBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                updateAntecedantsBtnActionPerformed(evt);
+                updateAntecedentsBtnActionPerformed(evt);
             }
         });
 
@@ -677,36 +700,39 @@ public class DossierPatient extends javax.swing.JInternalFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 83, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 431, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
                         .addComponent(jLabel17)
-                        .addGap(18, 18, 18)
-                        .addComponent(comboClasses, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(updateAntecedantsBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                        .addComponent(comboClasses, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(updateAntecedentsBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(25, 25, 25)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(comboClasses, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel17))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
-                        .addComponent(updateAntecedantsBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(169, 169, 169))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(updateAntecedentsBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1))
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Antécédents", jPanel2);
 
+        tableConsultations.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         tableConsultations.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
@@ -725,16 +751,23 @@ public class DossierPatient extends javax.swing.JInternalFrame {
         });
         jScrollPane3.setViewportView(tableConsultations);
 
+        typeConsultationCbx.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+
+        jLabel20.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel20.setText("Type");
 
+        jLabel21.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel21.setText("Date");
 
         detailsConsultationTxt.setColumns(20);
+        detailsConsultationTxt.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         detailsConsultationTxt.setRows(5);
         jScrollPane4.setViewportView(detailsConsultationTxt);
 
+        jLabel22.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel22.setText("Détails");
 
+        consultationBtn.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         consultationBtn.setText("Nouvelle Consultation");
         consultationBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -742,13 +775,17 @@ public class DossierPatient extends javax.swing.JInternalFrame {
             }
         });
 
+        jLabel23.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel23.setText("Action");
 
+        actionConsultationCbx.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         actionConsultationCbx.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 actionConsultationCbxActionPerformed(evt);
             }
         });
+
+        dateConsultationTxt.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -757,32 +794,33 @@ public class DossierPatient extends javax.swing.JInternalFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(consultationBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel22)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel23)
-                        .addGap(18, 18, 18)
-                        .addComponent(actionConsultationCbx, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel20)
                             .addComponent(jLabel21))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(31, 31, 31)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(typeConsultationCbx, 0, 215, Short.MAX_VALUE)
-                            .addComponent(dateConsultationTxt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 70, Short.MAX_VALUE)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 396, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(dateConsultationTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
+                            .addComponent(typeConsultationCbx, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel23)
+                        .addGap(18, 18, 18)
+                        .addComponent(actionConsultationCbx, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jSeparator1)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel22)
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(consultationBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jScrollPane4))))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 626, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(25, 25, 25)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -801,31 +839,40 @@ public class DossierPatient extends javax.swing.JInternalFrame {
                         .addGap(18, 18, 18)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel22)
-                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
-                        .addComponent(consultationBtn))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(44, 44, 44)
+                        .addComponent(consultationBtn)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 559, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
         jTabbedPane1.addTab("Consultations", jPanel3);
 
+        jLabel24.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel24.setText("Action ");
 
+        actionOrdonnanceCbx.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         actionOrdonnanceCbx.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 actionOrdonnanceCbxActionPerformed(evt);
             }
         });
 
+        jLabel25.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel25.setText("Date");
 
+        dateOrdonnanceTxt.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+
+        jLabel26.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel26.setText("Détails");
 
         detailsOrdonnanceTxt.setColumns(20);
+        detailsOrdonnanceTxt.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         detailsOrdonnanceTxt.setRows(5);
         jScrollPane5.setViewportView(detailsOrdonnanceTxt);
 
+        ordonnanceBtn.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         ordonnanceBtn.setText("jButton1");
         ordonnanceBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -833,6 +880,7 @@ public class DossierPatient extends javax.swing.JInternalFrame {
             }
         });
 
+        tableOrdonnance.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         tableOrdonnance.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -841,6 +889,7 @@ public class DossierPatient extends javax.swing.JInternalFrame {
 
             }
         ));
+        tableOrdonnance.setRowHeight(25);
         tableOrdonnance.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tableOrdonnanceMouseClicked(evt);
@@ -854,29 +903,29 @@ public class DossierPatient extends javax.swing.JInternalFrame {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel24)
-                        .addGap(37, 37, 37)
-                        .addComponent(actionOrdonnanceCbx, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(actionOrdonnanceCbx, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jSeparator2)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
+                    .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel25)
                             .addComponent(jLabel26))
                         .addGap(38, 38, 38)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(dateOrdonnanceTxt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)))
-                    .addComponent(ordonnanceBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 391, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(ordonnanceBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jScrollPane5)
+                            .addComponent(dateOrdonnanceTxt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 606, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(25, 25, 25)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -885,23 +934,23 @@ public class DossierPatient extends javax.swing.JInternalFrame {
                         .addGap(18, 18, 18)
                         .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel25)
-                            .addComponent(dateOrdonnanceTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
+                            .addComponent(dateOrdonnanceTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 27, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel26)
                             .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addComponent(ordonnanceBtn)
-                        .addGap(0, 63, Short.MAX_VALUE))
+                        .addGap(0, 272, Short.MAX_VALUE))
                     .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
         jTabbedPane1.addTab("Ordonnances", jPanel4);
 
-        imprimerBtn.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        imprimerBtn.setFont(new java.awt.Font("Tahoma", 1, 20)); // NOI18N
         imprimerBtn.setText("Générer dossier en PDF");
         imprimerBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -909,7 +958,7 @@ public class DossierPatient extends javax.swing.JInternalFrame {
             }
         });
 
-        closeDossierBtn.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        closeDossierBtn.setFont(new java.awt.Font("Tahoma", 1, 20)); // NOI18N
         closeDossierBtn.setText("Fermer");
         closeDossierBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -922,23 +971,24 @@ public class DossierPatient extends javax.swing.JInternalFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTabbedPane1)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(354, 354, 354)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(497, 497, 497)
                         .addComponent(imprimerBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(closeDossierBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(closeDossierBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jTabbedPane1)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(29, 29, 29)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 394, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(26, 26, 26)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(jTabbedPane1)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(imprimerBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE)
                     .addComponent(closeDossierBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
@@ -950,38 +1000,6 @@ public class DossierPatient extends javax.swing.JInternalFrame {
     private void comboClassesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboClassesActionPerformed
         remplirTableauAntecedents((String) comboClasses.getSelectedItem());
     }//GEN-LAST:event_comboClassesActionPerformed
-
-    private void updateAntecedantsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateAntecedantsBtnActionPerformed
-        DefaultTableModel dtm = (DefaultTableModel) tableAntecedentsPatient.getModel();
-        if (dtm.getRowCount() == 0) {
-            JOptionPane.showMessageDialog(null, "AUCUNE VALEUR SELECTIONNEE", "PATIENT", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        for (int i = 0; i < dtm.getRowCount(); i++) {
-            Long idAntecedent = (Long) dtm.getValueAt(i, 2);
-            PatientAntecedent patAnt = this.findAntecedentInPatient(idAntecedent);
-            if ((Boolean) dtm.getValueAt(i, 1) && patAnt == null) {
-                patAnt = new PatientAntecedent();
-                //patAnt.setId(paDAO.newID());
-                //patAnt.setPatient(this.patient);
-                Antecedent ant = antecedentDAO.findById(idAntecedent);
-                patAnt.setAntecedent(ant);
-                patAnt.setCommentaire("");
-                patAnt.setDateEntree(new Date());
-                this.patient.addPatientAntecedent(patAnt);
-            } else if (!(Boolean) dtm.getValueAt(i, 1) && patAnt != null) {
-                this.patient.removePatientAntecedent(patAnt);
-            }
-        }
-
-        if (patientDAO.edit(patient)) {
-            this.patient = patientDAO.findById(this.ID_PATIENT);
-            this.remplirTree();
-            JOptionPane.showMessageDialog(null, "ANTECEDENTS MIS A JOUR", "PATIENT", JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(null, "ECHEC DE LA MISE A JOUR", "PATIENT", JOptionPane.ERROR_MESSAGE);
-        }
-    }//GEN-LAST:event_updateAntecedantsBtnActionPerformed
 
     private void disableFormConsultation() {
         typeConsultationCbx.setEnabled(false);
@@ -1037,6 +1055,7 @@ public class DossierPatient extends javax.swing.JInternalFrame {
     private void actionConsultationCbxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_actionConsultationCbxActionPerformed
         String action = (String) actionConsultationCbx.getSelectedItem();
         detailsConsultationTxt.setText("");
+        dateConsultationTxt.setDate(null);
         switch (action) {
             case "":
                 disableFormConsultation();
@@ -1045,6 +1064,7 @@ public class DossierPatient extends javax.swing.JInternalFrame {
                 break;
             case AJOUTER_CONSULTATION:
                 enableFormConsultation();
+                dateConsultationTxt.setDate(new Date());
                 detailsConsultationTxt.setText("Le " + dateFormat.format(new Date()) + " Docteur " + Session.getUser().getNom());
                 consultationBtn.setEnabled(true);
                 consultationBtn.setText(AJOUTER_CONSULTATION);
@@ -1064,7 +1084,7 @@ public class DossierPatient extends javax.swing.JInternalFrame {
 
     private void tableConsultationsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableConsultationsMouseClicked
         String action = (String) actionConsultationCbx.getSelectedItem();
-        Integer selectedID;
+        Long selectedID;
 
         if (action.isEmpty()) {
             JOptionPane.showMessageDialog(null, "VEUILLEZ SELECTIONNER UNE ACTION ", "ERREUR", JOptionPane.ERROR_MESSAGE);
@@ -1072,7 +1092,7 @@ public class DossierPatient extends javax.swing.JInternalFrame {
         } else if (action.equals(MODIFIER_CONSULTATION) || action.equals(SUPPRIMER_CONSULTATION)) {
             DefaultTableModel m = (DefaultTableModel) tableConsultations.getModel();
             try {
-                selectedID = (Integer) m.getValueAt(tableConsultations.getSelectedRow(), 0);
+                selectedID = (Long) m.getValueAt(tableConsultations.getSelectedRow(), 0);
             } catch (Exception e) {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
                 JOptionPane.showMessageDialog(null, "VEUILLEZ SELECTIONNER UN ELEMENT VALIDE", "ERREUR", JOptionPane.ERROR_MESSAGE);
@@ -1093,7 +1113,7 @@ public class DossierPatient extends javax.swing.JInternalFrame {
                 newConsultation.setDateConsultation(dateConsultationTxt.getDate());
                 newConsultation.setDonnees(detailsConsultationTxt.getText());
                 newConsultation.setPatient(patient);
-                TypeConsultation tc = typeConsultationDAO.findByLibelle((String) typeConsultationCbx.getSelectedItem());
+                TypeConsultation tc = typesConsultationArray.get(typeConsultationCbx.getSelectedIndex() - 1);
                 newConsultation.setTypeConsultation(tc);
                 patient.addConsultation(newConsultation);
                 if (patientDAO.edit(patient)) {
@@ -1112,7 +1132,7 @@ public class DossierPatient extends javax.swing.JInternalFrame {
                     } else {
                         consultationEdit.setDonnees(detailsConsultationTxt.getText());
                         consultationEdit.setDateConsultation(dateConsultationTxt.getDate());
-                        TypeConsultation typeEdit = typeConsultationDAO.findByLibelle(typeConsultationCbx.getSelectedItem().toString());
+                        TypeConsultation typeEdit = typesConsultationArray.get(typeConsultationCbx.getSelectedIndex() - 1);
                         consultationEdit.setTypeConsultation(typeEdit);
                         if (patientDAO.editConsultation(patient, consultationEdit)) {
                             JOptionPane.showMessageDialog(null, "CONSULTATION MODIFIEE AVEC SUCCES", "SUCCES", JOptionPane.INFORMATION_MESSAGE);
@@ -1264,10 +1284,47 @@ public class DossierPatient extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_imprimerBtnActionPerformed
 
     private void closeDossierBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeDossierBtnActionPerformed
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         ListePatients listePatients = new ListePatients();
         this.getDesktopPane().add(listePatients).setVisible(true);
+        try {
+            listePatients.setMaximum(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(ListePatients.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         this.dispose();
     }//GEN-LAST:event_closeDossierBtnActionPerformed
+
+    private void updateAntecedentsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateAntecedentsBtnActionPerformed
+        DefaultTableModel dtm = (DefaultTableModel) tableAntecedentsPatient.getModel();
+        if (dtm.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(null, "AUCUNE VALEUR SELECTIONNEE", "PATIENT", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        for (int i = 0; i < dtm.getRowCount(); i++) {
+            Long idAntecedent = (Long) dtm.getValueAt(i, 2);
+            PatientAntecedent patAnt = this.findAntecedentInPatient(idAntecedent);
+            if ((Boolean) dtm.getValueAt(i, 1) && patAnt == null) {
+                patAnt = new PatientAntecedent();
+                Antecedent ant = antecedentDAO.findById(idAntecedent);
+                patAnt.setAntecedent(ant);
+                patAnt.setCommentaire("");
+                patAnt.setDateEntree(new Date());
+                this.patient.addPatientAntecedent(patAnt);
+            } else if (!(Boolean) dtm.getValueAt(i, 1) && patAnt != null) {
+                this.patient.removePatientAntecedent(patAnt);
+            }
+        }
+
+        if (patientDAO.edit(patient)) {
+            this.patient = patientDAO.findById(this.ID_PATIENT);
+            this.remplirTree();
+            JOptionPane.showMessageDialog(null, "ANTECEDENTS MIS A JOUR", "PATIENT", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null, "ECHEC DE LA MISE A JOUR", "PATIENT", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_updateAntecedentsBtnActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1344,6 +1401,6 @@ public class DossierPatient extends javax.swing.JInternalFrame {
     private javax.swing.JLabel telDomicileLabel;
     private javax.swing.JLabel telPortableLabel;
     private javax.swing.JComboBox<String> typeConsultationCbx;
-    private javax.swing.JToggleButton updateAntecedantsBtn;
+    private javax.swing.JButton updateAntecedentsBtn;
     // End of variables declaration//GEN-END:variables
 }

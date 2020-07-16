@@ -34,11 +34,11 @@ public class ProfessionDAO {
     }
 
     // Search profession via son libelle
-    public Profession findProfessionByLibeller(String libelle) {
+    public Profession findByLibelle(String libelle) {
         try {
             openSession();
             List pros = session.createQuery("FROM Profession p  WHERE p.libelle=:lib").setParameter("lib", libelle).getResultList();
-            return pros.size() > 0 ? (Profession)pros.get(0) : null;
+            return pros.size() > 0 ? (Profession) pros.get(0) : null;
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
             return null;
